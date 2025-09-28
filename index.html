@@ -1,0 +1,3799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>🎲 DataLotto49 Mobile</title>
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --danger-light: #fca5a5;
+      --warning: #f59e0b;
+      --info: #06b6d4;
+      --dark: #1f2937;
+      --light: #f9fafb;
+      --gray: #6b7280;
+      --border-radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    input, textarea {
+      -webkit-user-select: text;
+      -khtml-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 10px;
+      color: var(--dark);
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 5px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .header h1 {
+      color: var(--primary);
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      color: var(--gray);
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    }
+
+    .disclaimer-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--warning);
+      background: var(--warning);
+      color: white;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      animation: disclaimerPulse 2s infinite;
+    }
+
+    .disclaimer-btn:hover {
+      background: #e68900;
+      border-color: #e68900;
+      transform: scale(1.1);
+    }
+
+    @keyframes disclaimerPulse {
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      }
+      50% { 
+        box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+      }
+    }
+
+    .selected-numbers {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+    }
+
+    .selected-numbers h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .selected-display {
+      min-height: 50px;
+      border: 2px dashed #e5e7eb;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .number-selection-section {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+    }
+
+    .number-selection-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
+
+    .number-selection-header h3 {
+      color: var(--primary);
+      text-align: center;
+      margin: 0;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .selection-mode-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .selection-mode-btn {
+      width: 42px;
+      height: 42px;
+      border: 3px solid;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      background: #f5f5f5;
+    }
+
+    .selection-mode-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .selection-mode-btn[data-mode="cold"] {
+      border-color: #2196f3;
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .selection-mode-btn[data-mode="hot"] {
+      border-color: #f44336;
+      background: #ffebee;
+      color: #d32f2f;
+    }
+
+    .selection-mode-btn[data-mode="excluded"] {
+      border-color: #9e9e9e;
+      background: #f5f5f5;
+      color: #616161;
+    }
+
+    .selection-mode-btn[data-mode="data"] {
+      border-color: #4caf50;
+      background: #e8f5e8;
+      color: #2e7d32;
+    }
+
+    .selection-mode-btn[data-mode="simulate"] {
+      border-color: #ff9800;
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .selection-mode-btn.active {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      animation: pulse-selection 2s infinite;
+    }
+
+    .selection-mode-btn.active[data-mode="cold"] {
+      border-color: #1976d2;
+      background: #2196f3;
+      color: white;
+      box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+    }
+
+    .selection-mode-btn.active[data-mode="hot"] {
+      border-color: #d32f2f;
+      background: #f44336;
+      color: white;
+      box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+    }
+
+    .selection-mode-btn.active[data-mode="excluded"] {
+      border-color: #616161;
+      background: #9e9e9e;
+      color: white;
+      box-shadow: 0 8px 25px rgba(158, 158, 158, 0.4);
+    }
+
+    .selection-mode-btn.active[data-mode="data"] {
+      border-color: #2e7d32;
+      background: #4caf50;
+      color: white;
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    .selection-mode-btn.active[data-mode="simulate"] {
+      border-color: #f57c00;
+      background: #ff9800;
+      color: white;
+      box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+    }
+
+    @keyframes pulse-selection {
+      0%, 100% { transform: scale(1.1); }
+      50% { transform: scale(1.2); }
+    }
+
+    #randomBtn:hover {
+      transform: rotate(360deg) scale(1.05);
+    }
+
+    #clearBtn {
+      transition: all 0.3s ease;
+      border-color: #9e9e9e;
+      background: #f5f5f5;
+      color: #616161;
+    }
+
+    #clearBtn:hover {
+      transform: scale(1.1);
+    }
+
+    #clearBtn.has-selections {
+      background: var(--danger-light);
+      border-color: var(--danger-light);
+      color: white;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+      20%, 40%, 60%, 80% { transform: translateX(2px); }
+    }
+
+    #clearBtn.shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    @media(min-width: 480px) {
+      .numbers-grid {
+        gap: 6px;
+      }
+    }
+
+    .number-ball {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid #e0e0e0;
+      background: linear-gradient(135deg, #fafafa, #f0f0f0);
+      position: relative;
+      font-size: clamp(0.7rem, 2.5vw, 1rem);
+      min-height: 35px;
+    }
+
+    .number-ball:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .number-ball.selected {
+      background: linear-gradient(135deg, #ffd700, #ffa000);
+      border-color: #ff8f00;
+      color: white;
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(255,193,7,0.4);
+      animation: pulse 1.5s infinite;
+    }
+
+    .number-ball.generated-pick {
+      background: linear-gradient(135deg, #9333ea, #c084fc);
+      color: white;
+      transform: scale(1.05);
+      border-color: #7c3aed;
+      box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+    }
+
+    .number-ball.random-pick {
+      background: var(--warning);
+      color: white;
+      transform: scale(1.05);
+      border-color: #e68900;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .number-ball.hot {
+      border-color: #ff5722;
+      background: linear-gradient(135deg, #ffebee, #ffcdd2);
+      color: #d32f2f;
+      box-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+    }
+
+    .number-ball.cold {
+      border-color: #03a9f4;
+      background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
+      color: #0277bd;
+      box-shadow: 0 0 10px rgba(3, 169, 244, 0.3);
+    }
+
+    .number-ball.excluded {
+      background: #757575;
+      border-color: #424242;
+      color: white;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .number-ball .number-icon {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      font-size: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 1px solid white;
+    }
+
+    .number-ball.hot .number-icon {
+      background: #ff5722;
+      color: white;
+    }
+
+    .number-ball.cold .number-icon {
+      background: #03a9f4;
+      color: white;
+    }
+
+    .number-ball.excluded .number-icon {
+      background: #9e9e9e;
+      color: white;
+    }
+
+    .number-ball.random-pick .number-icon {
+      background: var(--warning);
+      color: white;
+      border-color: #e68900;
+    }
+
+    .number-ball.generated-pick .number-icon {
+      background: #7c3aed;
+      color: white;
+      border-color: #a855f7;
+    }
+
+    /* SECCIONES COLAPSABLES */
+    .collapsible-section {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+
+    .collapsible-header {
+      padding: 15px;
+      background: var(--light);
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .collapsible-header:hover {
+      background: #f3f4f6;
+    }
+
+    .collapsible-header h3 {
+      color: var(--primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .collapse-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .collapse-btn:hover {
+      background: var(--primary-dark);
+      transform: scale(1.1);
+    }
+
+    .collapse-btn.collapsed {
+      transform: rotate(0deg);
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .collapsible-content.expanded {
+      max-height: 2000px;
+      transition: max-height 0.5s ease-in;
+    }
+
+    .collapsible-inner {
+      padding: 15px;
+    }
+
+    .data-analysis-section {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+    }
+
+    .data-analysis-section h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .data-info {
+      padding: 10px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: var(--gray);
+      text-align: center;
+    }
+
+    .data-info.has-data {
+      background: #e8f5e8;
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media(max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-item {
+      padding: 10px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-bottom: 3px;
+    }
+
+    .stat-value {
+      font-weight: bold;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+
+    .stat-value.valid {
+      color: #4caf50;
+      text-shadow: 0 0 10px rgba(76,175,80,0.3);
+    }
+
+    .stat-value.invalid {
+      color: var(--danger);
+    }
+
+    .strategy-section {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+    }
+
+    .strategy-section h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .strategy-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    @media(max-width: 480px) {
+      .strategy-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .strategy-btn {
+      padding: 12px 8px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      font-size: 0.9rem;
+    }
+
+    .strategy-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .strategy-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .input-row label {
+      font-weight: bold;
+      color: var(--dark);
+      min-width: 60px;
+      font-size: 0.9rem;
+    }
+
+    .input-row input {
+      width: 70px;
+      padding: 6px 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .input-row input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .input-row span {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .number-option {
+      padding: 8px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .number-option:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .number-option.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: clamp(1rem, 3vw, 1.1rem);
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: generatePulse 2s infinite;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    @keyframes generatePulse {
+      0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      }
+      50% { 
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+      }
+    }
+
+    .ticket {
+      background: linear-gradient(135deg, #fff8e1, #ffecb3);
+      border: 2px dashed #ff9800;
+      border-radius: 15px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .ticket.show {
+      display: block;
+    }
+
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+      text-align: center;
+      color: #e65100;
+      flex-wrap: wrap;
+    }
+
+    .ticket-header h4 {
+      color: var(--primary);
+      font-size: clamp(1rem, 3vw, 1.1rem);
+    }
+
+    .ticket-header p {
+      color: var(--gray);
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+    }
+
+    .ticket-combination {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+    }
+
+    .ticket-number {
+      width: 25px;
+      height: 25px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      flex-shrink: 0;
+    }
+
+    .ticket-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .ticket-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .ticket-btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .save-btn {
+      background: linear-gradient(135deg, #2196f3, #1976d2);
+      color: white;
+    }
+
+    .share-btn {
+      background: linear-gradient(135deg, #4caf50, #388e3c);
+      color: white;
+    }
+
+    .ticket-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .filter-group {
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+
+    .filter-group.active {
+      background: #f7f3ff;
+      border-left-color: var(--secondary);
+    }
+
+    .filter-title {
+      font-weight: bold;
+      color: var(--dark);
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .range-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .range-control input {
+      width: 70px;
+      padding: 6px 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .range-control input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .range-control input.error {
+      border-color: var(--danger);
+      background-color: #fef2f2;
+    }
+
+    .range-control span {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .filter-chip {
+      padding: 6px 12px;
+      background: #f3f4f6;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--primary);
+    }
+
+    .filter-chip.active {
+      border-color: #4caf50;
+      background: #e8f5e8;
+      color: #2e7d32;
+    }
+
+    .validation-error {
+      background: #ffebee;
+      border: 1px solid #f44336;
+      color: #c62828;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .validation-error.show {
+      display: block;
+    }
+
+    .saved-tickets-section {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 80px;
+    }
+
+    .saved-tickets-section h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .saved-tickets {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .saved-ticket-item {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .saved-ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .saved-ticket-date {
+      font-weight: bold;
+      color: var(--dark);
+      font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    }
+
+    .saved-ticket-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .validate {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .delete-btn {
+      background: var(--danger) !important;
+      color: white !important;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+
+    .delete-btn:hover {
+      background: #dc2626 !important;
+      transform: scale(1.05);
+    }
+
+    .toggle-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .saved-combinations {
+      margin-top: 8px;
+      padding: 8px;
+      background: #f9fafb;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .saved-combination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px;
+      background: white;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    .hit-count {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--success);
+      background-color: #e8f9f1;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    .saved-combination-number {
+      width: 18px;
+      height: 18px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .saved-combination-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Loading */
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-content {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      max-width: 90%;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      width: 95%;
+      max-width: 400px;
+      max-height: 80vh;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      margin-bottom: 15px;
+      flex-shrink: 0;
+    }
+
+    .modal-header h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      flex-shrink: 0;
+    }
+
+    .modal-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    #validationResults {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 200px;
+      margin-bottom: 15px;
+      padding-right: 5px;
+    }
+
+    #validationResults::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #validationResults::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    #validationResults::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    #validationResults::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+
+    .modal-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .modal-btn.cancel {
+      background: #f3f4f6;
+      color: var(--dark);
+    }
+
+    .modal-btn.confirm {
+      background: var(--success);
+      color: white;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px);
+      transition: all 0.3s ease;
+      max-width: 90%;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    .toast.warning {
+      background: var(--warning);
+    }
+
+    .hidden-file-input {
+      display: none;
+    }
+
+    @media(max-width: 320px) {
+      .numbers-grid {
+        gap: 2px;
+      }
+
+      .number-ball {
+        min-height: 30px;
+        font-size: 0.6rem;
+      }
+
+      .selection-mode-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🎲 DataLotto49</h1>
+      <p>Generador Inteligente con Arquitectura Matemática Avanzada</p>
+      <button class="disclaimer-btn" id="disclaimerBtn" title="Disclaimer Ético">⚠️</button>
+    </header>
+
+    <div class="selected-numbers">
+      <h3>🎯 Números Seleccionados</h3>
+      <div class="selected-display" id="selectedDisplay">
+        <div style="color:#666; font-style: italic;">Selecciona hasta 6 números</div>
+      </div>
+    </div>
+
+    <div class="number-selection-section">
+      <div class="number-selection-header">
+        <h3>Selección de números</h3>
+        <div class="selection-mode-controls">
+          <button class="selection-mode-btn active" data-mode="cold" title="Marcar/Desmarcar números fríos">
+            <span class="icon">❄</span>
+          </button>
+          <button class="selection-mode-btn" data-mode="hot" title="Marcar/Desmarcar números calientes">
+            <span class="icon">🔥</span>
+          </button>
+          <button class="selection-mode-btn" data-mode="excluded" title="Marcar/Desmarcar números excluidos">
+            <span class="icon">🚫</span>
+          </button>
+          <button class="selection-mode-btn" data-mode="data" title="Cargar base de datos" id="dataBtn">
+            <span class="icon">📊</span>
+          </button>
+          <button class="selection-mode-btn" data-mode="simulate" title="Simular datos" id="simulateBtn">
+            <span class="icon">🎰</span>
+          </button>
+          <button class="selection-mode-btn" id="randomBtn" title="Seleccionar 6 números al azar">
+            <span class="icon">🎲</span>
+          </button>
+          <button class="selection-mode-btn" id="clearBtn" title="Limpiar todas las selecciones">
+            <span class="icon">🗑️</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="numbers-grid" id="numbersGrid"></div>
+    </div>
+
+    <!-- Analizador Estadístico -->
+    <div class="data-analysis-section">
+      <h3>📊 Analizador Estadístico Base</h3>
+      <div class="data-info" id="dataInfo">
+        No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.
+      </div>
+      <div class="stats-grid" id="dataStatsGrid" style="display: none;">
+        <div class="stat-item">
+          <div class="stat-label">Total Sorteos</div>
+          <div class="stat-value" id="totalDraws">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Tipo de Datos</div>
+          <div class="stat-value" id="dataType">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Números Más Frecuentes</div>
+          <div class="stat-value" id="mostFrequent">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Números Menos Frecuentes</div>
+          <div class="stat-value" id="leastFrequent">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Chi-cuadrado (p-valor)</div>
+          <div class="stat-value" id="chiSquare">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Sesgo Detectado</div>
+          <div class="stat-value" id="biasDetected">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas Colapsables -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" data-target="stats">
+        <h3>📊 Estadísticas en Tiempo Real</h3>
+        <button class="collapse-btn collapsed" id="statsCollapseBtn">+</button>
+      </div>
+      <div class="collapsible-content" id="statsContent">
+        <div class="collapsible-inner">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-label">Suma Total</div>
+              <div class="stat-value" id="statSuma">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Par/Impar</div>
+              <div class="stat-value" id="statParImpar">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Bajos/Altos</div>
+              <div class="stat-value" id="statBajosAltos">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Decenas</div>
+              <div class="stat-value" id="statDecenas">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Agrup. Decenas</div>
+              <div class="stat-value" id="statAgrupDecenas">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Consecutivos</div>
+              <div class="stat-value" id="statConsecutivos">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Suma Dígitos</div>
+              <div class="stat-value" id="statSumaDigitos">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Números Primos</div>
+              <div class="stat-value" id="statPrimos">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Desviación</div>
+              <div class="stat-value" id="statDesviacion">-</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Patrones</div>
+              <div class="stat-value" id="statPatrones">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy-section">
+      <h3>♟ Estrategia de Juego</h3>
+      <div class="strategy-buttons">
+        <div class="strategy-btn active" data-strategy="simple">
+          <div style="font-size: 1.5rem; margin-bottom: 5px;">🎯</div>
+          <div>Simple</div>
+        </div>
+        <div class="strategy-btn" data-strategy="winning">
+          <div style="font-size: 1.5rem; margin-bottom: 5px;">🏆</div>
+          <div>Estrategia Ganadora</div>
+        </div>
+        <div class="strategy-btn" data-strategy="multiple">
+          <div style="font-size: 1.5rem; margin-bottom: 5px;">🎰</div>
+          <div>Múltiple</div>
+        </div>
+      </div>
+
+      <div class="multiple-options" id="winningOptions" style="display: none;">
+        <div class="input-row">
+          <label>Generar:</label>
+          <input type="number" id="generateCount" value="100" min="10" max="1000">
+          <span>combinaciones</span>
+        </div>
+        <div class="input-row">
+          <label>Jugar:</label>
+          <input type="number" id="playCount" value="10" min="1" max="100">
+          <span>mejores</span>
+        </div>
+      </div>
+
+      <div class="multiple-numbers-options" id="multipleNumbersOptions" style="display: none;">
+        <div class="numbers-select">
+          <label>¿Cuántos números quieres seleccionar?</label>
+          <div class="number-option active" data-numbers="7">7 números</div>
+          <div class="number-option" data-numbers="8">8 números</div>
+          <div class="number-option" data-numbers="9">9 números</div>
+          <div class="number-option" data-numbers="10">10 números</div>
+          <div class="number-option" data-numbers="11">11 números</div>
+        </div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn"><span>🤞 Generar Combinación</span></button>
+
+      <div class="ticket" id="ticket">
+        <div class="ticket-header">
+          <h4>🎫 Tu Boleto Ganador</h4>
+          <p id="ticketDate"></p>
+        </div>
+        <div id="ticketCombinations"></div>
+        <div class="ticket-actions">
+          <button class="ticket-btn save-btn" id="saveBtn"><span>💾 Guardar Boleto</span></button>
+          <button class="ticket-btn share-btn" id="shareBtn"><span>📤 Compartir</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros Matemáticos Jerárquicos Colapsables -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" data-target="filters">
+        <h3>⚙️ Filtros Matemáticos Jerárquicos</h3>
+        <button class="collapse-btn collapsed" id="filtersCollapseBtn">+</button>
+      </div>
+      <div class="collapsible-content" id="filtersContent">
+        <div class="collapsible-inner">
+          <div class="filters-panel">
+            <!-- Filtro 1: Exclusiones Absolutas -->
+            <div class="filter-group" title="[Filtro de Exclusión] Evita generar combinaciones que contengan números terminados en los dígitos seleccionados. Útil para descartar patrones no deseados.">
+              <div class="filter-title">🚫 [FILTRO 1] Excluir Terminaciones</div>
+              <div class="filter-options" id="terminacionesExcluidasOptions">
+                <div class="filter-chip" data-value="0">*0</div>
+                <div class="filter-chip" data-value="1">*1</div>
+                <div class="filter-chip" data-value="2">*2</div>
+                <div class="filter-chip" data-value="3">*3</div>
+                <div class="filter-chip" data-value="4">*4</div>
+                <div class="filter-chip" data-value="5">*5</div>
+                <div class="filter-chip" data-value="6">*6</div>
+                <div class="filter-chip" data-value="7">*7</div>
+                <div class="filter-chip" data-value="8">*8</div>
+                <div class="filter-chip" data-value="9">*9</div>
+              </div>
+            </div>
+
+            <!-- Filtro 2: Restricciones Básicas -->
+            <div class="filter-group" title="[Filtro de Rango] La suma de los 6 números debe estar dentro de este rango. Estadísticamente, la mayoría de los sorteos ganadores suman entre 121 y 190.">
+              <div class="filter-title">🎯 [FILTRO 2] Suma Total</div>
+              <div class="range-control">
+                <input type="number" id="sumMin" value="121" min="21" max="279">
+                <span>a</span>
+                <input type="number" id="sumMax" value="190" min="21" max="279">
+              </div>
+              <div class="validation-error" id="sumError">El valor mínimo no puede ser mayor que el máximo</div>
+            </div>
+
+            <div class="filter-group" title="[Filtro de Proporción] Define la cantidad de números pares e impares en la combinación. Las proporciones 4/2, 3/3 y 2/4 son las más comunes.">
+              <div class="filter-title">⚖️ [FILTRO 3] Par/Impar</div>
+              <div class="filter-options" id="parImparOptions">
+                <div class="filter-chip" data-value="6/0">6/0</div>
+                <div class="filter-chip" data-value="5/1">5/1</div>
+                <div class="filter-chip active" data-value="4/2">4/2</div>
+                <div class="filter-chip active" data-value="3/3">3/3</div>
+                <div class="filter-chip" data-value="2/4">2/4</div>
+                <div class="filter-chip" data-value="1/5">1/5</div>
+                <div class="filter-chip" data-value="0/6">0/6</div>
+              </div>
+            </div>
+
+            <div class="filter-group" title="[Filtro de Proporción] Define la cantidad de números bajos (1-25) y altos (26-49). Proporciones equilibradas como 3/3, 4/2 y 2/4 son frecuentes.">
+              <div class="filter-title">📊 [FILTRO 4] Bajos/Altos(1-25/26-49)</div>
+              <div class="filter-options" id="bajosAltosOptions">
+                <div class="filter-chip" data-value="6/0">6/0</div>
+                <div class="filter-chip" data-value="5/1">5/1</div>
+                <div class="filter-chip active" data-value="4/2">4/2</div>
+                <div class="filter-chip active" data-value="3/3">3/3</div>
+                <div class="filter-chip active" data-value="2/4">2/4</div>
+                <div class="filter-chip" data-value="1/5">1/5</div>
+                <div class="filter-chip" data-value="0/6">0/6</div>
+              </div>
+            </div>
+
+            <div class="filter-group" title="[Filtro de Cantidad] Define cuántos números primos (como 2, 3, 5, 7, 11...) debe tener la combinación. Generalmente, hay entre 1 y 3 primos en un sorteo.">
+              <div class="filter-title">🔢 [FILTRO 5] Números Primos</div>
+              <div class="range-control">
+                <span>Entre</span>
+                <input type="number" id="primosMin" value="1" min="0" max="6">
+                <span>y</span>
+                <input type="number" id="primosMax" value="3" min="0" max="6">
+                <span>primos</span>
+              </div>
+              <div class="validation-error" id="primosError">El valor mínimo no puede ser mayor que el máximo</div>
+            </div>
+
+            <!-- Filtro 6: Patrones Geométricos -->
+            <div class="filter-group" title="[Filtro de Patrón] Define cómo se agrupan los números consecutivos. '2/1/1/1/1' significa un par de números consecutivos y cuatro sueltos. '1/1/1/1/1/1' significa que no hay consecutivos.">
+              <div class="filter-title">🔗 [FILTRO 6] Números Consecutivos</div>
+              <div class="filter-options" id="consecutivosOptions">
+                <div class="filter-chip" data-value="6">6</div>
+                <div class="filter-chip" data-value="5/1">5/1</div>
+                <div class="filter-chip" data-value="4/2">4/2</div>
+                <div class="filter-chip" data-value="4/1/1">4/1/1</div>
+                <div class="filter-chip" data-value="3/3">3/3</div>
+                <div class="filter-chip" data-value="3/2/1">3/2/1</div>
+                <div class="filter-chip" data-value="3/1/1/1">3/1/1/1</div>
+                <div class="filter-chip" data-value="2/2/2">2/2/2</div>
+                <div class="filter-chip" data-value="2/2/1/1">2/2/1/1</div>
+                <div class="filter-chip active" data-value="2/1/1/1/1">2/1/1/1/1</div>
+                <div class="filter-chip active" data-value="1/1/1/1/1/1">1/1/1/1/1/1</div>
+              </div>
+            </div>
+
+            <div class="filter-group" title="[Filtro de Distribución] Controla cómo se distribuyen los números en las diferentes decenas (1-9, 10-19, etc.). '3/2/1' indica 3 números en una decena, 2 en otra y 1 en una tercera.">
+              <div class="filter-title">🔢 [FILTRO 7] Agrupación por Decenas</div>
+              <div class="filter-options" id="agrupDecenasOptions">
+                <div class="filter-chip active" data-value="6">6</div>
+                <div class="filter-chip active" data-value="5/1">5/1</div>
+                <div class="filter-chip active" data-value="4/2">4/2</div>
+                <div class="filter-chip active" data-value="4/1/1">4/1/1</div>
+                <div class="filter-chip active" data-value="3/3">3/3</div>
+                <div class="filter-chip active" data-value="3/2/1">3/2/1</div>
+                <div class="filter-chip active" data-value="3/1/1/1">3/1/1/1</div>
+                <div class="filter-chip active" data-value="2/2/2">2/2/2</div>
+                <div class="filter-chip active" data-value="2/2/1/1">2/2/1/1</div>
+                <div class="filter-chip active" data-value="2/1/1/1/1">2/1/1/1/1</div>
+              </div>
+            </div>
+
+            <!-- Filtro 8: Estadísticos Avanzados -->
+            <div class="filter-group" title="[Filtro de Rango Avanzado] La suma de todos los dígitos individuales de los 6 números. Es un filtro más sutil para refinar la selección.">
+              <div class="filter-title">∑ [FILTRO 8] Suma de Dígitos</div>
+              <div class="range-control">
+                <input type="number" id="sumaDigitosMin" value="28" min="21" max="63">
+                <span>a</span>
+                <input type="number" id="sumaDigitosMax" value="45" min="21" max="63">
+              </div>
+              <div class="validation-error" id="sumaDigitosError">El valor mínimo no puede ser mayor que el máximo</div>
+            </div>
+
+            <div class="filter-group" title="[Filtro Estadístico] Mide la dispersión de los números. Un valor bajo significa que los números están muy juntos; un valor alto, que están muy separados. El rango 12-18 es común.">
+              <div class="filter-title">📊 [FILTRO 9] Desviación Estándar</div>
+              <div class="range-control">
+                <input type="number" id="desviacionMin" value="12.0" min="1" max="24" step="0.1">
+                <span>a</span>
+                <input type="number" id="desviacionMax" value="18.0" min="1" max="24" step="0.1">
+              </div>
+              <div class="validation-error" id="desviacionError">El valor mínimo no puede ser mayor que el máximo</div>
+            </div>
+
+            <!-- Filtro 10: Patrones Prohibidos -->
+            <div class="filter-group" title="[Filtro Geométrico/Numérico] Evita combinaciones que formen patrones visuales en el tablero (líneas, triángulos) o patrones numéricos específicos (Fibonacci, múltiplos).">
+              <div class="filter-title">🚫 [FILTRO 10] Excluir Patrones</div>
+              <div class="filter-options" id="patronesOptions">
+                <div class="filter-chip" data-value="fibonacci">⌐ Fibonacci</div>
+                <div class="filter-chip" data-value="paresConsecutivos">⌐ Pares consecutivos</div>
+                <div class="filter-chip" data-value="multiplos">⌐ Múltiplos</div>
+                <div class="filter-chip" data-value="lineasRectas">⌐ Líneas rectas</div>
+                <div class="filter-chip" data-value="triangulos">⌐ Triángulos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="saved-tickets-section">
+      <h3>🗂 Boletos Guardados</h3>
+      <div class="saved-tickets" id="savedTickets">
+        <div style="color:#666; text-align: center; padding: 20px;">No tienes boletos guardados</div>
+      </div>
+    </div>
+
+    <!-- Modales -->
+    <div class="loading" id="loadingModal">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h3 id="loadingText">Generando combinación...</h3>
+        <p>Intentos: <span id="loadingAttempts">0</span></p>
+      </div>
+    </div>
+
+    <div class="modal" id="validationModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>🔍 Validar Boleto</h3>
+          <p>Introduce los 6 números ganadores separados por espacios, comas o puntos.</p>
+        </div>
+        <input type="text" class="modal-input" id="winningNumbersInput" placeholder="7, 12. 23 31,42.49" maxlength="23">
+        <div id="validationResults"></div>
+        <div class="modal-actions">
+          <button class="modal-btn cancel" id="cancelValidationBtn">Cerrar</button>
+          <button class="modal-btn confirm" id="confirmValidationBtn">Validar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Disclaimer -->
+    <div class="modal" id="disclaimerModal">
+      <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3>⚠️ Disclaimer Ético</h3>
+        </div>
+        <div style="padding: 15px; color: var(--dark); line-height: 1.6; overflow-y: auto; max-height: 60vh;">
+          <p><strong>IMPORTANTE:</strong></p>
+          <p>Esta aplicación es una herramienta de entretenimiento y análisis estadístico. Los números de lotería son completamente aleatorios.</p>
+          <p><strong>Recuerda:</strong></p>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>No hay forma de predecir números ganadores</li>
+            <li>Juega solo lo que puedas permitirte perder</li>
+            <li>El juego puede crear adicción</li>
+            <li>Esta app no garantiza premios</li>
+            <li>Los algoritmos son para análisis, no predicción</li>
+            <li>Los datos históricos no predicen futuros resultados</li>
+            <li>Los filtros matemáticos solo organizan probabilidades</li>
+            <li>Las estrategias no aumentan las posibilidades reales de ganar</li>
+          </ul>
+          <p><strong>Responsabilidad:</strong></p>
+          <p>El usuario es completamente responsable de sus decisiones de juego. Esta herramienta no fomenta el juego compulsivo.</p>
+          <p><strong>Ayuda:</strong></p>
+          <p>Si tienes problemas con el juego, busca ayuda profesional. En España: <strong>900 200 225</strong> (Línea de ayuda contra la ludopatía)</p>
+          <p style="margin-top: 15px; padding: 10px; background: #fef2f2; border-left: 4px solid var(--danger); border-radius: 4px;">
+            <strong>AVISO LEGAL:</strong> Esta aplicación es solo para entretenimiento. Los desarrolladores no se responsabilizan por pérdidas económicas derivadas del uso de esta herramienta.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn confirm" id="disclaimerCloseBtn">Entendido</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" class="hidden-file-input" accept=".csv,.db" multiple>
+  </div>
+
+  <script>
+// ============================================
+// SISTEMA DE ALMACENAMIENTO PERSISTENTE
+// ============================================
+
+window.loadDataFromAppInventor = function(fileContent) {
+  if (window.app) {
+    try {
+      const data = window.app.parseCSVData(fileContent);
+      window.app.historicalData = data;
+      window.app.dataType = 'real';
+      window.app.dataLoaded = true;
+      window.app.updateDataAnalysis();
+      window.app.analyzeNumbers();
+      window.app.updateGridWithHotColdNumbers();
+      window.app.showToast(`✅ Datos cargados desde App Inventor: ${data.length} sorteos`, 'success');
+    } catch (error) {
+      window.app.showToast(`Error al procesar datos del archivo: ${error.message}`, 'error');
+    }
+  }
+};
+
+window.receiveAppInventorTickets = function(jsonString) {
+  try {
+    const data = JSON.parse(jsonString);
+    if (data.action === 'TICKETS_LOADED' && window.app) {
+      window.app.savedTickets = data.tickets || [];
+      window.app.updateSavedTickets();
+      console.log(`Cargados ${data.tickets ? data.tickets.length : 0} boletos desde App Inventor`);
+    } else if (data.action === 'TICKETS_SAVED' && window.app) {
+      window.app.showToast('Boletos guardados en App Inventor', 'success');
+    }
+  } catch(error) {
+    console.error('Error procesando datos de App Inventor:', error);
+  }
+};
+
+function detectPlatform() {
+  if (typeof window.AppInventor !== 'undefined' || 
+      window.location.href.includes('appinventor') ||
+      navigator.userAgent.includes('AppInventor')) {
+    return 'appinventor';
+  } else if (window.location.href.includes('appmaker.xyz') ||
+             typeof window.appmaker !== 'undefined') {
+    return 'appmaker';
+  } else {
+    return 'web';
+  }
+}
+
+function requestFileFromAppInventor() {
+    if (typeof window.AppInventor !== 'undefined') {
+        window.AppInventor.setWebViewString(JSON.stringify({
+            action: 'REQUEST_FILE_PICK'
+        }));
+    } else {
+        console.warn("La función para solicitar archivos solo está disponible en App Inventor.");
+        if (window.app) {
+            window.app.showToast("Esta función solo está disponible en la app Android.", "warning");
+        }
+    }
+}
+
+
+    // Clase principal de la aplicación
+    class DataLotto49Advanced {
+      constructor() {
+        // Estado del sistema
+        this.selectedNumbers = [];
+        this.excludedNumbers = new Set();
+        this.hotNumbers = new Set();
+        this.coldNumbers = new Set();
+        this.currentSelectionMode = 'cold';
+        this.isGenerating = false;
+        this.savedTickets = [];
+        this.currentTicket = null;
+        this.currentValidatingTicket = null;
+        this.historicalData = [];
+        this.numberStats = {};
+        this.analysisPeriod = 100;
+        this.dataLoaded = false;
+        this.dataType = 'none';
+
+        // Filtros matemáticos
+        this.filters = {
+          terminaciones: [],
+          sum: { min: 121, max: 190 },
+          parImpar: ['4/2', '3/3'],
+          bajosAltos: ['4/2', '3/3', '2/4'],
+          primos: { min: 1, max: 3 },
+          consecutivos: ['2/1/1/1/1', '1/1/1/1/1/1'],
+          agrupDecenas: ['6', '5/1', '4/2', '4/1/1', '3/3', '3/2/1', '3/1/1/1', '2/2/2', '2/2/1/1', '2/1/1/1/1'],
+          sumaDigitos: { min: 28, max: 45 },
+          desviacion: { min: 12.0, max: 18.0 },
+          patrones: []
+        };
+
+        // Matriz geométrica 7x7
+        this.geometricMatrix = this.buildMatrix7x7();
+
+        // Inicializar
+        this.init();
+      }
+
+      init() {
+        this.initializeHistoricalData();
+        this.initializeNumberStats();
+        this.analyzeNumbers();
+        this.createNumbersGrid();
+        this.bindEvents();
+        this.updateFilters();
+      }
+
+      // ===== MATRIZ GEOMÉTRICA =====
+      buildMatrix7x7() {
+        const matrix = {};
+        let num = 1;
+        for (let row = 0; row < 7; row++) {
+          for (let col = 0; col < 7; col++) {
+            if (num <= 49) {
+              matrix[num] = { x: col, y: row };
+              num++;
+            }
+          }
+        }
+        return matrix;
+      }
+
+      // ===== DATOS HISTÓRICOS =====
+      initializeHistoricalData() {
+        if (!this.dataLoaded) {
+          this.simulateHistoricalData(500);
+        }
+      }
+
+      simulateHistoricalData(numDraws = 500) {
+        this.historicalData = [];
+        const baseDate = new Date();
+        baseDate.setDate(baseDate.getDate() - numDraws * 3.5);
+
+        for(let i = 0; i < numDraws; i++) {
+          const drawDate = new Date(baseDate);
+          drawDate.setDate(drawDate.getDate() + (i * 3.5));
+          const numbers = this.generateRealisticDraw();
+          this.historicalData.push({
+            id: i + 1,
+            date: drawDate,
+            numbers: numbers.sort((a, b) => a - b),
+            sum: numbers.reduce((a, b) => a + b, 0)
+          });
+        }
+        
+        this.dataType = 'simulated';
+        this.dataLoaded = true;
+        this.updateDataAnalysis();
+        this.analyzeNumbers();
+        this.updateGridWithHotColdNumbers();
+        this.showToast('✅ Datos simulados generados correctamente', 'success');
+      }
+
+      generateRealisticDraw() {
+        const numbers = new Set();
+        const ranges = [
+          { min: 1, max: 9, weight: 0.8 },
+          { min: 10, max: 19, weight: 1.0 },
+          { min: 20, max: 29, weight: 1.0 },
+          { min: 30, max: 39, weight: 1.0 },
+          { min: 40, max: 49, weight: 0.8 }
+        ];
+
+        while(numbers.size < 6) {
+          const totalWeight = ranges.reduce((sum, r) => sum + r.weight, 0);
+          let rand = Math.random() * totalWeight;
+          let selectedRange = null;
+
+          for(const range of ranges) {
+            rand -= range.weight;
+            if(rand <= 0) {
+              selectedRange = range;
+              break;
+            }
+          }
+
+          if(selectedRange) {
+            let attempts = 0;
+            while(attempts < 10) {
+              const num = Math.floor(Math.random() * (selectedRange.max - selectedRange.min + 1)) + selectedRange.min;
+              if(!numbers.has(num)) {
+                numbers.add(num);
+                break;
+              }
+              attempts++;
+            }
+          }
+        }
+
+        return Array.from(numbers);
+      }
+
+      async loadRealData(files) {
+        try {
+          this.historicalData = [];
+          let totalDraws = 0;
+          
+          for (const file of files) {
+            const data = await this.loadDataFile(file);
+            this.historicalData.push(...data);
+            totalDraws += data.length;
+          }
+          
+          this.historicalData.sort((a, b) => new Date(a.date) - new Date(b.date));
+          this.historicalData.forEach((draw, index) => {
+            draw.id = index + 1;
+          });
+          
+          this.dataType = 'real';
+          this.dataLoaded = true;
+          this.updateDataAnalysis();
+          this.analyzeNumbers();
+          this.updateGridWithHotColdNumbers();
+          
+          this.showToast(`✅ Datos reales cargados: ${totalDraws} sorteos`, 'success');
+          
+        } catch (error) {
+          this.showToast(`⌐ Error cargando datos: ${error.message}`, 'error');
+        }
+      }
+
+      async loadDataFile(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const content = e.target.result;
+              const data = this.parseCSVData(content);
+              resolve(data);
+            } catch (error) {
+              reject(error);
+            }
+          };
+          reader.onerror = () => reject(new Error('Error leyendo archivo'));
+          reader.readAsText(file);
+        });
+      }
+
+      parseCSVData(content) {
+        const lines = content.trim().split('\n');
+        const draws = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          
+          const numbers = line.split(/[,;\t]/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+          
+          if (numbers.length !== 6) {
+            throw new Error(`Línea ${i + 1}: Se esperan 6 números, se encontraron ${numbers.length}`);
+          }
+          
+          if (numbers.some(n => n < 1 || n > 49)) {
+            throw new Error(`Línea ${i + 1}: Números fuera del rango 1-49`);
+          }
+          
+          draws.push({
+            id: i + 1,
+            date: new Date(Date.now() - (lines.length - i) * 3.5 * 24 * 60 * 60 * 1000),
+            numbers: numbers.sort((a, b) => a - b),
+            sum: numbers.reduce((a, b) => a + b, 0)
+          });
+        }
+        
+        return draws;
+      }
+
+      updateDataAnalysis() {
+        const dataInfo = document.getElementById('dataInfo');
+        const dataStatsGrid = document.getElementById('dataStatsGrid');
+        
+        if (!this.dataLoaded || this.historicalData.length === 0) {
+          dataInfo.textContent = 'No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.';
+          dataInfo.className = 'data-info';
+          dataStatsGrid.style.display = 'none';
+          return;
+        }
+        
+        const frequencies = {};
+        for (let i = 1; i <= 49; i++) frequencies[i] = 0;
+        
+        this.historicalData.forEach(draw => {
+          draw.numbers.forEach(num => frequencies[num]++);
+        });
+        
+        const sortedFreq = Object.entries(frequencies).sort((a, b) => b[1] - a[1]);
+        const mostFrequent = sortedFreq.slice(0, 3).map(([num]) => num).join(', ');
+        const leastFrequent = sortedFreq.slice(-3).map(([num]) => num).join(', ');
+        
+        const chiSquareResult = this.performChiSquareTest(frequencies);
+        
+        dataInfo.innerHTML = `📊 ${this.historicalData.length} sorteos cargados (${this.dataType === 'real' ? 'DATOS REALES' : 'DATOS SIMULADOS'})`;
+        dataInfo.className = 'data-info has-data';
+        
+        document.getElementById('totalDraws').textContent = this.historicalData.length;
+        document.getElementById('dataType').textContent = this.dataType === 'real' ? 'REALES' : 'SIMULADOS';
+        document.getElementById('mostFrequent').textContent = mostFrequent;
+        document.getElementById('leastFrequent').textContent = leastFrequent;
+        document.getElementById('chiSquare').textContent = chiSquareResult.pValue.toFixed(4);
+        document.getElementById('biasDetected').textContent = chiSquareResult.biased ? 'SÍ' : 'NO';
+        
+        dataStatsGrid.style.display = 'grid';
+      }
+
+      performChiSquareTest(frequencies) {
+        const totalDraws = this.historicalData.length;
+        const expectedFreq = totalDraws * 6 / 49;
+        
+        let chiSquare = 0;
+        for (let i = 1; i <= 49; i++) {
+          const observed = frequencies[i];
+          chiSquare += Math.pow(observed - expectedFreq, 2) / expectedFreq;
+        }
+        
+        const criticalValue = 65.17;
+        const pValue = chiSquare > criticalValue ? 0.001 : 0.5;
+        const biased = chiSquare > criticalValue;
+        
+        return { chiSquare, pValue, biased };
+      }
+
+      // ===== ANÁLISIS DE NÚMEROS =====
+      initializeNumberStats() {
+        for(let i = 1; i <= 49; i++) {
+          this.numberStats[i] = {
+            frequency: 0,
+            lastAppearance: -1,
+            relativeFreq: 0,
+            trend: 0,
+            cycle: 0,
+            score: 0
+          };
+        }
+      }
+
+      analyzeNumbers() {
+        this.initializeNumberStats();
+        
+        const analysisData = this.historicalData.slice(-this.analysisPeriod);
+        const totalDraws = analysisData.length;
+
+        analysisData.forEach((draw, index) => {
+          draw.numbers.forEach(num => {
+            this.numberStats[num].frequency++;
+            this.numberStats[num].lastAppearance = index;
+          });
+        });
+
+        for(let num = 1; num <= 49; num++) {
+          const stats = this.numberStats[num];
+          stats.relativeFreq = (stats.frequency / totalDraws) * 100;
+
+          const recentDraws = analysisData.slice(-20);
+          const recentFrequency = recentDraws.filter(draw => draw.numbers.includes(num)).length;
+          const olderDraws = analysisData.slice(-40, -20);
+          const olderFrequency = olderDraws.filter(draw => draw.numbers.includes(num)).length;
+          stats.trend = recentFrequency - olderFrequency;
+
+          if(stats.lastAppearance === -1) {
+            stats.cycle = totalDraws;
+          } else {
+            stats.cycle = totalDraws - 1 - stats.lastAppearance;
+          }
+
+          stats.score = this.calculateCompositeScore(num);
+        }
+
+        this.classifyNumbers();
+      }
+
+      calculateCompositeScore(num) {
+        const stats = this.numberStats[num];
+        const avgFreq = this.analysisPeriod / 6;
+        const freqComponent = (stats.frequency - avgFreq) / avgFreq;
+        const trendComponent = Math.max(-1, Math.min(1, stats.trend));
+        const maxCycle = this.analysisPeriod * 0.5;
+        const cycleComponent = (maxCycle - stats.cycle) / maxCycle;
+
+        return (freqComponent * 0.4) + (trendComponent * 0.3) + (cycleComponent * 0.3);
+      }
+
+      classifyNumbers() {
+        this.hotNumbers.clear();
+        this.coldNumbers.clear();
+
+        if (!this.dataLoaded || this.historicalData.length === 0) {
+          return;
+        }
+
+        const frequencies = {};
+        for (let i = 1; i <= 49; i++) {
+          frequencies[i] = 0;
+        }
+
+        this.historicalData.forEach(draw => {
+          draw.numbers.forEach(num => {
+            frequencies[num]++;
+          });
+        });
+
+        const sortedByFreq = Object.entries(frequencies)
+          .map(([num, freq]) => ({ number: parseInt(num), frequency: freq }))
+          .sort((a, b) => b.frequency - a.frequency);
+
+        for (let i = 0; i < 5 && i < sortedByFreq.length; i++) {
+          this.hotNumbers.add(sortedByFreq[i].number);
+        }
+
+        for (let i = sortedByFreq.length - 5; i < sortedByFreq.length; i++) {
+          if (i >= 0) {
+            this.coldNumbers.add(sortedByFreq[i].number);
+          }
+        }
+
+        console.log(`🔥 Números calientes (${this.hotNumbers.size}):`, Array.from(this.hotNumbers).sort());
+        console.log(`❄️ Números fríos (${this.coldNumbers.size}):`, Array.from(this.coldNumbers).sort());
+      }
+
+      updateGridWithHotColdNumbers() {
+        document.querySelectorAll('.number-ball').forEach(ball => {
+          ball.classList.remove('hot', 'cold');
+        });
+
+        this.hotNumbers.forEach(num => {
+          const ball = document.querySelector(`.number-ball[data-number="${num}"]`);
+          if (ball) {
+            ball.classList.add('hot');
+          }
+        });
+
+        this.coldNumbers.forEach(num => {
+          const ball = document.querySelector(`.number-ball[data-number="${num}"]`);
+          if (ball) {
+            ball.classList.add('cold');
+          }
+        });
+
+        this.updateNumberIcons();
+      }
+
+      // ===== INTERFAZ DE NÚMEROS =====
+      createNumbersGrid() {
+        const grid = document.getElementById('numbersGrid');
+        grid.innerHTML = '';
+        
+        for(let i = 1; i <= 49; i++) {
+          const ball = document.createElement('div');
+          ball.className = 'number-ball';
+          ball.dataset.number = i;
+          ball.innerHTML = `<span>${i.toString().padStart(2, '0')}</span>`;
+          ball.addEventListener('click', () => this.handleNumberClick(i, ball));
+          grid.appendChild(ball);
+        }
+      }
+
+      handleNumberClick(number, ball) {
+        this.clearRandomPicks();
+        
+        if(this.currentSelectionMode === 'excluded') {
+          this.toggleExcludedNumber(number, ball);
+        } else if(this.currentSelectionMode === 'hot') {
+          this.toggleHotNumber(number, ball);
+        } else if(this.currentSelectionMode === 'cold') {
+          this.toggleColdNumber(number, ball);
+        } else {
+          this.toggleSelectedNumber(number, ball);
+        }
+        this.calculateStats();
+        this.updateClearButtonState();
+        this.updateNumberIcons();
+      }
+
+      toggleSelectedNumber(number, ball) {
+        const index = this.selectedNumbers.indexOf(number);
+        if(index > -1) {
+          this.selectedNumbers.splice(index, 1);
+          ball.classList.remove('selected');
+        } else {
+          if(this.selectedNumbers.length < 6) {
+            this.selectedNumbers.push(number);
+            ball.classList.add('selected');
+          }
+        }
+        this.updateDisplay();
+      }
+
+      toggleExcludedNumber(number, ball) {
+        if(this.excludedNumbers.has(number)) {
+          this.excludedNumbers.delete(number);
+          ball.classList.remove('excluded');
+        } else {
+          this.excludedNumbers.add(number);
+          ball.classList.add('excluded');
+        }
+      }
+
+      toggleHotNumber(number, ball) {
+        if(this.hotNumbers.has(number)) {
+          this.hotNumbers.delete(number);
+          ball.classList.remove('hot');
+        } else {
+          this.hotNumbers.add(number);
+          ball.classList.add('hot');
+        }
+      }
+
+      toggleColdNumber(number, ball) {
+        if(this.coldNumbers.has(number)) {
+          this.coldNumbers.delete(number);
+          ball.classList.remove('cold');
+        } else {
+          this.coldNumbers.add(number);
+          ball.classList.add('cold');
+        }
+      }
+
+      selectRandomNumbers() {
+        this.clearAllSelections();
+
+        const availableNumbers = Array.from({length: 49}, (_, i) => i + 1);
+        const randomPicks = new Set();
+
+        while (randomPicks.size < 6) {
+          const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+          const number = availableNumbers[randomIndex];
+          if (!randomPicks.has(number)) {
+            randomPicks.add(number);
+          }
+        }
+
+        this.selectedNumbers = Array.from(randomPicks);
+        this.selectedNumbers.forEach(num => {
+          const ball = document.querySelector(`.number-ball[data-number="${num}"]`);
+          if (ball) {
+            ball.classList.add('random-pick');
+          }
+        });
+
+        this.updateDisplay();
+        this.calculateStats();
+        this.updateNumberIcons();
+      }
+
+      clearRandomPicks() {
+        document.querySelectorAll('.number-ball.random-pick').forEach(ball => {
+          ball.classList.remove('random-pick');
+        });
+      }
+
+      clearAllSelections() {
+        const clearBtn = document.getElementById('clearBtn');
+        clearBtn.classList.add('shake');
+        setTimeout(() => {
+          clearBtn.classList.remove('shake');
+        }, 500);
+
+        this.selectedNumbers = [];
+        document.querySelectorAll('.number-ball.selected, .number-ball.random-pick, .number-ball.hot, .number-ball.cold, .number-ball.excluded, .number-ball.generated-pick').forEach(ball => {
+          ball.classList.remove('selected', 'random-pick', 'hot', 'cold', 'excluded', 'generated-pick');
+        });
+        
+        this.hotNumbers.clear();
+        this.coldNumbers.clear();
+        this.excludedNumbers.clear();
+        
+        this.updateDisplay();
+        this.calculateStats();
+        this.updateClearButtonState();
+        this.updateNumberIcons();
+      }
+
+      updateClearButtonState() {
+        const clearBtn = document.getElementById('clearBtn');
+        const hasSelections = this.selectedNumbers.length > 0 || 
+                            this.hotNumbers.size > 0 || 
+                            this.coldNumbers.size > 0 || 
+                            this.excludedNumbers.size > 0;
+        
+        if (hasSelections) {
+          clearBtn.classList.add('has-selections');
+        } else {
+          clearBtn.classList.remove('has-selections');
+        }
+      }
+
+      syncNumbersToGrid() {
+        document.querySelectorAll('.number-ball').forEach(ball => {
+          ball.classList.remove('selected', 'random-pick', 'generated-pick');
+        });
+        
+        this.selectedNumbers.forEach(num => {
+          const ball = document.querySelector(`.number-ball[data-number="${num}"]`);
+          if(ball) {
+            ball.classList.add('generated-pick');
+          }
+        });
+        
+        this.updateNumberIcons();
+      }
+
+      updateDisplay() {
+        const selectedDisplay = document.getElementById('selectedDisplay');
+        selectedDisplay.innerHTML = '';
+
+        if(this.selectedNumbers.length === 0) {
+          selectedDisplay.innerHTML = '<div style="color:#666; font-style: italic;">Selecciona hasta 6 números</div>';
+        } else {
+          this.selectedNumbers.sort((a, b) => a - b).forEach(num => {
+            const span = document.createElement('span');
+            span.style.background = '#ffd700';
+            span.style.color = 'white';
+            span.style.padding = '6px 10px';
+            span.style.borderRadius = '15px';
+            span.style.fontWeight = 'bold';
+            span.style.fontSize = '0.9rem';
+            span.textContent = num.toString().padStart(2, '0');
+            selectedDisplay.appendChild(span);
+          });
+        }
+      }
+
+      updateNumberIcons() {
+        document.querySelectorAll('.number-ball').forEach(ball => {
+          const existingIcon = ball.querySelector('.number-icon');
+          if (existingIcon) {
+            existingIcon.remove();
+          }
+          
+          let iconContent = '';
+          if (ball.classList.contains('hot')) {
+            iconContent = '🔥';
+          } else if (ball.classList.contains('cold')) {
+            iconContent = '❄';
+          } else if (ball.classList.contains('excluded')) {
+            iconContent = '🚫';
+          } else if (ball.classList.contains('random-pick')) {
+            iconContent = '🎲';
+          } else if (ball.classList.contains('generated-pick')) {
+            iconContent = '🤖';
+          }
+          
+          if (iconContent) {
+            const icon = document.createElement('div');
+            icon.className = 'number-icon';
+            icon.textContent = iconContent;
+            ball.appendChild(icon);
+          }
+        });
+      }
+
+      // ===== GENERACIÓN DE COMBINACIONES =====
+      createIntelligentCombination() {
+        const combination = [];
+        const availableNumbers = Array.from({length: 49}, (_, i) => i + 1)
+          .filter(num => !this.excludedNumbers.has(num));
+        
+        if (this.dataLoaded && (this.hotNumbers.size > 0 || this.coldNumbers.size > 0)) {
+          const targetHot = Math.min(2, Math.floor(6 * 0.4));
+          const targetCold = Math.min(2, Math.floor(6 * 0.3));
+          
+          const hotAvailable = Array.from(this.hotNumbers).filter(n => availableNumbers.includes(n));
+          if(hotAvailable.length > 0) {
+            for(let i = 0; i < targetHot && combination.length < 6; i++) {
+              const randomHot = hotAvailable.splice(Math.floor(Math.random() * hotAvailable.length), 1)[0];
+              if(randomHot !== undefined) {
+                combination.push(randomHot);
+              }
+            }
+          }
+
+          const coldAvailable = Array.from(this.coldNumbers).filter(n => availableNumbers.includes(n) && !combination.includes(n));
+          if(coldAvailable.length > 0) {
+            for(let i = 0; i < targetCold && combination.length < 6; i++) {
+              const randomCold = coldAvailable.splice(Math.floor(Math.random() * coldAvailable.length), 1)[0];
+              if(randomCold !== undefined) {
+                combination.push(randomCold);
+              }
+            }
+          }
+
+          console.log(`🎯 Generación inteligente: ${combination.length}/6 números usando análisis`);
+        }
+        
+        const remainingNumbers = availableNumbers.filter(n => !combination.includes(n));
+        
+        const ranges = [
+          {min: 1, max: 10, target: 1},
+          {min: 11, max: 20, target: 1},
+          {min: 21, max: 30, target: 1},
+          {min: 31, max: 40, target: 1},
+          {min: 41, max: 49, target: 1}
+        ];
+        
+        while (combination.length < 6 && remainingNumbers.length > 0) {
+          let added = false;
+          for(const range of ranges) {
+            const rangeNumbers = remainingNumbers.filter(n => n >= range.min && n <= range.max);
+            const rangeSelected = combination.filter(n => n >= range.min && n <= range.max);
+            
+            if(rangeNumbers.length > 0 && rangeSelected.length < range.target && combination.length < 6) {
+              const randomFromRange = rangeNumbers[Math.floor(Math.random() * rangeNumbers.length)];
+              combination.push(randomFromRange);
+              remainingNumbers.splice(remainingNumbers.indexOf(randomFromRange), 1);
+              added = true;
+              break;
+            }
+          }
+          
+          if(!added && remainingNumbers.length > 0) {
+            const randomNumber = remainingNumbers.splice(Math.floor(Math.random() * remainingNumbers.length), 1)[0];
+            combination.push(randomNumber);
+          }
+        }
+
+        return combination.slice(0, 6).sort((a, b) => a - b);
+      }
+
+      async validateCombination(combination) {
+        if (combination.length !== 6) return false;
+        if (new Set(combination).size !== 6) return false;
+        
+        const result = this.applyHierarchicalFilters([combination]);
+        return result.combinations.length > 0;
+      }
+
+      async generateCombination() {
+        if(this.isGenerating) return;
+        this.isGenerating = true;
+
+        try {
+          document.getElementById('saveBtn').disabled = false;
+          const strategy = document.querySelector('.strategy-btn.active').dataset.strategy;
+
+          if(strategy === 'simple') {
+            await this.generateSimpleCombination();
+          } else if(strategy === 'winning') {
+            await this.generateWinningCombination();
+          } else {
+            await this.generateMultipleCombination();
+          }
+        } catch(error) {
+          this.showToast('Error al generar combinación: ' + error.message, 'error');
+        } finally {
+          this.isGenerating = false;
+        }
+      }
+
+      async generateSimpleCombination() {
+        const loadingModal = document.getElementById('loadingModal');
+        const attemptsEl = document.getElementById('loadingAttempts');
+        let attempts = 0;
+        const maxAttempts = 50000;
+
+        try {
+          attemptsEl.textContent = '0';
+          loadingModal.style.display = 'flex';
+
+          while(attempts < maxAttempts) {
+            attempts++;
+            attemptsEl.textContent = attempts;
+
+            if(attempts % 100 === 0) {
+              await this.delay(1);
+            }
+
+            const combination = this.createIntelligentCombination();
+
+            if(await this.validateCombination(combination)) {
+              this.selectedNumbers = combination;
+              this.syncNumbersToGrid();
+              this.updateDisplay();
+              this.calculateStats();
+              this.showTicket([combination]);
+              this.showToast('🎉 ¡Combinación inteligente encontrada!', 'success');
+              loadingModal.style.display = 'none';
+              return;
+            }
+          }
+
+          loadingModal.style.display = 'none';
+          this.showToast('No se encontró combinación válida. Relaja los filtros.', 'error');
+          
+        } catch (error) {
+          console.error('Error en generateSimpleCombination:', error);
+          loadingModal.style.display = 'none';
+          this.showToast(`Error al generar combinación simple: ${error.message}`, 'error');
+        }
+      }
+
+      async generateWinningCombination() {
+        const loadingModal = document.getElementById('loadingModal');
+        const attemptsEl = document.getElementById('loadingAttempts');
+        const loadingText = document.getElementById('loadingText');
+
+        try {
+          loadingModal.style.display = 'flex';
+          attemptsEl.textContent = '0';
+          loadingText.innerHTML = 'Generando combinación ganadora...';
+
+          const generateCount = parseInt(document.getElementById('generateCount').value) || 100;
+          const playCount = parseInt(document.getElementById('playCount').value) || 10;
+
+          const validCombinations = [];
+          let attempts = 0;
+
+          while(validCombinations.length < generateCount && attempts < 100000) {
+            attempts++;
+            attemptsEl.textContent = attempts;
+
+            if(attempts % 100 === 0) {
+              await this.delay(1);
+            }
+
+            const combination = this.createIntelligentCombination();
+
+            if(await this.validateCombination(combination)) {
+              const combinationStr = combination.join(',');
+              if(!validCombinations.some(c => c.join(',') === combinationStr)) {
+                validCombinations.push(combination);
+              }
+            }
+          }
+
+          if(validCombinations.length === 0) {
+            loadingModal.style.display = 'none';
+            this.showToast('No se encontró combinación válida. Relaja los filtros.', 'error');
+            return;
+          }
+
+          const bestCombinations = this.selectBestCombinations(validCombinations, playCount);
+
+          if(bestCombinations.length > 0) {
+            this.selectedNumbers = bestCombinations[0];
+            this.syncNumbersToGrid();
+            this.updateDisplay();
+            this.calculateStats();
+          }
+
+          this.showTicket(bestCombinations);
+          this.showToast(`¡Generadas ${validCombinations.length} combinaciones! Mostrando las ${playCount} mejores.`, 'success');
+          loadingModal.style.display = 'none';
+          
+        } catch (error) {
+          console.error('Error en generateWinningCombination:', error);
+          loadingModal.style.display = 'none';
+          this.showToast(`Error al generar combinación ganadora: ${error.message}`, 'error');
+        }
+      }
+
+      async generateMultipleCombination() {
+        const loadingModal = document.getElementById('loadingModal');
+        const attemptsEl = document.getElementById('loadingAttempts');
+        const loadingText = document.getElementById('loadingText');
+
+        try {
+          const numNumbers = parseInt(document.querySelector('.number-option.active')?.dataset.numbers || 7);
+          
+          attemptsEl.textContent = '0';
+          loadingModal.style.display = 'flex';
+          loadingText.innerHTML = `Generando combinación múltiple de ${numNumbers} números...`;
+
+          const maxAttempts = 10000;
+          let attempts = 0;
+          let bestCandidate = null;
+          let bestValidPercentage = 0;
+
+          const adaptiveMargins = {
+            7: 0.75, 8: 0.50, 9: 0.35, 10: 0.25, 11: 0.20
+          };
+
+          const totalPossibleCombinations = this.calculateCombinations(numNumbers, 6);
+          const adaptiveMargin = adaptiveMargins[numNumbers] || 0.30;
+          const targetValidCombinations = Math.max(1, Math.floor(totalPossibleCombinations * adaptiveMargin));
+
+          while(attempts < maxAttempts) {
+            attempts++;
+            attemptsEl.textContent = attempts;
+
+            if(attempts % 50 === 0) {
+              await this.delay(1);
+            }
+
+            const selectedNumbers = this.generateSmartMultipleNumbers(numNumbers);
+            
+            if (selectedNumbers.length !== numNumbers) {
+              continue;
+            }
+
+            const allCombinations = this.generateCombinationsFromArray(selectedNumbers, 6);
+            
+            let validCombinations = 0;
+            for(const combo of allCombinations) {
+              if(await this.validateCombination(combo)) {
+                validCombinations++;
+              }
+            }
+
+            const validPercentage = (validCombinations / allCombinations.length) * 100;
+
+            if(validCombinations >= targetValidCombinations || validPercentage >= (adaptiveMargin * 100)) {
+              this.selectedNumbers = selectedNumbers.slice(0, 6).sort((a, b) => a - b);
+              this.syncNumbersToGrid();
+              this.updateDisplay();
+              this.calculateStats();
+
+              this.showTicketMultiple(selectedNumbers, validCombinations, allCombinations.length);
+              this.showToast(`🎉 ¡Combinación múltiple encontrada! ${validCombinations}/${allCombinations.length} válidas (${validPercentage.toFixed(1)}%)`, 'success');
+              loadingModal.style.display = 'none';
+              return;
+            }
+
+            if(validPercentage > bestValidPercentage) {
+              bestValidPercentage = validPercentage;
+              bestCandidate = {
+                numbers: [...selectedNumbers],
+                validCombinations: validCombinations,
+                totalCombinations: allCombinations.length,
+                percentage: validPercentage
+              };
+            }
+          }
+
+          if(bestCandidate && bestCandidate.validCombinations > 0) {
+            this.selectedNumbers = bestCandidate.numbers.slice(0, 6).sort((a, b) => a - b);
+            this.syncNumbersToGrid();
+            this.updateDisplay();
+            this.calculateStats();
+
+            this.showTicketMultiple(bestCandidate.numbers, bestCandidate.validCombinations, bestCandidate.totalCombinations);
+            this.showToast(`⚡ Mejor combinación múltiple: ${bestCandidate.validCombinations}/${bestCandidate.totalCombinations} válidas (${bestCandidate.percentage.toFixed(1)}%)`, 'warning');
+            loadingModal.style.display = 'none';
+            return;
+          }
+
+          loadingModal.style.display = 'none';
+          this.showToast(`⌐ No se encontró combinación múltiple válida de ${numNumbers} números. Intenta relajar los filtros.`, 'error');
+          
+        } catch (error) {
+          console.error('Error en generateMultipleCombination:', error);
+          loadingModal.style.display = 'none';
+          this.showToast(`Error al generar combinación múltiple: ${error.message}`, 'error');
+        }
+      }
+
+      generateSmartMultipleNumbers(count) {
+        const availableNumbers = Array.from({length: 49}, (_, i) => i + 1)
+          .filter(num => !this.excludedNumbers.has(num));
+
+        if (availableNumbers.length < count) {
+          return [];
+        }
+
+        const selected = [];
+        
+        if (this.dataLoaded && this.hotNumbers.size > 0) {
+          const hotAvailable = Array.from(this.hotNumbers).filter(n => availableNumbers.includes(n));
+          const hotToAdd = Math.min(Math.floor(count * 0.3), hotAvailable.length);
+          for(let i = 0; i < hotToAdd; i++) {
+            const randomHot = hotAvailable.splice(Math.floor(Math.random() * hotAvailable.length), 1)[0];
+            selected.push(randomHot);
+          }
+        }
+
+        if (this.dataLoaded && this.coldNumbers.size > 0) {
+          const coldAvailable = Array.from(this.coldNumbers).filter(n => availableNumbers.includes(n) && !selected.includes(n));
+          const coldToAdd = Math.min(Math.floor(count * 0.3), coldAvailable.length);
+          for(let i = 0; i < coldToAdd; i++) {
+            const randomCold = coldAvailable.splice(Math.floor(Math.random() * coldAvailable.length), 1)[0];
+            selected.push(randomCold);
+          }
+        }
+
+        const ranges = [
+          {min: 1, max: 10, quota: Math.ceil(count / 5)},
+          {min: 11, max: 20, quota: Math.ceil(count / 5)},
+          {min: 21, max: 30, quota: Math.ceil(count / 5)},
+          {min: 31, max: 40, quota: Math.ceil(count / 5)},
+          {min: 41, max: 49, quota: Math.ceil(count / 5)}
+        ];
+
+        const remainingAvailable = availableNumbers.filter(n => !selected.includes(n));
+        
+        while(selected.length < count && remainingAvailable.length > 0) {
+          let added = false;
+          for(const range of ranges) {
+            const rangeNumbers = remainingAvailable.filter(n => n >= range.min && n <= range.max);
+            const rangeSelected = selected.filter(n => n >= range.min && n <= range.max);
+            
+            if(rangeNumbers.length > 0 && rangeSelected.length < range.quota && selected.length < count) {
+              const randomFromRange = rangeNumbers[Math.floor(Math.random() * rangeNumbers.length)];
+              selected.push(randomFromRange);
+              remainingAvailable.splice(remainingAvailable.indexOf(randomFromRange), 1);
+              added = true;
+              break;
+            }
+          }
+          
+          if(!added && remainingAvailable.length > 0) {
+            const randomNumber = remainingAvailable.splice(Math.floor(Math.random() * remainingAvailable.length), 1)[0];
+            selected.push(randomNumber);
+          }
+        }
+
+        return selected.sort((a, b) => a - b);
+      }
+
+      generateCombinationsFromArray(array, size) {
+        if (size > array.length || size <= 0) {
+          return [];
+        }
+        
+        if (size === 1) {
+          return array.map(value => [value]);
+        }
+        
+        if (size === array.length) {
+          return [array];
+        }
+
+        const result = [];
+        const indices = Array.from({length: size}, (_, i) => i);
+        
+        while (true) {
+          result.push(indices.map(i => array[i]));
+          
+          let i = size - 1;
+          while (i >= 0 && indices[i] === array.length - size + i) {
+            i--;
+          }
+          
+          if (i < 0) break;
+          
+          indices[i]++;
+          for (let j = i + 1; j < size; j++) {
+            indices[j] = indices[j - 1] + 1;
+          }
+        }
+        
+        return result;
+      }
+
+      calculateCombinations(n, r) {
+        if (r > n || r < 0) return 0;
+        if (r === 0 || r === n) return 1;
+        
+        r = Math.min(r, n - r);
+        
+        let result = 1;
+        for (let i = 0; i < r; i++) {
+          result = result * (n - i) / (i + 1);
+        }
+        
+        return Math.round(result);
+      }
+
+      selectBestCombinations(combinations, count) {
+        return combinations
+          .map(combo => ({
+            combination: combo,
+            score: this.calculateAdvancedCombinationScore(combo)
+          }))
+          .sort((a, b) => b.score - a.score)
+          .slice(0, count)
+          .map(item => item.combination);
+      }
+
+      calculateAdvancedCombinationScore(combination) {
+        let score = 0;
+        
+        if (this.dataLoaded) {
+          const hotNumbers = combination.filter(n => this.hotNumbers.has(n));
+          score += hotNumbers.length * 15;
+          const coldNumbers = combination.filter(n => this.coldNumbers.has(n));
+          score -= coldNumbers.length * 8;
+
+          combination.forEach(num => {
+            const stats = this.numberStats[num];
+            if(stats) {
+              score += stats.score * 5;
+              if(stats.cycle >= 3 && stats.cycle <= 12) score += 3;
+              if(stats.trend > 0) score += stats.trend * 4;
+            }
+          });
+        }
+
+        const suma = combination.reduce((a, b) => a + b, 0);
+        if(suma >= 140 && suma <= 169) score += 20;
+        const pares = combination.filter(n => n % 2 === 0).length;
+        if(pares >= 2 && pares <= 4) score += 15;
+        const bajos = combination.filter(n => n <= 25).length;
+        if(bajos >= 2 && bajos <= 4) score += 10;
+
+        const ranges = [
+          combination.filter(n => n >= 1 && n <= 10).length,
+          combination.filter(n => n >= 11 && n <= 20).length,
+          combination.filter(n => n >= 21 && n <= 30).length,
+          combination.filter(n => n >= 31 && n <= 40).length,
+          combination.filter(n => n >= 41 && n <= 49).length
+        ];
+        const nonEmptyRanges = ranges.filter(count => count > 0).length;
+        score += nonEmptyRanges * 2;
+        score += Math.random() * 3;
+        return score;
+      }
+
+      // ===== FILTROS JERÁRQUICOS =====
+      applyHierarchicalFilters(combinations) {
+        let filtered = combinations;
+
+        // Nivel 1: Exclusiones absolutas
+        filtered = this.applyLevel1Exclusions(filtered);
+
+        // Nivel 2: Restricciones básicas
+        filtered = this.applyLevel2BasicConstraints(filtered);
+
+        // Nivel 3: Patrones geométricos
+        filtered = this.applyLevel3GeometricPatterns(filtered);
+
+        // Nivel 4: Estadísticos avanzados
+        filtered = this.applyLevel4StatisticalFilters(filtered);
+
+        // Nivel 5: Patrones prohibidos
+        filtered = this.applyLevel5PatternExclusions(filtered);
+
+        return { combinations: filtered };
+      }
+
+      applyLevel1Exclusions(combinations) {
+        return combinations.filter(combo => {
+          if (this.filters.terminaciones.length > 0) {
+            if (combo.some(n => this.filters.terminaciones.includes(n % 10))) {
+              return false;
+            }
+          }
+          
+          if (combo.some(n => this.excludedNumbers.has(n))) {
+            return false;
+          }
+          
+          return true;
+        });
+      }
+
+      applyLevel2BasicConstraints(combinations) {
+        return combinations.filter(combo => {
+          const suma = combo.reduce((a, b) => a + b, 0);
+          if (suma < this.filters.sum.min || suma > this.filters.sum.max) return false;
+
+          const pares = combo.filter(n => n % 2 === 0).length;
+          const parImpar = `${pares}/${6 - pares}`;
+          if (this.filters.parImpar.length > 0 && !this.filters.parImpar.includes(parImpar)) return false;
+
+          const bajos = combo.filter(n => n <= 25).length;
+          const bajosAltos = `${bajos}/${6 - bajos}`;
+          if (this.filters.bajosAltos.length > 0 && !this.filters.bajosAltos.includes(bajosAltos)) return false;
+
+          const primosList = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+          const primos = combo.filter(n => primosList.includes(n)).length;
+          if (primos < this.filters.primos.min || primos > this.filters.primos.max) return false;
+
+          return true;
+        });
+      }
+
+      applyLevel3GeometricPatterns(combinations) {
+        return combinations.filter(combo => {
+          if (!this.validateConsecutivePattern(combo)) return false;
+          
+          const decenas = {
+            '1-9': combo.filter(n => n >= 1 && n <= 9).length,
+            '10-19': combo.filter(n => n >= 10 && n <= 19).length,
+            '20-29': combo.filter(n => n >= 20 && n <= 29).length,
+            '30-39': combo.filter(n => n >= 30 && n <= 39).length,
+            '40-49': combo.filter(n => n >= 40 && n <= 49).length
+          };
+          const decenaCounts = Object.values(decenas).filter(count => count > 0).sort((a, b) => b - a);
+          const agrupDecenas = decenaCounts.join('/');
+          if (this.filters.agrupDecenas.length > 0 && !this.filters.agrupDecenas.includes(agrupDecenas)) return false;
+          
+          return true;
+        });
+      }
+
+      applyLevel4StatisticalFilters(combinations) {
+        return combinations.filter(combo => {
+          const sumaDigitos = combo.reduce((sum, num) => {
+            return sum + num.toString().split('').reduce((digitSum, digit) => digitSum + parseInt(digit), 0);
+          }, 0);
+          if (sumaDigitos < this.filters.sumaDigitos.min || sumaDigitos > this.filters.sumaDigitos.max) return false;
+
+          const mean = combo.reduce((a, b) => a + b, 0) / 6;
+          const variance = combo.reduce((sum, num) => sum + Math.pow(num - mean, 2), 0) / 6;
+          const desviacion = Math.sqrt(variance);
+          if (desviacion < this.filters.desviacion.min || desviacion > this.filters.desviacion.max) return false;
+
+          return true;
+        });
+      }
+
+      applyLevel5PatternExclusions(combinations) {
+        return combinations.filter(combo => {
+          if (this.filters.patrones.includes('fibonacci') && this.isFibonacciSequence(combo)) return false;
+          if (this.filters.patrones.includes('paresConsecutivos') && this.hasConsecutivePairs(combo)) return false;
+          if (this.filters.patrones.includes('multiplos') && this.hasMultiples(combo)) return false;
+          if (this.filters.patrones.includes('lineasRectas') && this.detectStraightLine(combo)) return false;
+          if (this.filters.patrones.includes('triangulos') && this.detectTriangle(combo)) return false;
+          
+          return true;
+        });
+      }
+
+      // ===== DETECCIÓN GEOMÉTRICA =====
+      detectStraightLine(numbers) {
+        const coords = numbers.map(n => this.geometricMatrix[n]);
+        
+        for (let i = 0; i < coords.length - 2; i++) {
+          for (let j = i + 1; j < coords.length - 1; j++) {
+            for (let k = j + 1; k < coords.length; k++) {
+              if (this.areCollinear(coords[i], coords[j], coords[k])) {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      }
+
+      areCollinear(p1, p2, p3) {
+        const area = Math.abs((p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y)) / 2);
+        return area < 0.001;
+      }
+
+      detectTriangle(numbers) {
+        if (numbers.length < 3) return false;
+        
+        const coords = numbers.map(n => this.geometricMatrix[n]);
+        
+        for (let i = 0; i < coords.length - 2; i++) {
+          for (let j = i + 1; j < coords.length - 1; j++) {
+            for (let k = j + 1; k < coords.length; k++) {
+              if (this.isSpecialTriangle(coords[i], coords[j], coords[k])) {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      }
+
+      isSpecialTriangle(p1, p2, p3) {
+        const d1 = this.distance(p1, p2);
+        const d2 = this.distance(p2, p3);
+        const d3 = this.distance(p3, p1);
+        
+        if (Math.abs(d1 - d2) < 0.1 && Math.abs(d2 - d3) < 0.1) return true;
+        if (Math.abs(d1 - d2) < 0.1 || Math.abs(d2 - d3) < 0.1 || Math.abs(d1 - d3) < 0.1) return true;
+        
+        return false;
+      }
+
+      distance(p1, p2) {
+        return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+      }
+
+      // ===== CÁLCULO DE ESTADÍSTICAS =====
+      calculateStats() {
+        if (this.selectedNumbers.length < 6) {
+          this.clearStats();
+          return;
+        }
+
+        const nums = [...this.selectedNumbers].sort((a, b) => a - b);
+
+        const suma = nums.reduce((a, b) => a + b, 0);
+        const sumaValid = suma >= this.filters.sum.min && suma <= this.filters.sum.max;
+        this.updateStat('suma', suma, sumaValid);
+
+        const pares = nums.filter(n => n % 2 === 0).length;
+        const impares = nums.length - pares;
+        const parImpar = `${pares}/${impares}`;
+        const parImparValid = this.filters.parImpar.includes(parImpar);
+        this.updateStat('parImpar', parImpar, parImparValid);
+
+        const bajos = nums.filter(n => n <= 25).length;
+        const altos = nums.length - bajos;
+        const bajosAltos = `${bajos}/${altos}`;
+        const bajosAltosValid = this.filters.bajosAltos.includes(bajosAltos);
+        this.updateStat('bajosAltos', bajosAltos, bajosAltosValid);
+
+        const decenasCount = {
+          '1-9': nums.filter(n => n >= 1 && n <= 9).length,
+          '10-19': nums.filter(n => n >= 10 && n <= 19).length,
+          '20-29': nums.filter(n => n >= 20 && n <= 29).length,
+          '30-39': nums.filter(n => n >= 30 && n <= 39).length,
+          '40-49': nums.filter(n => n >= 40 && n <= 49).length
+        };
+        const decenasPresentes = Object.keys(decenasCount).filter(k => decenasCount[k] > 0);
+        this.updateStat('decenas', decenasPresentes.length, true);
+
+        const decenaCounts = Object.values(decenasCount).filter(count => count > 0).sort((a, b) => b - a);
+        const agrupDecenas = decenaCounts.join('/');
+        const agrupDecenasValid = this.filters.agrupDecenas.includes(agrupDecenas);
+        this.updateStat('agrupDecenas', agrupDecenas, agrupDecenasValid);
+
+        this.calculateConsecutiveStats(nums);
+
+        const sumaDigitos = nums.reduce((sum, num) => {
+          return sum + num.toString().split('').reduce((digitSum, digit) => digitSum + parseInt(digit), 0);
+        }, 0);
+        const sumaDigitosValid = sumaDigitos >= this.filters.sumaDigitos.min && sumaDigitos <= this.filters.sumaDigitos.max;
+        this.updateStat('sumaDigitos', sumaDigitos, sumaDigitosValid);
+
+        const primosList = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+        const primos = nums.filter(n => primosList.includes(n)).length;
+        const primosValid = primos >= this.filters.primos.min && primos <= this.filters.primos.max;
+        this.updateStat('primos', primos, primosValid);
+
+        if (nums.length >= 2) {
+          const mean = suma / nums.length;
+          const variance = nums.reduce((sum, num) => sum + Math.pow(num - mean, 2), 0) / nums.length;
+          const desviacion = Math.sqrt(variance);
+          const desviacionValid = desviacion >= this.filters.desviacion.min && desviacion <= this.filters.desviacion.max;
+          this.updateStat('desviacion', desviacion.toFixed(2), desviacionValid);
+        } else {
+          this.updateStat('desviacion', '-', false);
+        }
+
+        let patrones = [];
+        if (this.isFibonacciSequence(nums)) patrones.push('Fibonacci');
+        if (this.hasConsecutivePairs(nums)) patrones.push('Pares consec.');
+        if (this.hasMultiples(nums)) patrones.push('Múltiplos');
+
+        const patronesText = patrones.length > 0 ? patrones.join(', ') : 'Ninguno';
+        this.updateStat('patrones', patronesText, true);
+      }
+
+      calculateConsecutiveStats(nums) {
+        const sorted = [...nums].sort((a, b) => a - b);
+        const consecutivePattern = this.calculateConsecutivePattern(sorted);
+        const consecutivosValid = this.validateConsecutivePattern(nums);
+
+        this.updateStat('consecutivos', consecutivePattern, consecutivosValid);
+
+        return { pattern: consecutivePattern, valid: consecutivosValid };
+      }
+
+      clearStats() {
+        const statIds = ['statSuma', 'statParImpar', 'statBajosAltos', 'statDecenas', 'statAgrupDecenas', 'statConsecutivos', 'statSumaDigitos', 'statPrimos', 'statDesviacion', 'statPatrones'];
+        statIds.forEach(id => {
+          const element = document.getElementById(id);
+          if(element) {
+            element.textContent = '-';
+            element.className = 'stat-value';
+          }
+        });
+      }
+
+      updateStat(statName, value, isValid) {
+        const element = document.getElementById(`stat${statName.charAt(0).toUpperCase() + statName.slice(1)}`);
+        if(element) {
+          element.textContent = value;
+          element.className = `stat-value ${isValid ? 'valid' : 'invalid'}`;
+        }
+      }
+
+      validateConsecutivePattern(combination) {
+        const activePatterns = this.filters.consecutivos;
+        if (activePatterns.length === 0) return true;
+        const sorted = [...combination].sort((a, b) => a - b);
+        const actualPattern = this.calculateConsecutivePattern(sorted);
+        return activePatterns.includes(actualPattern);
+      }
+
+      calculateConsecutivePattern(sortedNumbers) {
+        if (sortedNumbers.length !== 6) return '-';
+        const consecutiveGroups = [];
+        let currentGroup = 1;
+
+        for (let i = 1; i < sortedNumbers.length; i++) {
+          if (sortedNumbers[i] === sortedNumbers[i-1] + 1) {
+            currentGroup++;
+          } else {
+            if (currentGroup > 1) {
+              consecutiveGroups.push(currentGroup);
+            }
+            currentGroup = 1;
+          }
+        }
+
+        if (currentGroup > 1) {
+          consecutiveGroups.push(currentGroup);
+        }
+
+        const totalInGroups = consecutiveGroups.reduce((sum, group) => sum + group, 0);
+        const singleNumbers = 6 - totalInGroups;
+
+        const pattern = [...consecutiveGroups];
+        for (let i = 0; i < singleNumbers; i++) {
+          pattern.push(1);
+        }
+
+        return pattern.sort((a, b) => b - a).join('/');
+      }
+
+      isFibonacciSequence(numbers) {
+        const fib = [1, 1, 2, 3, 5, 8, 13, 21, 34];
+        return numbers.every(num => fib.includes(num));
+      }
+
+      hasConsecutivePairs(numbers) {
+        const sorted = [...numbers].sort((a, b) => a - b);
+        for(let i = 0; i < sorted.length - 1; i++) {
+          if(sorted[i+1] === sorted[i] + 1 && sorted[i] % 2 === 0) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      hasMultiples(numbers) {
+        for(let i = 0; i < numbers.length; i++) {
+          for(let j = i + 1; j < numbers.length; j++) {
+            if(numbers[j] % numbers[i] === 0 || numbers[i] % numbers[j] === 0) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      // ===== FILTROS Y VALIDACIÓN =====
+      updateFilters() {
+        this.filters.sum.min = parseInt(document.getElementById('sumMin').value) || 121;
+        this.filters.sum.max = parseInt(document.getElementById('sumMax').value) || 190;
+        this.filters.primos.min = parseInt(document.getElementById('primosMin').value) || 1;
+        this.filters.primos.max = parseInt(document.getElementById('primosMax').value) || 3;
+        this.filters.sumaDigitos.min = parseInt(document.getElementById('sumaDigitosMin').value) || 28;
+        this.filters.sumaDigitos.max = parseInt(document.getElementById('sumaDigitosMax').value) || 45;
+        this.filters.desviacion.min = parseFloat(document.getElementById('desviacionMin').value) || 12.0;
+        this.filters.desviacion.max = parseFloat(document.getElementById('desviacionMax').value) || 18.0;
+
+        this.filters.agrupDecenas = Array.from(document.querySelectorAll('#agrupDecenasOptions .filter-chip.active')).map(chip => chip.dataset.value);
+        this.filters.consecutivos = Array.from(document.querySelectorAll('#consecutivosOptions .filter-chip.active')).map(chip => chip.dataset.value);
+        this.filters.terminaciones = Array.from(document.querySelectorAll('#terminacionesExcluidasOptions .filter-chip.active')).map(chip => parseInt(chip.dataset.value));
+        this.filters.patrones = Array.from(document.querySelectorAll('#patronesOptions .filter-chip.active')).map(chip => chip.dataset.value);
+        this.filters.parImpar = Array.from(document.querySelectorAll('#parImparOptions .filter-chip.active')).map(chip => chip.dataset.value);
+        this.filters.bajosAltos = Array.from(document.querySelectorAll('#bajosAltosOptions .filter-chip.active')).map(chip => chip.dataset.value);
+
+        this.updateActiveFilterHighlights();
+      }
+
+      updateActiveFilterHighlights() {
+        document.querySelectorAll('.filter-group').forEach(group => {
+            const hasActiveChip = group.querySelector('.filter-chip.active');
+            const hasRangeInput = group.querySelector('input[type="number"]');
+
+            if (hasActiveChip || hasRangeInput) {
+                group.classList.add('active');
+            } else {
+                group.classList.remove('active');
+            }
+            
+            // Special case: de-highlight if all chips are active (means no filter is applied)
+            if(hasActiveChip) {
+                const allChips = group.querySelectorAll('.filter-chip');
+                const activeChips = group.querySelectorAll('.filter-chip.active');
+                if (allChips.length > 0 && allChips.length === activeChips.length) {
+                    // This is an inclusion filter with everything selected, so it's not really filtering
+                     if (!group.querySelector('#terminacionesExcluidasOptions') && !group.querySelector('#patronesOptions')) {
+                        group.classList.remove('active');
+                     }
+                }
+            }
+        });
+      }
+
+      handleFilterClick(chip) {
+        chip.classList.toggle('active');
+        this.updateFilters();
+      }
+
+      validateMinMaxInputs(minId, maxId, errorId) {
+        const minInput = document.getElementById(minId);
+        const maxInput = document.getElementById(maxId);
+        const errorDiv = document.getElementById(errorId);
+        
+        if (!minInput || !maxInput || !errorDiv) return true;
+
+        const minValue = parseFloat(minInput.value);
+        const maxValue = parseFloat(maxInput.value);
+        
+        if (minValue > maxValue) {
+          minInput.classList.add('error');
+          maxInput.classList.add('error');
+          errorDiv.classList.add('show');
+          return false;
+        } else {
+          minInput.classList.remove('error');
+          maxInput.classList.remove('error');
+          errorDiv.classList.remove('show');
+          return true;
+        }
+      }
+
+      // ===== BOLETOS =====
+      showTicket(combinations) {
+        const ticketEl = document.getElementById('ticket');
+        const ticketCombinations = document.getElementById('ticketCombinations');
+        ticketCombinations.innerHTML = combinations.map((combo, index) => `
+          <div class="ticket-combination">
+            <div class="ticket-number">${index + 1}</div>
+            <div>${combo.join('-')}</div>
+          </div>
+        `).join('');
+
+        const now = new Date();
+        document.getElementById('ticketDate').textContent = now.toLocaleString('es-ES');
+        ticketEl.classList.add('show');
+
+        this.currentTicket = {
+          combinations: combinations,
+          date: now.toISOString(),
+          id: Date.now(),
+          maxHits: null,
+          strategy: document.querySelector('.strategy-btn.active')?.dataset.strategy || 'simple'
+        };
+      }
+
+      showTicketMultiple(numbers, validCombinations, totalCombinations) {
+        const ticketEl = document.getElementById('ticket');
+        const ticketCombinations = document.getElementById('ticketCombinations');
+        ticketCombinations.innerHTML = `
+          <div class="ticket-combination">
+            <div class="ticket-number">1</div>
+            <div>${numbers.join('-')}</div>
+          </div>
+          <div style="padding: 10px; background:#f9fafb; border-radius: 6px; font-size: 0.9rem;">
+            <strong>Modo Múltiple:</strong> ${validCombinations}/${totalCombinations} combinaciones válidas (${((validCombinations/totalCombinations)*100).toFixed(1)}%)<br>
+            <small style="color: var(--gray); margin-top: 5px; display: block;">
+              De estos ${numbers.length} números se pueden formar ${totalCombinations} combinaciones de 6, 
+              y ${validCombinations} cumplen todos los filtros activos.
+            </small>
+          </div>
+        `;
+
+        const now = new Date();
+        document.getElementById('ticketDate').textContent = now.toLocaleString('es-ES');
+        ticketEl.classList.add('show');
+
+        this.currentTicket = {
+          combinations: [numbers],
+          date: now.toISOString(),
+          id: Date.now(),
+          maxHits: null,
+          isMultiple: true,
+          validCombinations: validCombinations,
+          totalCombinations: totalCombinations,
+          strategy: 'multiple'
+        };
+      }
+
+      saveTicket() {
+        if(!this.currentTicket) {
+          this.showToast('No hay boleto para guardar', 'error');
+          return;
+        }
+
+        if (!this.savedTickets.some(ticket => ticket.id === this.currentTicket.id)) {
+          this.savedTickets.unshift(this.currentTicket);
+          this.saveToLocalStorage();
+          this.updateSavedTickets();
+        }
+        
+        this.showToast('Boleto guardado correctamente', 'success');
+        document.getElementById('saveBtn').disabled = true;
+      }
+
+      shareTicket() {
+        if(!this.currentTicket) {
+          this.showToast('No hay boleto para compartir', 'error');
+          return;
+        }
+
+        const shareText = `🎲 DataLotto49 Mobile
+📅 ${new Date(this.currentTicket.date).toLocaleString('es-ES')}
+${this.currentTicket.combinations.map((combo, index) => `${index + 1}. ${combo.join('-')}`).join('\n')}
+¡Combinación generada con IA! 🤖🤞`;
+
+        if(navigator.share) {
+          navigator.share({ title: 'DataLotto49 Mobile', text: shareText });
+        } else {
+          navigator.clipboard.writeText(shareText).then(() => {
+            this.showToast('Boleto copiado al portapapeles');
+          }).catch(() => {
+            this.showToast('Error al copiar el boleto', 'error');
+          });
+        }
+      }
+
+      updateSavedTickets() {
+        const container = document.getElementById('savedTickets');
+        
+        if(this.savedTickets.length === 0) {
+          container.innerHTML = '<div style="color:#666; text-align: center; padding: 20px;">No tienes boletos guardados</div>';
+          return;
+        }
+
+        container.innerHTML = this.savedTickets.map(ticket => {
+          const strategyNames = {
+            'simple': 'Simple',
+            'winning': 'Estrategia Ganadora', 
+            'multiple': 'Múltiple'
+          };
+          const strategyName = strategyNames[ticket.strategy] || 'Simple';
+          const strategyEmoji = ticket.strategy === 'multiple' ? '🎰' : ticket.strategy === 'winning' ? '🏆' : '🎯';
+          
+          return `
+          <div class="saved-ticket-item" data-ticket-id="${ticket.id}">
+            <div class="saved-ticket-header">
+              <div class="saved-ticket-date">
+                ${strategyEmoji} ${strategyName} | #${String(ticket.id).slice(-4)} | ${new Date(ticket.date).toLocaleString('es-ES')}
+                ${ticket.maxHits !== null ? `<span style="color: var(--success); font-weight: bold;"> | Máx: ${ticket.maxHits} aciertos</span>` : ''}
+                ${ticket.isMultiple ? `<br><small style="color: var(--info);">Múltiple: ${ticket.validCombinations}/${ticket.totalCombinations} válidas</small>` : ''}
+              </div>
+              <div class="saved-ticket-actions">
+                <button class="saved-ticket-btn validate" data-id="${ticket.id}" style="background: var(--success); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;">🔍</button>
+                <button class="saved-ticket-btn delete-btn" data-id="${ticket.id}">✖</button>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span>${ticket.combinations.length} combinación${ticket.combinations.length > 1 ? 'es' : ''}</span>
+              <button class="toggle-btn" data-id="${ticket.id}"><span>+</span></button>
+            </div>
+            <div class="saved-combinations" data-id="${ticket.id}" style="display: none;">
+              ${ticket.combinations.map((combo, index) => `
+                <div class="saved-combination" data-combo-index="${index}">
+                  <div class="saved-combination-content">
+                    <div class="saved-combination-number">${index + 1}</div>
+                    <div style="font-family:'Courier New', monospace;">${combo.join('-')}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;}).join('');
+      }
+
+      deleteSavedTicket(ticketId) {
+        try {
+          // Robust comparison to handle potential type mismatch (number vs string)
+          this.savedTickets = this.savedTickets.filter(ticket => String(ticket.id) !== ticketId);
+          this.saveToLocalStorage();
+          this.updateSavedTickets();
+          
+          if (typeof window.AppInventor !== 'undefined') {
+            window.AppInventor.setWebViewString(JSON.stringify({
+              action: 'DELETE_TICKET',
+              ticketId: Number(ticketId) // Ensure App Inventor receives a number
+            }));
+          }
+          
+          this.showToast('Boleto eliminado correctamente', 'success');
+          
+        } catch (error) {
+          console.error('Error eliminando ticket:', error);
+          this.showToast('Error al eliminar el boleto', 'error');
+        }
+      }
+
+      validateSavedTicket(ticketId) {
+        const ticket = this.savedTickets.find(t => t.id.toString() === ticketId);
+        if(!ticket) {
+          this.showToast('Boleto no encontrado', 'error');
+          return;
+        }
+
+        this.currentValidatingTicket = ticket;
+        this.showValidationModal();
+      }
+
+      showValidationModal() {
+        document.getElementById('validationModal').style.display = 'flex';
+        document.getElementById('winningNumbersInput').value = '';
+        document.getElementById('validationResults').innerHTML = '';
+      }
+
+      closeValidationModal() {
+        document.getElementById('validationModal').style.display = 'none';
+        this.currentValidatingTicket = null;
+      }
+
+      performValidation() {
+        if(!this.currentValidatingTicket) {
+          this.showToast('No hay boleto para validar', 'error');
+          return;
+        }
+
+        const input = document.getElementById('winningNumbersInput').value.trim();
+        if(!input) {
+          this.showToast('Por favor, introduce los números ganadores', 'error');
+          return;
+        }
+
+        const winningNumbers = input.split(/[,\s\.]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 49);
+        if(winningNumbers.length !== 6) {
+          this.showToast('Debes introducir exactamente 6 números ganadores válidos.', 'error');
+          return;
+        }
+
+        let resultsHtml = '<h4>Resultados de Validación</h4>';
+        let maxMatches = 0;
+
+        this.currentValidatingTicket.combinations.forEach((combo, index) => {
+          const matches = combo.filter(num => winningNumbers.includes(num)).length;
+          if (matches > maxMatches) maxMatches = matches;
+          
+          resultsHtml += `<div style="margin: 10px 0; padding: 10px; background:#f9fafb; border-radius: 6px;">
+              <strong>Combinación ${index + 1}:</strong> ${combo.join('-')}<br>
+              <strong>Aciertos: ${matches}/6</strong>
+            </div>`;
+        });
+
+        resultsHtml += `<div style="margin-top: 10px; padding: 10px; background:#e0f2fe; border-radius: 6px; font-weight: bold;">
+          Máximo de aciertos en una combinación: ${maxMatches}/6
+        </div>`;
+
+        this.currentValidatingTicket.maxHits = maxMatches;
+        this.saveToLocalStorage();
+        this.updateSavedTickets();
+
+        document.getElementById('validationResults').innerHTML = resultsHtml;
+        this.showToast('Validación completada.');
+      }
+
+      saveTicketToAppInventor(ticket) {
+        try {
+          if (typeof window.AppInventor !== 'undefined') {
+            window.AppInventor.setWebViewString(JSON.stringify({
+              action: 'SAVE_TICKET',
+              data: ticket
+            }));
+          } else {
+            console.log('Guardando en App Inventor:', ticket);
+          }
+        } catch (error) {
+          console.error('Error comunicando con App Inventor:', error);
+        }
+      }
+
+     loadSavedTickets() {
+  const platform = detectPlatform();
+  
+  try {
+    // App Inventor - Solicitar datos de TinyDB
+    if (platform === 'appinventor') {
+      if (typeof window.AppInventor !== 'undefined') {
+        window.AppInventor.setWebViewString(JSON.stringify({
+          action: 'LOAD_ALL_TICKETS',
+          timestamp: Date.now()
+        }));
+        console.log('Solicitando boletos de App Inventor TinyDB');
+        
+        // Timeout fallback - si no responde en 3 segundos, usar localStorage
+        setTimeout(() => {
+          if (this.savedTickets.length === 0) {
+            console.log('Timeout App Inventor, usando localStorage fallback');
+            this.loadFromLocalStorageFallback();
+          }
+        }, 3000);
+      } else {
+        this.loadFromLocalStorageFallback();
+      }
+    }
+    // appmaker.xyz - Usar su storage nativo
+    else if (platform === 'appmaker') {
+      if (typeof window.appmaker !== 'undefined' && window.appmaker.storage) {
+        const saved = window.appmaker.storage.getItem('DataLotto49_Tickets');
+        if (saved) {
+          this.savedTickets = JSON.parse(saved);
+          this.updateSavedTickets();
+          console.log('Cargados boletos desde appmaker.xyz storage');
+        }
+      } else {
+        this.loadFromLocalStorageFallback();
+      }
+    }
+    // Web browser - localStorage normal
+    else {
+      this.loadFromLocalStorageFallback();
+    }
+    
+  } catch(error) {
+    console.error('Error cargando boletos:', error);
+    this.loadFromLocalStorageFallback();
+  }
+}
+
+
+loadFromLocalStorageFallback() {
+  try {
+    const saved = localStorage.getItem('DataLotto49MobileTickets');
+    if (saved) {
+      this.savedTickets = JSON.parse(saved);
+      this.updateSavedTickets();
+      console.log('Cargados boletos desde localStorage fallback');
+    }
+  } catch(error) {
+    console.error('Error en localStorage fallback:', error);
+    this.savedTickets = [];
+  }
+}
+
+
+
+
+saveToLocalStorage() {
+  const platform = detectPlatform();
+  
+  try {
+    // App Inventor - Usar TinyDB
+    if (platform === 'appinventor') {
+      if (typeof window.AppInventor !== 'undefined') {
+        window.AppInventor.setWebViewString(JSON.stringify({
+          action: 'SAVE_ALL_TICKETS',
+          tickets: this.savedTickets,
+          timestamp: Date.now()
+        }));
+        console.log('Enviando boletos a App Inventor TinyDB');
+      }
+    }
+    // appmaker.xyz - Usar su storage nativo
+    else if (platform === 'appmaker') {
+      if (typeof window.appmaker !== 'undefined' && window.appmaker.storage) {
+        window.appmaker.storage.setItem('DataLotto49_Tickets', JSON.stringify(this.savedTickets));
+        console.log('Guardado en appmaker.xyz storage');
+      } else {
+        localStorage.setItem('DataLotto49MobileTickets', JSON.stringify(this.savedTickets));
+      }
+    }
+    // Web browser - localStorage normal
+    else {
+      localStorage.setItem('DataLotto49MobileTickets', JSON.stringify(this.savedTickets));
+      console.log('Guardado en localStorage del navegador');
+    }
+    
+  } catch(error) {
+    console.error('Error guardando boletos:', error);
+    // Siempre intentar localStorage como último recurso
+    try {
+      localStorage.setItem('DataLotto49MobileTickets', JSON.stringify(this.savedTickets));
+    } catch(fallbackError) {
+      console.error('Error en fallback localStorage:', fallbackError);
+    }
+  }
+}
+
+
+      // ===== SECCIONES COLAPSABLES =====
+      toggleCollapse(sectionId) {
+        const content = document.getElementById(sectionId + 'Content');
+        const btn = document.getElementById(sectionId + 'CollapseBtn');
+        
+        if (!content || !btn) {
+          console.error('Elementos de colapso no encontrados:', sectionId);
+          return;
+        }
+        
+        if (content.classList.contains('expanded')) {
+          content.classList.remove('expanded');
+          btn.classList.add('collapsed');
+          btn.textContent = '+';
+        } else {
+          content.classList.add('expanded');
+          btn.classList.remove('collapsed');
+          btn.textContent = '−';
+        }
+      }
+
+      // ===== EVENTOS =====
+      bindEvents() {
+        // Disclaimer
+        document.getElementById('disclaimerBtn').addEventListener('click', () => {
+          document.getElementById('disclaimerModal').style.display = 'flex';
+        });
+        
+        document.getElementById('disclaimerCloseBtn').addEventListener('click', () => {
+          document.getElementById('disclaimerModal').style.display = 'none';
+        });
+
+        document.getElementById('disclaimerModal').addEventListener('click', (e) => {
+          if (e.target.id === 'disclaimerModal') {
+            document.getElementById('disclaimerModal').style.display = 'none';
+          }
+        });
+
+        // Secciones colapsables
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+          header.addEventListener('click', () => {
+            const target = header.dataset.target;
+            if (target) {
+              this.toggleCollapse(target);
+            }
+          });
+        });
+
+        // Botones de modo de selección
+        document.querySelectorAll('.selection-mode-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            if (e.currentTarget.id === 'randomBtn') {
+              this.selectRandomNumbers();
+              return;
+            }
+            if (e.currentTarget.id === 'clearBtn') {
+              this.clearAllSelections();
+              return;
+            }
+            if (e.currentTarget.id === 'dataBtn') {
+              const platform = detectPlatform();
+              if (platform === 'appinventor') {
+                requestFileFromAppInventor();
+              } else {
+                document.getElementById('fileInput').click();
+              }
+              return;
+            }
+            if (e.currentTarget.id === 'simulateBtn') {
+              this.simulateHistoricalData();
+              return;
+            }
+            
+            document.querySelectorAll('.selection-mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.currentSelectionMode = btn.dataset.mode;
+          });
+        });
+
+        // File input
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+          const files = Array.from(e.target.files);
+          if (files.length > 0) {
+            this.loadRealData(files);
+          }
+        });
+
+        // Estrategias de juego
+        document.querySelectorAll('.strategy-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.strategy-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const strategy = btn.dataset.strategy;
+            
+            document.getElementById('winningOptions').style.display = strategy === 'winning' ? 'block' : 'none';
+            document.getElementById('multipleNumbersOptions').style.display = strategy === 'multiple' ? 'block' : 'none';
+          });
+        });
+
+        // Opciones de números múltiples
+        document.querySelectorAll('.number-option').forEach(option => {
+          option.addEventListener('click', () => {
+            document.querySelectorAll('.number-option').forEach(o => o.classList.remove('active'));
+            option.classList.add('active');
+          });
+        });
+
+        // Filtros
+        document.addEventListener('click', (e) => {
+          if(e.target.classList.contains('filter-chip') && e.target.dataset.value) {
+            this.handleFilterClick(e.target);
+          }
+        });
+
+        // Inputs de rango
+        const rangeInputsConfig = [
+          { minId: 'sumMin', maxId: 'sumMax', errorId: 'sumError' },
+          { minId: 'primosMin', maxId: 'primosMax', errorId: 'primosError' },
+          { minId: 'sumaDigitosMin', maxId: 'sumaDigitosMax', errorId: 'sumaDigitosError' },
+          { minId: 'desviacionMin', maxId: 'desviacionMax', errorId: 'desviacionError' },
+        ];
+
+        rangeInputsConfig.forEach(config => {
+          const minInput = document.getElementById(config.minId);
+          const maxInput = document.getElementById(config.maxId);
+          
+          const handler = () => {
+            this.validateMinMaxInputs(config.minId, config.maxId, config.errorId);
+            this.updateFilters();
+          };
+          
+          if(minInput) {
+            minInput.addEventListener('change', handler);
+            minInput.addEventListener('input', handler);
+          }
+          if(maxInput) {
+            maxInput.addEventListener('change', handler);
+            maxInput.addEventListener('input', handler);
+          }
+        });
+
+        // Event delegation for saved tickets actions
+        document.getElementById('savedTickets').addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete-btn');
+            const validateBtn = e.target.closest('.validate');
+            const toggleBtn = e.target.closest('.toggle-btn');
+
+            if (deleteBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const ticketId = deleteBtn.dataset.id;
+                if (confirm('¿Estás seguro de que quieres eliminar este boleto?')) {
+                    this.deleteSavedTicket(ticketId);
+                }
+                return;
+            }
+
+            if (validateBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const ticketId = validateBtn.dataset.id;
+                this.validateSavedTicket(ticketId);
+                return;
+            }
+
+            if (toggleBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const ticketId = toggleBtn.dataset.id;
+                const combinations = document.querySelector(`.saved-combinations[data-id="${ticketId}"]`);
+                if (combinations) {
+                    const isVisible = combinations.style.display === 'block';
+                    combinations.style.display = isVisible ? 'none' : 'block';
+                    toggleBtn.querySelector('span').textContent = isVisible ? '+' : '−';
+                }
+                return;
+            }
+        });
+
+        // Botones principales
+        document.getElementById('generateBtn').addEventListener('click', () => this.generateCombination());
+        document.getElementById('saveBtn').addEventListener('click', () => this.saveTicket());
+        document.getElementById('shareBtn').addEventListener('click', () => this.shareTicket());
+        document.getElementById('cancelValidationBtn').addEventListener('click', () => this.closeValidationModal());
+        document.getElementById('confirmValidationBtn').addEventListener('click', () => this.performValidation());
+
+        this.updateClearButtonState();
+        this.updateActiveFilterHighlights();
+      }
+
+      // ===== UTILIDADES =====
+      showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3500);
+      }
+
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }
+
+    if (typeof window.AppInventor === 'undefined') {
+      window.AppInventor = {
+        setWebViewString: function(value) {
+          console.log('AppInventor Message:', value);
+        }
+      };
+    }
+
+
+// Inicialización
+    let app;
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    app = new DataLotto49Advanced();
+    window.app = app;
+    
+    const platform = detectPlatform();
+    console.log(`Plataforma detectada: ${platform}`);
+    
+    if (platform === 'appinventor') {
+      console.log('Configurando para App Inventor con TinyDB');
+      // Retrasar la carga para dar tiempo a App Inventor
+      setTimeout(() => {
+        app.loadSavedTickets();
+      }, 1500);
+    } else if (platform === 'appmaker') {
+      console.log('Configurando para appmaker.xyz');
+      setTimeout(() => {
+        app.loadSavedTickets();
+      }, 1000);
+    } else {
+      console.log('Configurando para navegador web');
+      setTimeout(() => {
+        app.loadSavedTickets();
+      }, 500);
+    }
+    
+    console.log('DataLotto49 Advanced cargado exitosamente');
+    
+  } catch(error) {
+    console.error('Error al cargar DataLotto49 Advanced:', error);
+  }
+});
+  </script>
+</body>
+</html>
