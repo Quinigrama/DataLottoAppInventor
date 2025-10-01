@@ -1902,7 +1902,7 @@ function requestFileFromAppInventor() {
           agrupDecenas: [],
           sumaDigitos: { min: 28, max: 45 },
           desviacion: { min: 12.0, max: 18.0 },
-          entropy: { min: 2.3, max: 2.5 },
+          entropy: { min: 2.3, max: 2.6 },
           geometric: { exclude: [], favor: [] },
           useMarkov: false,
           useNash: false,
@@ -2000,7 +2000,7 @@ function requestFileFromAppInventor() {
           this.dataLoaded = true;
           this.updateDataAnalysis();
           this.analyzeNumbers();
-          this.updateGridWithHotColdNumbers();
+          this.updateGridWithHotColdNumbers(); // CORREGIDO
           
           this.showToast(`✅ Datos reales cargados: ${totalDraws} sorteos`, 'success');
           
@@ -2023,7 +2023,7 @@ function requestFileFromAppInventor() {
           this.dataLoaded = true;
           this.updateDataAnalysis();
           this.analyzeNumbers();
-          this.updateGridWithHotColdNumbers();
+          this.updateGridWithHotColdNumbers(); // CORREGIDO
           this.hideLoading();
           this.showToast(`✅ Datos cargados desde URL: ${data.length} sorteos`, 'success');
         } catch (error) {
@@ -2064,35 +2064,35 @@ function requestFileFromAppInventor() {
       updateDataAnalysis() {
         const dataInfo = document.getElementById('dataInfo');
         const dataStatsGrid = document.getElementById('dataStatsGrid');
+        if (!dataInfo || !dataStatsGrid) return;
+        
         if (!this.dataLoaded || this.historicalData.length === 0) {
-          if(dataInfo) dataInfo.textContent = 'No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.';
-          if(dataInfo) dataInfo.className = 'data-info';
-          if(dataStatsGrid) dataStatsGrid.style.display = 'none';
+          dataInfo.textContent = 'No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.';
+          dataInfo.className = 'data-info';
+          dataStatsGrid.style.display = 'none';
           return;
         }
         const frequencies = {};
         for (let i = 1; i <= 49; i++) frequencies[i] = 0;
         this.historicalData.forEach(draw => draw.numbers.forEach(num => frequencies[num]++));
         const sortedFreq = Object.entries(frequencies).sort((a, b) => b[1] - a[1]);
-        if(dataInfo) dataInfo.innerHTML = `📊 ${this.historicalData.length} sorteos cargados (${this.dataType === 'real' ? 'DATOS REALES' : 'DATOS SIMULADOS'})`;
-        if(dataInfo) dataInfo.className = 'data-info has-data';
+        dataInfo.innerHTML = `📊 ${this.historicalData.length} sorteos cargados (${this.dataType === 'real' ? 'DATOS REALES' : 'DATOS SIMULADOS'})`;
+        dataInfo.className = 'data-info has-data';
         
-        const totalDrawsEl = document.getElementById('totalDraws');
-        if(totalDrawsEl) totalDrawsEl.textContent = this.historicalData.length;
+        const safeSetText = (id, text) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        };
         
-        const dataTypeEl = document.getElementById('dataType');
-        if(dataTypeEl) dataTypeEl.textContent = this.dataType.toUpperCase();
-        
-        const mostFrequentEl = document.getElementById('mostFrequent');
-        if(mostFrequentEl) mostFrequentEl.textContent = sortedFreq.slice(0, 3).map(([num]) => num).join(', ');
-        
-        const leastFrequentEl = document.getElementById('leastFrequent');
-        if(leastFrequentEl) leastFrequentEl.textContent = sortedFreq.slice(-3).map(([num]) => num).join(', ');
+        safeSetText('totalDraws', this.historicalData.length);
+        safeSetText('dataType', this.dataType.toUpperCase());
+        safeSetText('mostFrequent', sortedFreq.slice(0, 3).map(([num]) => num).join(', '));
+        safeSetText('leastFrequent', sortedFreq.slice(-3).map(([num]) => num).join(', '));
         
         const chiSquareEl = document.getElementById('chiSquare');
         const biasEl = document.getElementById('biasDetected');
 
-        if (this.historicalData.length >= 50) {
+        if (this.historicalData.length >= 50 && chiSquareEl && biasEl) {
             const expectedFrequency = (this.historicalData.length * 6) / 49;
             let chiSquareStat = 0;
             for (let i = 1; i <= 49; i++) {
@@ -2101,21 +2101,17 @@ function requestFileFromAppInventor() {
             const criticalValue = 65.17; // df=48, p=0.05
             const biasDetected = chiSquareStat > criticalValue;
             
-            if(chiSquareEl) chiSquareEl.textContent = chiSquareStat.toFixed(2);
-            if(biasEl) {
-              biasEl.textContent = biasDetected ? 'Sí (Significativo al 95%)' : 'No (Distribución Normal)';
-              biasEl.classList.toggle('invalid', biasDetected);
-              biasEl.classList.toggle('valid', !biasDetected);
-            }
-        } else {
-            if(chiSquareEl) chiSquareEl.textContent = 'N/A';
-            if(biasEl) {
-              biasEl.textContent = 'Datos insuficientes';
-              biasEl.classList.remove('valid', 'invalid');
-            }
+            chiSquareEl.textContent = chiSquareStat.toFixed(2);
+            biasEl.textContent = biasDetected ? 'Sí (Significativo al 95%)' : 'No (Distribución Normal)';
+            biasEl.classList.toggle('invalid', biasDetected);
+            biasEl.classList.toggle('valid', !biasDetected);
+        } else if(chiSquareEl && biasEl) {
+            chiSquareEl.textContent = 'N/A';
+            biasEl.textContent = 'Datos insuficientes';
+            biasEl.classList.remove('valid', 'invalid');
         }
         
-        if(dataStatsGrid) dataStatsGrid.style.display = 'grid';
+        dataStatsGrid.style.display = 'grid';
       }
 
       // ===== ANÁLISIS DE NÚMEROS (Sin cambios) =====
@@ -2234,25 +2230,34 @@ function requestFileFromAppInventor() {
 
       // ===== FILTROS (Reactivados y completos) =====
       updateFilterStateFromUI() {
-          this.filters.terminaciones = Array.from(document.querySelectorAll('#terminacionesOptions .filter-chip.active')).map(el => parseInt(el.dataset.value));
-          this.filters.sum = { min: parseInt(document.getElementById('sumMin')?.value || 0), max: parseInt(document.getElementById('sumMax')?.value || 0) };
-          this.filters.parImpar = Array.from(document.querySelectorAll('#parImparOptions .filter-chip.active')).map(el => el.dataset.value);
-          this.filters.bajosAltos = Array.from(document.querySelectorAll('#bajosAltosOptions .filter-chip.active')).map(el => el.dataset.value);
-          this.filters.primos = { min: parseInt(document.getElementById('primosMin')?.value || 0), max: parseInt(document.getElementById('primosMax')?.value || 0) };
-          this.filters.consecutivos = Array.from(document.querySelectorAll('#consecutivosOptions .filter-chip.active')).map(el => el.dataset.value);
-          this.filters.agrupDecenas = Array.from(document.querySelectorAll('#agrupDecenasOptions .filter-chip.active')).map(el => el.dataset.value);
-          this.filters.sumaDigitos = { min: parseInt(document.getElementById('sumaDigitosMin')?.value || 0), max: parseInt(document.getElementById('sumaDigitosMax')?.value || 0) };
+          const getVal = (id, isFloat = false) => {
+              const el = document.getElementById(id);
+              if (!el) return isFloat ? 0.0 : 0;
+              return isFloat ? parseFloat(el.value) : parseInt(el.value);
+          };
+          const getChecked = (id) => document.getElementById(id)?.checked || false;
+          const getActiveChips = (selector) => Array.from(document.querySelectorAll(selector)).map(el => el.dataset.value);
+
+          this.filters.terminaciones = getActiveChips('#terminacionesOptions .filter-chip.active').map(Number);
+          this.filters.sum = { min: getVal('sumMin'), max: getVal('sumMax') };
+          this.filters.parImpar = getActiveChips('#parImparOptions .filter-chip.active');
+          this.filters.bajosAltos = getActiveChips('#bajosAltosOptions .filter-chip.active');
+          this.filters.primos = { min: getVal('primosMin'), max: getVal('primosMax') };
+          this.filters.consecutivos = getActiveChips('#consecutivosOptions .filter-chip.active');
+          this.filters.agrupDecenas = getActiveChips('#agrupDecenasOptions .filter-chip.active');
+          this.filters.sumaDigitos = { min: getVal('sumaDigitosMin'), max: getVal('sumaDigitosMax') };
+          this.filters.desviacion = { min: getVal('desviacionMin', true), max: getVal('desviacionMax', true) };
+          this.filters.entropy = { min: getVal('entropyMin', true), max: getVal('entropyMax', true) };
           
-          this.filters.desviacion = { min: parseFloat(document.getElementById('desviacionMin')?.value || 0), max: parseFloat(document.getElementById('desviacionMax')?.value || 0) };
-          this.filters.entropy = { min: parseFloat(document.getElementById('entropyMin')?.value || 0), max: parseFloat(document.getElementById('entropyMax')?.value || 0) };
           const geometricChips = Array.from(document.querySelectorAll('#geometricOptions .filter-chip.active'));
           this.filters.geometric = {
               exclude: geometricChips.filter(el => el.textContent.startsWith('🚫')).map(el => el.dataset.value),
               favor: geometricChips.filter(el => el.textContent.startsWith('👍')).map(el => el.dataset.value),
           };
-          this.filters.useMarkov = document.getElementById('useMarkovSwitch')?.checked;
-          this.filters.useNash = document.getElementById('useNashSwitch')?.checked;
-          this.filters.useRegression = document.getElementById('useRegressionSwitch')?.checked;
+          
+          this.filters.useMarkov = getChecked('useMarkovSwitch');
+          this.filters.useNash = getChecked('useNashSwitch');
+          this.filters.useRegression = getChecked('useRegressionSwitch');
       }
 
       // ===== SELECCIÓN DE NÚMEROS (CORREGIDO) =====
@@ -2651,18 +2656,21 @@ function requestFileFromAppInventor() {
       displayCombinationStats(combination) {
         const statsContent = document.getElementById('statsContent');
         if (!statsContent) return;
-        const allStatValues = statsContent.querySelectorAll('.stat-value');
+        
+        const safeSetText = (id, text) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        };
+        
         if (!combination || combination.length !== 6) {
-            allStatValues.forEach(el => {
-                if (el) el.textContent = '-';
-            });
+            statsContent.querySelectorAll('.stat-value').forEach(el => el.textContent = '-');
             return;
         }
         const stats = this.getCombinationStats(combination);
         for (const key in stats) {
             if (key.startsWith('_')) continue; // No mostrar valores raw
-            const el = document.getElementById(`stat${key.charAt(0).toUpperCase() + key.slice(1)}`);
-            if (el) el.textContent = stats[key];
+            const elId = `stat${key.charAt(0).toUpperCase() + key.slice(1)}`;
+            safeSetText(elId, stats[key]);
         }
       }
 
@@ -2749,7 +2757,7 @@ function requestFileFromAppInventor() {
         const ticketDateEl = document.getElementById('ticketDate');
         if (ticketDateEl) ticketDateEl.textContent = new Date().toLocaleString();
         
-        if (!combinationsDiv) return;
+        if (!combinationsDiv || !ticketDiv) return;
         combinationsDiv.innerHTML = '';
         
         combinations.forEach(combo => {
@@ -2792,7 +2800,7 @@ function requestFileFromAppInventor() {
             }
         }
         
-        if(ticketDiv) ticketDiv.classList.add('show');
+        ticketDiv.classList.add('show');
       }
       saveTicket() {
         if (!this.currentTicket) return;
@@ -2865,10 +2873,11 @@ function requestFileFromAppInventor() {
           item.querySelector('.validate')?.addEventListener('click', () => this.startValidation(ticket.date));
           item.querySelector('.toggle-btn')?.addEventListener('click', (e) => {
               const comboDiv = item.querySelector('.saved-combinations');
-              if (!comboDiv || !e.target) return;
+              const target = e.target;
+              if (!comboDiv || !target) return;
               const isVisible = comboDiv.style.display === 'block';
               comboDiv.style.display = isVisible ? 'none' : 'block';
-              e.target.textContent = isVisible ? '+' : '-';
+              target.textContent = isVisible ? '+' : '-';
           });
           container.appendChild(item);
         });
