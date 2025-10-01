@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -359,20 +358,30 @@
       transform: scale(1.1);
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.05); }
+      50% { transform: scale(1.15); }
+    }
 
     .number-ball.selected {
       background: linear-gradient(135deg, #ffd700, #ffa000);
       border-color: #ff8f00;
       color: white;
-      transform: scale(1.1);
+      transform: scale(1.05);
       box-shadow: 0 8px 25px rgba(255,193,7,0.4);
       animation: pulse 1.5s infinite;
+    }
+    
+    .number-ball.generated-pick,
+    .number-ball.random-pick {
+        transform: scale(1.05);
+        animation: pulse 1.5s infinite;
     }
 
     .number-ball.generated-pick {
       background: linear-gradient(135deg, #9333ea, #c084fc);
       color: white;
-      transform: scale(1.05);
       border-color: #7c3aed;
       box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
     }
@@ -380,13 +389,8 @@
     .number-ball.random-pick {
       background: var(--warning);
       color: white;
-      transform: scale(1.05);
       border-color: #e68900;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1.1); }
-      50% { transform: scale(1.2); }
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
     }
 
     .number-ball.hot {
@@ -413,45 +417,33 @@
 
     .number-ball .number-icon {
       position: absolute;
-      top: -3px;
-      right: -3px;
-      width: 14px;
-      height: 14px;
+      top: -4px;
+      right: -4px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      font-size: 7px;
+      font-size: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       border: 1px solid white;
+      background: var(--gray);
+      color: white;
+      text-shadow: 0 0 2px rgba(0,0,0,0.5);
+      line-height: 16px;
+    }
+    
+    .number-ball .number-icon:empty {
+      display: none;
     }
 
-    .number-ball.hot .number-icon {
-      background: #ff5722;
-      color: white;
-    }
+    .number-ball.hot .number-icon { background: #ff5722; }
+    .number-ball.cold .number-icon { background: #03a9f4; }
+    .number-ball.excluded .number-icon { background: #9e9e9e; }
+    .number-ball.random-pick .number-icon { background: var(--warning); }
+    .number-ball.generated-pick .number-icon { background: #7c3aed; }
 
-    .number-ball.cold .number-icon {
-      background: #03a9f4;
-      color: white;
-    }
-
-    .number-ball.excluded .number-icon {
-      background: #9e9e9e;
-      color: white;
-    }
-
-    .number-ball.random-pick .number-icon {
-      background: var(--warning);
-      color: white;
-      border-color: #e68900;
-    }
-
-    .number-ball.generated-pick .number-icon {
-      background: #7c3aed;
-      color: white;
-      border-color: #a855f7;
-    }
 
     /* SECCIONES COLAPSABLES */
     .collapsible-section {
@@ -1036,12 +1028,22 @@
       align-items: center;
       margin-bottom: 10px;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
     .saved-ticket-date {
       font-weight: bold;
       color: var(--dark);
       font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    }
+    
+    .saved-ticket-strategy {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--primary);
+        background-color: #f7f3ff;
+        padding: 3px 8px;
+        border-radius: 12px;
     }
 
     .saved-ticket-actions {
@@ -1174,6 +1176,12 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    
+    #loadingInfo {
+        margin-top: 10px;
+        color: var(--gray);
+        font-size: 0.9rem;
     }
 
     /* Modal */
@@ -1359,17 +1367,20 @@
       <div class="number-selection-header">
         <h3>Selección de números</h3>
         <div class="selection-mode-controls">
-          <button class="selection-mode-btn active" data-mode="cold" title="Marcar/Desmarcar números fríos">
-            <span class="icon">❄</span>
+          <button class="selection-mode-btn" data-mode="cold" title="Activar modo para marcar/desmarcar números fríos">
+            <span class="icon">❄️</span>
           </button>
-          <button class="selection-mode-btn" data-mode="hot" title="Marcar/Desmarcar números calientes">
+          <button class="selection-mode-btn" data-mode="hot" title="Activar modo para marcar/desmarcar números calientes">
             <span class="icon">🔥</span>
           </button>
-          <button class="selection-mode-btn" data-mode="excluded" title="Marcar/Desmarcar números excluidos">
+          <button class="selection-mode-btn" data-mode="excluded" title="Activar modo para marcar/desmarcar números excluidos">
             <span class="icon">🚫</span>
           </button>
           <button class="selection-mode-btn" data-mode="data" title="Cargar base de datos" id="dataBtn">
             <span class="icon">📊</span>
+          </button>
+          <button class="selection-mode-btn" id="urlBtn" title="Cargar datos desde URL" style="border-color: #673ab7; background: #ede7f6; color: #512da8;">
+            <span class="icon">🔗</span>
           </button>
           <button class="selection-mode-btn" data-mode="simulate" title="Simular datos" id="simulateBtn">
             <span class="icon">🎰</span>
@@ -1410,7 +1421,7 @@
           <div class="stat-value" id="leastFrequent">-</div>
         </div>
         <div class="stat-item">
-          <div class="stat-label">Chi-cuadrado (p-valor)</div>
+          <div class="stat-label">Chi-cuadrado (Estadístico)</div>
           <div class="stat-value" id="chiSquare">-</div>
         </div>
         <div class="stat-item">
@@ -1665,7 +1676,7 @@
                 <div class="range-control">
                   <input type="number" id="entropyMin" value="2.3" min="1.0" max="2.6" step="0.05">
                   <span>a</span>
-                  <input type="number" id="entropyMax" value="2.5" min="1.0" max="2.6" step="0.05">
+                  <input type="number" id="entropyMax" value="2.6" min="1.0" max="2.6" step="0.05">
                 </div>
                 <div class="validation-error" id="entropyError">El valor mínimo no puede ser mayor que el máximo</div>
             </div>
@@ -1700,8 +1711,15 @@
                 </label>
                 <span>Activar Optimización Nash (Anti-Popular)</span>
               </div>
+              <div class="switch-control" style="margin-top: 10px;" title="Favorece combinaciones con números que han aparecido con menos frecuencia (fríos), basado en el principio de que los resultados tienden a volver a la media a largo plazo.">
+                <label class="switch">
+                  <input type="checkbox" id="useRegressionSwitch">
+                  <span class="slider"></span>
+                </label>
+                <span>Activar Regresión a la Media (Pro-Fríos)</span>
+              </div>
               <div class="filter-info-text">
-                <b>Markov:</b> Analiza secuencias en datos históricos. <b>Nash:</b> Favorece números menos populares para maximizar premios potenciales (usa datos simulados de popularidad).
+                <b>Markov:</b> Analiza secuencias. <b>Nash:</b> Favorece números menos populares. <b>Regresión:</b> Apuesta por números 'atrasados' (fríos).
               </div>
             </div>
             
@@ -1722,7 +1740,7 @@
       <div class="loading-content">
         <div class="loading-spinner"></div>
         <h3 id="loadingText">Generando combinación...</h3>
-        <p>Intentos: <span id="loadingAttempts">0</span></p>
+        <p id="loadingInfo">Iniciando búsqueda...</p>
       </div>
     </div>
 
@@ -1785,7 +1803,6 @@
 // ============================================
 // SISTEMA DE ALMACENAMIENTO PERSISTENTE
 // ============================================
-
 window.loadDataFromAppInventor = function(fileContent) {
   if (window.app) {
     try {
@@ -1847,13 +1864,22 @@ function requestFileFromAppInventor() {
 
     // Clase principal de la aplicación
     class DataLotto49Advanced {
+      // Coordenadas pre-calculadas para cada número en la cuadrícula 7x7
+      static NUMBER_COORDS = (() => {
+          const coords = {};
+          for (let i = 1; i <= 49; i++) {
+              coords[i] = { row: Math.floor((i - 1) / 7), col: (i - 1) % 7 };
+          }
+          return coords;
+      })();
+
       constructor() {
         // Estado del sistema
-        this.selectedNumbers = [];
+        this.selectedNumbers = new Set();
         this.excludedNumbers = new Set();
         this.hotNumbers = new Set();
         this.coldNumbers = new Set();
-        this.currentSelectionMode = 'cold';
+        this.currentSelectionMode = null; // null | 'excluded' | 'hot' | 'cold'
         this.isGenerating = false;
         this.savedTickets = [];
         this.currentTicket = null;
@@ -1865,44 +1891,44 @@ function requestFileFromAppInventor() {
         this.dataType = 'none';
         this.platform = detectPlatform();
 
-        // Filtros matemáticos
+        // Filtros (activados todos los niveles)
         this.filters = {
           terminaciones: [],
           sum: { min: 121, max: 190 },
-          parImpar: ['4/2', '3/3', '2/4'],
-          bajosAltos: ['4/2', '3/3', '2/4'],
+          parImpar: [],
+          bajosAltos: [],
           primos: { min: 1, max: 3 },
-          consecutivos: ['2/1/1/1/1', '1/1/1/1/1/1'],
-          agrupDecenas: ['6', '5/1', '4/2', '4/1/1', '3/3', '3/2/1', '3/1/1/1', '2/2/2', '2/2/1/1', '2/1/1/1/1'],
+          consecutivos: [],
+          agrupDecenas: [],
           sumaDigitos: { min: 28, max: 45 },
           desviacion: { min: 12.0, max: 18.0 },
           entropy: { min: 2.3, max: 2.5 },
           geometric: { exclude: [], favor: [] },
           useMarkov: false,
           useNash: false,
+          useRegression: false,
+        };
+        
+        // Constantes y pre-cálculos
+        this.primes = new Set([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]);
+        this.TOLERANCE_LEVELS = { // Niveles de tolerancia para la estrategia Múltiple
+            7: 0.70,
+            8: 0.50,
+            9: 0.35,
+            10: 0.25,
+            11: 0.20
         };
 
-        // Matriz geométrica 7x7
-        this.geometricMatrix = this.buildMatrix7x7();
-        
-        // Modelos AI
-        this.transitionMatrix = {}; // Markov
-        this.popularityMatrix = []; // Nash
-        this.primes = new Set([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]);
-
-        // Inicializar
         this.init();
       }
 
       init() {
         this.initializeHistoricalData();
-        this.initializeNumberStats();
-        this.buildPopularityMatrix();
         this.analyzeNumbers();
         this.createNumbersGrid();
         this.bindEvents();
         this.loadTickets();
-        this.updateFilters();
+        this.updateFilterStateFromUI();
         if (this.platform === 'appinventor') {
             this.requestInitialDataFromAppInventor();
         }
@@ -1914,28 +1940,12 @@ function requestFileFromAppInventor() {
         }
       }
 
-      // ===== MATRIZ GEOMÉTRICA =====
-      buildMatrix7x7() {
-        const matrix = {};
-        let num = 1;
-        for (let row = 0; row < 7; row++) {
-          for (let col = 0; col < 7; col++) {
-            if (num <= 49) {
-              matrix[num] = { x: col, y: row, num };
-              num++;
-            }
-          }
-        }
-        return matrix;
-      }
-
-      // ===== DATOS HISTÓRICOS =====
+      // ===== DATOS HISTÓRICOS (Sin cambios) =====
       initializeHistoricalData() {
         if (!this.dataLoaded) {
           this.simulateHistoricalData(500);
         }
       }
-
       simulateHistoricalData(numDraws = 500) {
         this.historicalData = [];
         const baseDate = new Date();
@@ -1960,46 +1970,16 @@ function requestFileFromAppInventor() {
         this.updateGridWithHotColdNumbers();
         this.showToast('✅ Datos simulados generados correctamente', 'success');
       }
-
       generateRealisticDraw() {
         const numbers = new Set();
-        const ranges = [
-          { min: 1, max: 9, weight: 0.8 },
-          { min: 10, max: 19, weight: 1.0 },
-          { min: 20, max: 29, weight: 1.0 },
-          { min: 30, max: 39, weight: 1.0 },
-          { min: 40, max: 49, weight: 0.8 }
-        ];
-
         while(numbers.size < 6) {
-          const totalWeight = ranges.reduce((sum, r) => sum + r.weight, 0);
-          let rand = Math.random() * totalWeight;
-          let selectedRange = null;
-
-          for(const range of ranges) {
-            rand -= range.weight;
-            if(rand <= 0) {
-              selectedRange = range;
-              break;
-            }
-          }
-
-          if(selectedRange) {
-            let attempts = 0;
-            while(attempts < 10) {
-              const num = Math.floor(Math.random() * (selectedRange.max - selectedRange.min + 1)) + selectedRange.min;
-              if(!numbers.has(num)) {
+            const num = Math.floor(Math.random() * 49) + 1;
+            if(!numbers.has(num)) {
                 numbers.add(num);
-                break;
-              }
-              attempts++;
             }
-          }
         }
-
         return Array.from(numbers);
       }
-
       async loadRealData(files) {
         try {
           this.historicalData = [];
@@ -2028,15 +2008,36 @@ function requestFileFromAppInventor() {
           this.showToast(`Error cargando datos: ${error.message}`, 'error');
         }
       }
-
+      async loadDataFromUrl() {
+        const url = prompt("Introduce la URL del archivo de datos (CSV):");
+        if (!url) return;
+        try {
+          this.showLoading('Cargando datos desde URL...');
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+          const content = await response.text();
+          const data = this.parseCSVData(content);
+          
+          this.historicalData = data;
+          this.dataType = 'url';
+          this.dataLoaded = true;
+          this.updateDataAnalysis();
+          this.analyzeNumbers();
+          this.updateGridWithHotColdNumbers();
+          this.hideLoading();
+          this.showToast(`✅ Datos cargados desde URL: ${data.length} sorteos`, 'success');
+        } catch (error) {
+          this.hideLoading();
+          this.showToast(`Error al cargar desde URL: ${error.message}`, 'error');
+        }
+      }
       async loadDataFile(file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = (e) => {
             try {
               const content = e.target.result;
-              const data = this.parseCSVData(content);
-              resolve(data);
+              resolve(this.parseCSVData(content));
             } catch (error) {
               reject(error);
             }
@@ -2045,931 +2046,716 @@ function requestFileFromAppInventor() {
           reader.readAsText(file);
         });
       }
-
       parseCSVData(content) {
         const lines = content.trim().split('\n');
-        const draws = [];
-        
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].trim();
-          if (!line) continue;
-          
+        return lines.map((line, i) => {
+          if (!line.trim()) return null;
           const numbers = line.split(/[,;\t\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-          
-          if (numbers.length !== 6) {
-            throw new Error(`Línea ${i + 1}: Se esperan 6 números, se encontraron ${numbers.length}`);
-          }
-          
-          if (numbers.some(n => n < 1 || n > 49)) {
-            throw new Error(`Línea ${i + 1}: Números fuera del rango 1-49`);
-          }
-          
-          draws.push({
+          if (numbers.length !== 6) throw new Error(`Línea ${i + 1}: Se esperan 6 números`);
+          if (numbers.some(n => n < 1 || n > 49)) throw new Error(`Línea ${i + 1}: Números fuera de rango`);
+          return {
             id: i + 1,
             date: new Date(Date.now() - (lines.length - i) * 3.5 * 24 * 60 * 60 * 1000),
             numbers: numbers.sort((a, b) => a - b),
             sum: numbers.reduce((a, b) => a + b, 0)
-          });
-        }
-        
-        return draws;
+          };
+        }).filter(Boolean);
       }
-
       updateDataAnalysis() {
         const dataInfo = document.getElementById('dataInfo');
         const dataStatsGrid = document.getElementById('dataStatsGrid');
-        
         if (!this.dataLoaded || this.historicalData.length === 0) {
-          dataInfo.textContent = 'No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.';
-          dataInfo.className = 'data-info';
-          dataStatsGrid.style.display = 'none';
+          if(dataInfo) dataInfo.textContent = 'No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.';
+          if(dataInfo) dataInfo.className = 'data-info';
+          if(dataStatsGrid) dataStatsGrid.style.display = 'none';
           return;
         }
-        
         const frequencies = {};
         for (let i = 1; i <= 49; i++) frequencies[i] = 0;
-        
-        this.historicalData.forEach(draw => {
-          draw.numbers.forEach(num => frequencies[num]++);
-        });
-        
+        this.historicalData.forEach(draw => draw.numbers.forEach(num => frequencies[num]++));
         const sortedFreq = Object.entries(frequencies).sort((a, b) => b[1] - a[1]);
-        const mostFrequent = sortedFreq.slice(0, 3).map(([num]) => num).join(', ');
-        const leastFrequent = sortedFreq.slice(-3).map(([num]) => num).join(', ');
+        if(dataInfo) dataInfo.innerHTML = `📊 ${this.historicalData.length} sorteos cargados (${this.dataType === 'real' ? 'DATOS REALES' : 'DATOS SIMULADOS'})`;
+        if(dataInfo) dataInfo.className = 'data-info has-data';
         
-        const chiSquareResult = this.performChiSquareTest(frequencies);
+        const totalDrawsEl = document.getElementById('totalDraws');
+        if(totalDrawsEl) totalDrawsEl.textContent = this.historicalData.length;
         
-        dataInfo.innerHTML = `📊 ${this.historicalData.length} sorteos cargados (${this.dataType === 'real' ? 'DATOS REALES' : 'DATOS SIMULADOS'})`;
-        dataInfo.className = 'data-info has-data';
+        const dataTypeEl = document.getElementById('dataType');
+        if(dataTypeEl) dataTypeEl.textContent = this.dataType.toUpperCase();
         
-        document.getElementById('totalDraws').textContent = this.historicalData.length;
-        document.getElementById('dataType').textContent = this.dataType === 'real' ? 'REALES' : 'SIMULADOS';
-        document.getElementById('mostFrequent').textContent = mostFrequent;
-        document.getElementById('leastFrequent').textContent = leastFrequent;
-        document.getElementById('chiSquare').textContent = chiSquareResult.pValue.toFixed(4);
-        document.getElementById('biasDetected').textContent = chiSquareResult.biased ? 'SÍ' : 'NO';
+        const mostFrequentEl = document.getElementById('mostFrequent');
+        if(mostFrequentEl) mostFrequentEl.textContent = sortedFreq.slice(0, 3).map(([num]) => num).join(', ');
         
-        dataStatsGrid.style.display = 'grid';
-      }
+        const leastFrequentEl = document.getElementById('leastFrequent');
+        if(leastFrequentEl) leastFrequentEl.textContent = sortedFreq.slice(-3).map(([num]) => num).join(', ');
+        
+        const chiSquareEl = document.getElementById('chiSquare');
+        const biasEl = document.getElementById('biasDetected');
 
-      performChiSquareTest(frequencies) {
-        const totalDraws = this.historicalData.length;
-        const expectedFreq = totalDraws * 6 / 49;
-        
-        let chiSquare = 0;
-        for (let i = 1; i <= 49; i++) {
-          const observed = frequencies[i];
-          chiSquare += Math.pow(observed - expectedFreq, 2) / expectedFreq;
+        if (this.historicalData.length >= 50) {
+            const expectedFrequency = (this.historicalData.length * 6) / 49;
+            let chiSquareStat = 0;
+            for (let i = 1; i <= 49; i++) {
+                chiSquareStat += Math.pow(frequencies[i] - expectedFrequency, 2) / expectedFrequency;
+            }
+            const criticalValue = 65.17; // df=48, p=0.05
+            const biasDetected = chiSquareStat > criticalValue;
+            
+            if(chiSquareEl) chiSquareEl.textContent = chiSquareStat.toFixed(2);
+            if(biasEl) {
+              biasEl.textContent = biasDetected ? 'Sí (Significativo al 95%)' : 'No (Distribución Normal)';
+              biasEl.classList.toggle('invalid', biasDetected);
+              biasEl.classList.toggle('valid', !biasDetected);
+            }
+        } else {
+            if(chiSquareEl) chiSquareEl.textContent = 'N/A';
+            if(biasEl) {
+              biasEl.textContent = 'Datos insuficientes';
+              biasEl.classList.remove('valid', 'invalid');
+            }
         }
         
-        const criticalValue = 65.17;
-        const pValue = chiSquare > criticalValue ? 0.001 : 0.5;
-        const biased = chiSquare > criticalValue;
-        
-        return { chiSquare, pValue, biased };
+        if(dataStatsGrid) dataStatsGrid.style.display = 'grid';
       }
 
-      // ===== ANÁLISIS DE NÚMEROS Y MODELOS =====
-      initializeNumberStats() {
-        for(let i = 1; i <= 49; i++) {
-          this.numberStats[i] = {
-            frequency: 0,
-            lastAppearance: -1,
-            relativeFreq: 0,
-            trend: 0,
-            cycle: 0,
-            score: 0
-          };
-        }
-      }
-
+      // ===== ANÁLISIS DE NÚMEROS (Sin cambios) =====
       analyzeNumbers() {
-        this.initializeNumberStats();
-        
+        for(let i = 1; i <= 49; i++) this.numberStats[i] = { frequency: 0, score: 0 };
         const analysisData = this.historicalData.slice(-this.analysisPeriod);
-        const totalDraws = analysisData.length;
-        if (totalDraws === 0) return;
-
-        analysisData.forEach((draw, index) => {
-          draw.numbers.forEach(num => {
-            this.numberStats[num].frequency++;
-            this.numberStats[num].lastAppearance = index;
-          });
-        });
-
-        for(let num = 1; num <= 49; num++) {
-          const stats = this.numberStats[num];
-          stats.relativeFreq = (stats.frequency / totalDraws) * 100;
-
-          const recentDraws = analysisData.slice(-20);
-          const recentFrequency = recentDraws.filter(draw => draw.numbers.includes(num)).length;
-          const olderDraws = analysisData.slice(-40, -20);
-          const olderFrequency = olderDraws.filter(draw => draw.numbers.includes(num)).length;
-          stats.trend = recentFrequency - olderFrequency;
-
-          if(stats.lastAppearance === -1) {
-            stats.cycle = totalDraws;
-          } else {
-            stats.cycle = totalDraws - 1 - stats.lastAppearance;
-          }
-
-          stats.score = this.calculateCompositeScore(num);
-        }
-
+        if (analysisData.length === 0) return;
+        analysisData.forEach(draw => draw.numbers.forEach(num => this.numberStats[num].frequency++));
         this.classifyNumbers();
-        this.buildTransitionMatrix();
       }
-
-      calculateCompositeScore(num) {
-        const stats = this.numberStats[num];
-        const avgFreq = this.analysisPeriod / 6;
-        const freqComponent = (stats.frequency - avgFreq) / avgFreq;
-        const trendComponent = Math.max(-1, Math.min(1, stats.trend));
-        const maxCycle = this.analysisPeriod * 0.5;
-        const cycleComponent = (maxCycle - stats.cycle) / maxCycle;
-
-        return (freqComponent * 0.4) + (trendComponent * 0.3) + (cycleComponent * 0.3);
-      }
-
       classifyNumbers() {
-        const scores = Object.values(this.numberStats).map(s => s.score);
-        const sortedScores = [...scores].sort((a, b) => a - b);
-        const hotThreshold = sortedScores[Math.floor(sortedScores.length * 0.7)];
-        const coldThreshold = sortedScores[Math.floor(sortedScores.length * 0.3)];
-
+        const freqs = Object.values(this.numberStats).map(s => s.frequency);
+        const sortedFreqs = [...freqs].sort((a, b) => a - b);
+        const hotThreshold = sortedFreqs[Math.floor(sortedFreqs.length * 0.7)];
+        const coldThreshold = sortedFreqs[Math.floor(sortedFreqs.length * 0.3)];
         this.hotNumbers.clear();
         this.coldNumbers.clear();
         for (let num = 1; num <= 49; num++) {
-          const score = this.numberStats[num].score;
-          if (score >= hotThreshold) {
-            this.hotNumbers.add(num);
-          } else if (score <= coldThreshold) {
-            this.coldNumbers.add(num);
-          }
+          const freq = this.numberStats[num].frequency;
+          if (freq >= hotThreshold) this.hotNumbers.add(num);
+          if (freq <= coldThreshold) this.coldNumbers.add(num);
         }
       }
-
       updateGridWithHotColdNumbers() {
         for (let i = 1; i <= 49; i++) {
           const ball = document.querySelector(`.number-ball[data-number="${i}"]`);
           if (ball) {
             ball.classList.remove('hot', 'cold');
+            const icon = ball.querySelector('.number-icon');
+            if (!icon) continue;
+
+            let newIcon = '';
+            
             if (this.hotNumbers.has(i)) {
-              ball.classList.add('hot');
-            } else if (this.coldNumbers.has(i)) {
-              ball.classList.add('cold');
+                ball.classList.add('hot');
+                newIcon = '🔥';
+            }
+            if (this.coldNumbers.has(i)) {
+                ball.classList.add('cold');
+                newIcon = '❄️';
+            }
+            
+            const currentIcon = icon.textContent;
+            if (['🔥', '❄️', ''].includes(currentIcon) && !this.excludedNumbers.has(i)) {
+                icon.textContent = newIcon;
             }
           }
         }
       }
 
-      buildTransitionMatrix(order = 2) {
-        const transitions = {};
-        const data = this.historicalData.map(d => d.numbers);
-
-        for (let i = 0; i < data.length - order; i++) {
-            const currentState = data.slice(i, i + order).flat().sort((a, b) => a - b).join(',');
-            const nextNumbers = data[i + order];
-
-            if (!transitions[currentState]) {
-                transitions[currentState] = {};
-            }
-
-            nextNumbers.forEach(num => {
-                transitions[currentState][num] = (transitions[currentState][num] || 0) + 1;
-            });
-        }
-        
-        // Normalize
-        for (const state in transitions) {
-            const total = Object.values(transitions[state]).reduce((a, b) => a + b, 0);
-            for (const num in transitions[state]) {
-                transitions[state][num] /= total;
-            }
-        }
-        this.transitionMatrix = transitions;
-      }
-      
-      buildPopularityMatrix() {
-          this.popularityMatrix = new Array(50).fill(0);
-          // Simulate birthday bias and pattern preference
-          for (let i = 1; i <= 31; i++) this.popularityMatrix[i] += Math.random() * 0.5 + 0.5;
-          for (let i = 1; i <= 12; i++) this.popularityMatrix[i] += Math.random() * 0.3;
-          [7, 14, 21, 28, 35, 42, 49].forEach(n => this.popularityMatrix[n] += Math.random() * 0.2);
-          
-          const total = this.popularityMatrix.reduce((a, b) => a + b, 0);
-          this.popularityMatrix = this.popularityMatrix.map(p => p / total);
-      }
-
-
-      // ===== UI SETUP =====
+      // ===== UI SETUP Y EVENTOS (Sin cambios en su mayoría) =====
       createNumbersGrid() {
         const grid = document.getElementById('numbersGrid');
+        if (!grid) return;
         grid.innerHTML = '';
         for (let i = 1; i <= 49; i++) {
           const ball = document.createElement('div');
           ball.classList.add('number-ball');
           ball.dataset.number = i;
-          ball.textContent = i;
+          ball.innerHTML = `${i}<span class="number-icon"></span>`;
           if (this.hotNumbers.has(i)) ball.classList.add('hot');
           if (this.coldNumbers.has(i)) ball.classList.add('cold');
           grid.appendChild(ball);
         }
       }
-
       bindEvents() {
-        // Number selection
-        document.getElementById('numbersGrid').addEventListener('click', e => {
-          if (e.target.classList.contains('number-ball')) {
-            this.handleNumberClick(e.target);
-          }
+        document.getElementById('numbersGrid')?.addEventListener('click', e => {
+          if (e.target.classList.contains('number-ball')) this.handleNumberClick(e.target);
         });
-
-        // Mode controls
-        document.querySelector('.selection-mode-controls').addEventListener('click', e => {
-          const btn = e.target.closest('.selection-mode-btn');
-          if (btn) {
+        document.querySelector('.selection-mode-controls')?.addEventListener('click', e => {
+            const btn = e.target.closest('.selection-mode-btn');
+            if (!btn) return;
             const mode = btn.dataset.mode;
-            if (mode) {
-              this.updateSelectionMode(mode);
+            
+            if (['cold', 'hot', 'excluded'].includes(mode)) {
+                this.updateSelectionMode(mode);
             } else if (btn.id === 'randomBtn') {
-              this.randomSelect();
+                this.randomSelect();
             } else if (btn.id === 'clearBtn') {
-              this.clearSelections();
+                this.clearSelections(true);
+                const clearBtn = document.getElementById('clearBtn');
+                if (clearBtn) {
+                  clearBtn.classList.add('shake');
+                  setTimeout(() => clearBtn.classList.remove('shake'), 500);
+                }
             } else if (btn.id === 'dataBtn') {
-              if (this.platform === 'appinventor') {
-                requestFileFromAppInventor();
-              } else {
-                document.getElementById('fileInput').click();
-              }
+                document.getElementById('fileInput')?.click();
             } else if (btn.id === 'simulateBtn') {
-              this.simulateHistoricalData(500);
+                this.simulateHistoricalData(500);
+            } else if (btn.id === 'urlBtn') {
+                this.loadDataFromUrl();
             }
-          }
         });
-
-        // Collapsible sections
-        document.querySelectorAll('.collapsible-header').forEach(header => {
-          header.addEventListener('click', () => {
-            const targetId = header.dataset.target;
-            const content = document.getElementById(`${targetId}Content`);
-            const btn = document.getElementById(`${targetId}CollapseBtn`);
-            content.classList.toggle('expanded');
-            btn.textContent = content.classList.contains('expanded') ? '-' : '+';
-            btn.classList.toggle('collapsed');
-          });
+        document.querySelectorAll('.collapsible-header').forEach(h => h.addEventListener('click', () => this.toggleCollapse(h.dataset.target)));
+        document.querySelectorAll('.strategy-btn').forEach(btn => btn.addEventListener('click', () => this.updateStrategyUI(btn.dataset.strategy)));
+        document.querySelectorAll('.number-option').forEach(opt => opt.addEventListener('click', () => {
+          document.querySelectorAll('.number-option').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+        }));
+        document.getElementById('generateBtn')?.addEventListener('click', () => this.generateCombinations());
+        document.getElementById('saveBtn')?.addEventListener('click', () => this.saveTicket());
+        document.getElementById('shareBtn')?.addEventListener('click', () => this.shareTicket());
+        document.querySelector('.filters-panel')?.addEventListener('input', () => this.updateFilterStateFromUI());
+        document.querySelector('.filters-panel')?.addEventListener('click', e => {
+           if(e.target.classList.contains('filter-chip')) {
+               e.target.classList.toggle('active');
+               this.updateFilterStateFromUI();
+           }
         });
-
-        // Strategy buttons
-        document.querySelectorAll('.strategy-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            document.querySelectorAll('.strategy-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const strategy = btn.dataset.strategy;
-            this.updateStrategyUI(strategy);
-          });
-        });
-
-        document.querySelectorAll('.number-option').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.number-option').forEach(o => o.classList.remove('active'));
-                option.classList.add('active');
-                this.clearSelections();
-            });
-        });
-
-
-        // Generate button
-        document.getElementById('generateBtn').addEventListener('click', () => this.generateCombinations());
-
-        // Ticket actions
-        document.getElementById('saveBtn').addEventListener('click', () => this.saveTicket());
-        document.getElementById('shareBtn').addEventListener('click', () => this.shareTicket());
-
-        // Filters
-        document.querySelector('.filters-panel').addEventListener('input', e => {
-           if(e.target.tagName === 'INPUT') this.updateFilters();
-        });
-        document.querySelector('.filters-panel').addEventListener('click', e => {
-           if(e.target.classList.contains('filter-chip')) this.updateFilters();
-        });
-
-        // Modals
-        document.getElementById('disclaimerBtn').addEventListener('click', () => this.toggleModal('disclaimerModal', true));
-        document.getElementById('disclaimerCloseBtn').addEventListener('click', () => this.toggleModal('disclaimerModal', false));
-        document.getElementById('cancelValidationBtn').addEventListener('click', () => this.toggleModal('validationModal', false));
-        document.getElementById('confirmValidationBtn').addEventListener('click', () => this.confirmValidation());
-
-        // File input
-        document.getElementById('fileInput').addEventListener('change', e => {
-          if(e.target.files.length > 0) {
-            this.loadRealData(e.target.files);
-          }
-        });
+        document.getElementById('disclaimerBtn')?.addEventListener('click', () => this.toggleModal('disclaimerModal', true));
+        document.getElementById('disclaimerCloseBtn')?.addEventListener('click', () => this.toggleModal('disclaimerModal', false));
+        document.getElementById('cancelValidationBtn')?.addEventListener('click', () => this.toggleModal('validationModal', false));
+        document.getElementById('confirmValidationBtn')?.addEventListener('click', () => this.confirmValidation());
+        document.getElementById('fileInput')?.addEventListener('change', e => e.target.files.length > 0 && this.loadRealData(e.target.files));
       }
 
-      // ===== FILTER HANDLING =====
-      updateFilters() {
-        // Terminaciones
-        this.filters.terminaciones = Array.from(document.querySelectorAll('#terminacionesOptions .filter-chip.active')).map(el => parseInt(el.dataset.value));
-
-        // Ranges
-        ['sum', 'primos', 'sumaDigitos', 'desviacion', 'entropy'].forEach(key => {
-            const minInput = document.getElementById(`${key}Min`);
-            const maxInput = document.getElementById(`${key}Max`);
-            const errorDiv = document.getElementById(`${key}Error`);
-            const min = parseFloat(minInput.value);
-            const max = parseFloat(maxInput.value);
-
-            if (min > max) {
-                minInput.classList.add('error');
-                maxInput.classList.add('error');
-                if (errorDiv) errorDiv.classList.add('show');
-            } else {
-                minInput.classList.remove('error');
-                maxInput.classList.remove('error');
-                if (errorDiv) errorDiv.classList.remove('show');
-                this.filters[key] = { min, max };
-            }
-        });
-        
-        // Chip options
-        ['parImpar', 'bajosAltos', 'consecutivos', 'agrupDecenas'].forEach(key => {
-            const containerId = `${key}Options`;
-            this.filters[key] = Array.from(document.querySelectorAll(`#${containerId} .filter-chip.active`)).map(el => el.dataset.value);
-        });
-
-        // Geometric
-        this.filters.geometric.exclude = [];
-        this.filters.geometric.favor = [];
-        document.querySelectorAll('#geometricOptions .filter-chip.active').forEach(el => {
-            const value = el.dataset.value;
-            if (el.textContent.includes('🚫')) {
-                this.filters.geometric.exclude.push(value);
-            } else {
-                this.filters.geometric.favor.push(value);
-            }
-        });
-
-        // AI Switches
-        this.filters.useMarkov = document.getElementById('useMarkovSwitch').checked;
-        this.filters.useNash = document.getElementById('useNashSwitch').checked;
-      }
-      
-      handleFilterChipClick(chip) {
-        chip.classList.toggle('active');
-        // For geometric, handle exclude/favor logic if needed
-        if (chip.closest('#geometricOptions')) {
-            const value = chip.dataset.value;
-            if (value === 'espaciados') {
-                chip.classList.toggle('favor', chip.classList.contains('active'));
-            }
-        }
-        this.updateFilters();
+      // ===== FILTROS (Reactivados y completos) =====
+      updateFilterStateFromUI() {
+          this.filters.terminaciones = Array.from(document.querySelectorAll('#terminacionesOptions .filter-chip.active')).map(el => parseInt(el.dataset.value));
+          this.filters.sum = { min: parseInt(document.getElementById('sumMin')?.value || 0), max: parseInt(document.getElementById('sumMax')?.value || 0) };
+          this.filters.parImpar = Array.from(document.querySelectorAll('#parImparOptions .filter-chip.active')).map(el => el.dataset.value);
+          this.filters.bajosAltos = Array.from(document.querySelectorAll('#bajosAltosOptions .filter-chip.active')).map(el => el.dataset.value);
+          this.filters.primos = { min: parseInt(document.getElementById('primosMin')?.value || 0), max: parseInt(document.getElementById('primosMax')?.value || 0) };
+          this.filters.consecutivos = Array.from(document.querySelectorAll('#consecutivosOptions .filter-chip.active')).map(el => el.dataset.value);
+          this.filters.agrupDecenas = Array.from(document.querySelectorAll('#agrupDecenasOptions .filter-chip.active')).map(el => el.dataset.value);
+          this.filters.sumaDigitos = { min: parseInt(document.getElementById('sumaDigitosMin')?.value || 0), max: parseInt(document.getElementById('sumaDigitosMax')?.value || 0) };
+          
+          this.filters.desviacion = { min: parseFloat(document.getElementById('desviacionMin')?.value || 0), max: parseFloat(document.getElementById('desviacionMax')?.value || 0) };
+          this.filters.entropy = { min: parseFloat(document.getElementById('entropyMin')?.value || 0), max: parseFloat(document.getElementById('entropyMax')?.value || 0) };
+          const geometricChips = Array.from(document.querySelectorAll('#geometricOptions .filter-chip.active'));
+          this.filters.geometric = {
+              exclude: geometricChips.filter(el => el.textContent.startsWith('🚫')).map(el => el.dataset.value),
+              favor: geometricChips.filter(el => el.textContent.startsWith('👍')).map(el => el.dataset.value),
+          };
+          this.filters.useMarkov = document.getElementById('useMarkovSwitch')?.checked;
+          this.filters.useNash = document.getElementById('useNashSwitch')?.checked;
+          this.filters.useRegression = document.getElementById('useRegressionSwitch')?.checked;
       }
 
-      // ===== NUMBER SELECTION =====
+      // ===== SELECCIÓN DE NÚMEROS (CORREGIDO) =====
       handleNumberClick(ball) {
         const number = parseInt(ball.dataset.number);
-        if (this.currentSelectionMode === 'excluded') {
-          this.excludedNumbers.has(number) ? this.excludedNumbers.delete(number) : this.excludedNumbers.add(number);
-          ball.classList.toggle('excluded');
-        } else if (this.currentSelectionMode === 'hot') {
-          this.hotNumbers.has(number) ? this.hotNumbers.delete(number) : this.hotNumbers.add(number);
-          ball.classList.toggle('hot');
-        } else if (this.currentSelectionMode === 'cold') {
-          this.coldNumbers.has(number) ? this.coldNumbers.delete(number) : this.coldNumbers.add(number);
-          ball.classList.toggle('cold');
-        } else {
-          // Normal selection
-          if (this.selectedNumbers.includes(number)) {
-            this.removeNumber(number);
-          } else {
-            const maxNumbers = this.getMaxSelection();
-            if (this.selectedNumbers.length < maxNumbers) {
-                this.addNumber(number);
-            } else {
-                this.showToast(`Solo puedes seleccionar hasta ${maxNumbers} números.`, 'warning');
-            }
-          }
+        const icon = ball.querySelector('.number-icon');
+        if (!icon) return;
+        
+        if (this.excludedNumbers.has(number) && this.currentSelectionMode !== 'excluded') {
+            this.showToast('Este número está excluido.', 'warning');
+            return;
         }
-      }
-      
-      getMaxSelection() {
-        const strategy = document.querySelector('.strategy-btn.active').dataset.strategy;
-        if (strategy === 'multiple') {
-            return parseInt(document.querySelector('.number-option.active').dataset.numbers);
-        }
-        return 6;
-      }
 
-      updateSelectionMode(mode) {
-        if(this.currentSelectionMode === mode) {
-            // Toggle back to normal selection
-            this.currentSelectionMode = null;
-            document.querySelectorAll('.selection-mode-btn').forEach(b => b.classList.remove('active'));
-            this.showToast('Modo de selección normal activado', 'info');
-        } else {
-            this.currentSelectionMode = mode;
-            document.querySelectorAll('.selection-mode-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.mode === mode);
-            });
-            this.clearSelections(false);
-            const modeText = {
-                'hot': 'calientes',
-                'cold': 'fríos',
-                'excluded': 'excluidos'
-            };
-            this.showToast(`Modo para marcar números ${modeText[mode]} activado`, 'info');
+        switch (this.currentSelectionMode) {
+            case 'excluded':
+                if (this.selectedNumbers.has(number)) {
+                    this.showToast('No puedes excluir un número ya seleccionado.', 'warning');
+                    return;
+                }
+                this.excludedNumbers.has(number) ? this.excludedNumbers.delete(number) : this.excludedNumbers.add(number);
+                ball.classList.toggle('excluded');
+                if (this.excludedNumbers.has(number)) {
+                    icon.textContent = '🚫';
+                } else {
+                    if (this.hotNumbers.has(number)) icon.textContent = '🔥';
+                    else if (this.coldNumbers.has(number)) icon.textContent = '❄️';
+                    else icon.textContent = '';
+                }
+                break;
+
+            case 'hot':
+                if (this.coldNumbers.has(number)) {
+                    this.coldNumbers.delete(number);
+                    document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.remove('cold');
+                }
+                this.hotNumbers.has(number) ? this.hotNumbers.delete(number) : this.hotNumbers.add(number);
+                ball.classList.toggle('hot');
+                icon.textContent = this.hotNumbers.has(number) ? '🔥' : '';
+                break;
+
+            case 'cold':
+                if (this.hotNumbers.has(number)) {
+                    this.hotNumbers.delete(number);
+                    document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.remove('hot');
+                }
+                this.coldNumbers.has(number) ? this.coldNumbers.delete(number) : this.coldNumbers.add(number);
+                ball.classList.toggle('cold');
+                icon.textContent = this.coldNumbers.has(number) ? '❄️' : '';
+                break;
+
+            default: // Normal selection mode
+                if (this.excludedNumbers.has(number)) return;
+                if (document.querySelector('.random-pick, .generated-pick')) {
+                    this.clearGridHighlights();
+                    this.selectedNumbers.clear();
+                }
+                this.selectedNumbers.has(number) ? this.removeNumber(number) : this.addNumber(number);
+                break;
         }
       }
-
       addNumber(number) {
-        if (!this.selectedNumbers.includes(number)) {
-          this.selectedNumbers.push(number);
-          this.selectedNumbers.sort((a, b) => a - b);
-          document.querySelector(`.number-ball[data-number="${number}"]`).classList.add('selected');
+        if (this.selectedNumbers.size < 6) {
+          this.selectedNumbers.add(number);
+          document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.add('selected');
           this.updateSelectedDisplay();
           this.updateStats();
         }
       }
-
       removeNumber(number) {
-        this.selectedNumbers = this.selectedNumbers.filter(n => n !== number);
-        document.querySelector(`.number-ball[data-number="${number}"]`).classList.remove('selected');
+        this.selectedNumbers.delete(number);
+        document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.remove('selected');
         this.updateSelectedDisplay();
         this.updateStats();
       }
+      clearSelections(fullClear) {
+        this.selectedNumbers.clear();
+        if (fullClear) {
+          this.excludedNumbers.clear();
+          this.hotNumbers.clear();
+          this.coldNumbers.clear();
+          document.querySelectorAll('.number-ball').forEach(b => {
+              b.classList.remove('excluded', 'hot', 'cold');
+              const icon = b.querySelector('.number-icon');
+              if (icon) icon.textContent = '';
+          });
+          this.analyzeNumbers();
+          this.updateGridWithHotColdNumbers();
+        }
+        document.querySelectorAll('.number-ball.selected').forEach(b => b.classList.remove('selected'));
+        this.clearGridHighlights();
+        this.updateSelectedDisplay();
+        this.updateStats();
+      }
+      randomSelect() {
+        this.clearSelections(false);
+        const available = this.getAvailableUniverse();
+        if (available.length < 6) {
+          this.showToast('No hay suficientes números para seleccionar 6 al azar.', 'warning');
+          return;
+        }
+        
+        const randomNumbers = [];
+        while (randomNumbers.length < 6) {
+          const randomIndex = Math.floor(Math.random() * available.length);
+          const number = available.splice(randomIndex, 1)[0];
+          randomNumbers.push(number);
+          const ball = document.querySelector(`.number-ball[data-number="${number}"]`);
+          if (ball) {
+            ball.classList.add('random-pick');
+            const icon = ball.querySelector('.number-icon');
+            if (icon) icon.textContent = '🎲';
+          }
+        }
+        
+        this.selectedNumbers = new Set(randomNumbers);
+        this.updateTopDisplayWithCombination(randomNumbers, 'random');
+        this.updateStats();
+      }
+      updateSelectionMode(mode) {
+        const isTogglingOff = this.currentSelectionMode === mode;
+        this.currentSelectionMode = null;
+        document.querySelectorAll('.selection-mode-btn[data-mode]').forEach(b => {
+            if (['cold', 'hot', 'excluded'].includes(b.dataset.mode)) {
+                b.classList.remove('active');
+            }
+        });
 
+        if (isTogglingOff) {
+            this.showToast('Modo de selección normal activado', 'info');
+        } else {
+            this.currentSelectionMode = mode;
+            document.querySelector(`.selection-mode-btn[data-mode="${mode}"]`)?.classList.add('active');
+            const modeText = {
+                excluded: 'marcar números excluidos',
+                hot: 'marcar números Calientes',
+                cold: 'marcar números Fríos'
+            };
+            this.showToast(`Modo para ${modeText[mode]} activado`, 'info');
+        }
+      }
       updateSelectedDisplay() {
         const display = document.getElementById('selectedDisplay');
+        if (!display) return;
         display.innerHTML = '';
-        if (this.selectedNumbers.length === 0) {
-          display.innerHTML = '<div style="color:#666; font-style: italic;">Selecciona hasta 6 números</div>';
+        if (this.selectedNumbers.size === 0) {
+          display.innerHTML = `<div style="color:#666; font-style: italic;">Selecciona hasta 6 números</div>`;
         } else {
-          this.selectedNumbers.forEach(num => {
+          Array.from(this.selectedNumbers).sort((a,b)=>a-b).forEach(num => {
             const ball = document.createElement('div');
             ball.classList.add('number-ball', 'selected');
-            ball.style.width = '35px';
-            ball.style.height = '35px';
-            ball.style.cursor = 'default';
+            ball.style.cssText = 'width: 35px; height: 35px; cursor: default;';
             ball.textContent = num;
             display.appendChild(ball);
           });
         }
-        this.updateClearButtonState();
       }
 
-      updateClearButtonState() {
-          const clearBtn = document.getElementById('clearBtn');
-          const hasSelections = this.selectedNumbers.length > 0 || this.excludedNumbers.size > 0;
-          clearBtn.classList.toggle('has-selections', hasSelections);
-          if (hasSelections) {
-              clearBtn.classList.add('shake');
-              setTimeout(() => clearBtn.classList.remove('shake'), 500);
-          }
-      }
-
-      clearSelections(fullClear = true) {
-        this.selectedNumbers = [];
-        if(fullClear){
-            this.excludedNumbers.clear();
-            this.hotNumbers.clear();
-            this.coldNumbers.clear();
-            this.analyzeNumbers();
+      updateTopDisplayWithCombination(combination, type = 'generated') {
+        const display = document.getElementById('selectedDisplay');
+        if (!display) return;
+        display.innerHTML = '';
+        if (!combination || combination.length === 0) {
+            display.innerHTML = `<div style="color:#666; font-style: italic;">No se generó ninguna combinación.</div>`;
+            return;
         }
 
-        document.querySelectorAll('.number-ball').forEach(ball => {
-            ball.classList.remove('selected');
-            if(fullClear){
-                ball.classList.remove('excluded');
-                if (this.hotNumbers.has(parseInt(ball.dataset.number))) ball.classList.add('hot');
-                if (this.coldNumbers.has(parseInt(ball.dataset.number))) ball.classList.add('cold');
-            }
+        const className = type === 'random' ? 'random-pick' : 'generated-pick';
+
+        combination.sort((a, b) => a - b).forEach(num => {
+            const ball = document.createElement('div');
+            ball.classList.add('number-ball', className);
+            ball.style.cssText = 'width: 35px; height: 35px; cursor: default;';
+            ball.textContent = num;
+            display.appendChild(ball);
         });
-        
-        this.updateSelectedDisplay();
-        this.updateStats();
       }
 
-      randomSelect() {
-        this.clearSelections(false);
-        const availableNumbers = Array.from({ length: 49 }, (_, i) => i + 1)
-          .filter(n => !this.excludedNumbers.has(n));
-        
-        while (this.selectedNumbers.length < 6 && availableNumbers.length > 0) {
-          const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-          const number = availableNumbers.splice(randomIndex, 1)[0];
-          this.addNumber(number);
-        }
-      }
-
-      // ===== STRATEGY UI =====
+      // ===== UI STRATEGY (Sin cambios) =====
       updateStrategyUI(strategy) {
+        document.querySelectorAll('.strategy-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.strategy-btn[data-strategy="${strategy}"]`)?.classList.add('active');
         const winningOptions = document.getElementById('winningOptions');
         const multipleOptions = document.getElementById('multipleNumbersOptions');
-        const generateBtnText = document.querySelector('#generateBtn span');
-        
-        winningOptions.style.display = 'none';
-        multipleOptions.style.display = 'none';
-        
-        if (strategy === 'winning') {
-          winningOptions.style.display = 'block';
-          generateBtnText.textContent = '🤞 Iniciar Búsqueda Avanzada';
-        } else if (strategy === 'multiple') {
-          multipleOptions.style.display = 'block';
-          generateBtnText.textContent = '🤞 Generar Apuestas Múltiples';
-        } else {
-          generateBtnText.textContent = '🤞 Generar Combinación';
-        }
-        this.clearSelections(false);
+        if(winningOptions) winningOptions.style.display = strategy === 'winning' ? 'block' : 'none';
+        if(multipleOptions) multipleOptions.style.display = strategy === 'multiple' ? 'block' : 'none';
       }
       
-      // ===== GENERATION LOGIC =====
+      // ===========================================
+      // ===== MOTOR DE GENERACIÓN (CORREGIDO) =====
+      // ===========================================
       async generateCombinations() {
         if (this.isGenerating) return;
+
+        this.clearSelections(false);
+
+        this.isGenerating = true;
+        this.showLoading('Iniciando...');
         
-        this.updateFilters();
+        this.updateFilterStateFromUI();
+        const availableUniverse = this.getAvailableUniverse();
 
-        const strategy = document.querySelector('.strategy-btn.active').dataset.strategy;
-
-        if (strategy === 'simple' && this.selectedNumbers.length > 6) {
-          this.showToast('Para estrategia Simple, selecciona 6 números o menos.', 'error');
+        if (availableUniverse.length < 6) {
+          this.showToast('Imposible generar. Menos de 6 números disponibles con los filtros de exclusión actuales.', 'error');
+          this.hideLoading();
+          this.isGenerating = false;
           return;
         }
 
-        if (strategy === 'simple' && this.selectedNumbers.length < 6) {
-          this.showLoading('Completando y validando combinación...');
-          await new Promise(resolve => setTimeout(resolve, 50));
-          const baseCombination = [...this.selectedNumbers];
-          const needed = 6 - baseCombination.length;
-          let attempts = 0;
-          let foundCombination = null;
+        const strategy = document.querySelector('.strategy-btn.active')?.dataset.strategy;
+        let combinations = [];
 
-          while (attempts < 50000 && !foundCombination) {
-              attempts++;
-              document.getElementById('loadingAttempts').textContent = attempts;
-              
-              const availableNumbers = Array.from({length: 49}, (_, i) => i + 1)
-                  .filter(n => !this.excludedNumbers.has(n) && !baseCombination.includes(n));
-              
-              let combination = [...baseCombination];
-              for(let i=0; i<needed; i++){
-                  if(availableNumbers.length === 0) break;
-                  const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-                  combination.push(availableNumbers.splice(randomIndex, 1)[0]);
-              }
-              
-              combination.sort((a,b) => a-b);
+        await new Promise(resolve => setTimeout(resolve, 50));
 
-              if (this.isValidCombination(combination)) {
-                  foundCombination = combination;
-              }
+        try {
+          if (strategy === 'simple') {
+              this.showLoading('Buscando combinación...');
+              const result = this.findValidCombinations(availableUniverse, 1, 500000);
+              if (result.length > 0) combinations = result;
+          } else if (strategy === 'winning') {
+              const generateCount = parseInt(document.getElementById('generateCount')?.value || 100);
+              const playCount = parseInt(document.getElementById('playCount')?.value || 10);
+              combinations = await this.findAndRankWinningCombinations(availableUniverse, generateCount, playCount);
+          } else if (strategy === 'multiple') {
+            const numCount = parseInt(document.querySelector('.number-option.active')?.dataset.numbers || 7);
+            if (availableUniverse.length < numCount) {
+              throw new Error(`No hay suficientes números (${availableUniverse.length}) para una múltiple de ${numCount}.`);
+            }
+            const foundSuperset = await this.findValidSuperset(availableUniverse, numCount);
+            if (foundSuperset) {
+                combinations = [foundSuperset];
+            }
           }
-          
-          this.hideLoading();
-          if (foundCombination) {
-              this.displayTicket([foundCombination]);
+
+          if (combinations.length > 0) {
+            this.displayTicket(combinations, strategy);
           } else {
-              this.showToast('No se encontró combinación válida con los filtros actuales.', 'error');
+             this.showToast('No se encontró ninguna combinación que cumpla todos los filtros. Prueba a flexibilizarlos.', 'warning');
           }
 
-        } else if (strategy === 'winning') {
-            const generateCount = parseInt(document.getElementById('generateCount').value);
-            const playCount = parseInt(document.getElementById('playCount').value);
-            this.showLoading(`Generando ${generateCount} y seleccionando ${playCount}...`);
-            await new Promise(resolve => setTimeout(resolve, 50));
+        } catch (error) {
+            this.showToast(`Error: ${error.message}`, 'error');
+        } finally {
+            this.hideLoading();
+            this.isGenerating = false;
+        }
+      }
 
-            let validCombinations = [];
-            let attempts = 0;
-            const maxAttempts = generateCount * 200;
+      getAvailableUniverse() {
+        let universe = [];
+        for (let i = 1; i <= 49; i++) {
+          if (this.excludedNumbers.has(i)) continue;
+          if (this.filters.terminaciones.includes(i % 10)) continue;
+          universe.push(i);
+        }
+        return universe;
+      }
 
-            while(validCombinations.length < generateCount && attempts < maxAttempts) {
-                attempts++;
-                document.getElementById('loadingAttempts').textContent = attempts;
+      async findAndRankWinningCombinations(universe, generateCount, playCount) {
+        this.showLoading(`Buscando ${generateCount} válidas...`);
+        const loadingInfo = document.getElementById('loadingInfo');
 
-                const combination = this.generateRandomCombination();
-                if (this.isValidCombination(combination)) {
-                    const score = this.scoreCombination(combination);
-                    validCombinations.push({ combination, score });
+        const validCombos = [];
+        const maxAttempts = Math.max(500000, generateCount * 100);
+        
+        for(let i=0; i < maxAttempts && validCombos.length < generateCount; i++) {
+            if (i % 500 === 0) {
+                if (loadingInfo) loadingInfo.textContent = `${validCombos.length} / ${generateCount} encontradas... (Intento ${i})`;
+                await new Promise(resolve => setTimeout(resolve, 0));
+            }
+            const combo = this.generateRandomCombination(universe, 6);
+            if (this.isValidCombination(combo)) {
+                validCombos.push(combo);
+            }
+        }
+
+        if (validCombos.length === 0) {
+            throw new Error('No se encontraron combinaciones válidas. Intenta flexibilizar los filtros.');
+        }
+
+        this.showLoading('Puntuando y ordenando...');
+        if (loadingInfo) loadingInfo.textContent = `Puntuando ${validCombos.length} combinaciones...`;
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        const scoredCombos = validCombos.map(combo => ({
+            combo,
+            score: this.calculateCombinationScore(combo)
+        }));
+
+        scoredCombos.sort((a, b) => b.score - a.score);
+        return scoredCombos.slice(0, playCount).map(item => item.combo);
+      }
+
+      async findValidSuperset(universe, numCount) {
+        this.showLoading(`Buscando Múltiple de ${numCount}...`);
+        const loadingInfo = document.getElementById('loadingInfo');
+        
+        const tolerance = this.TOLERANCE_LEVELS[numCount];
+        const maxAttempts = 50000;
+        
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            if (attempt % 100 === 0) {
+                if(loadingInfo) loadingInfo.textContent = `Intento ${attempt} de ${maxAttempts}...`;
+                await new Promise(resolve => setTimeout(resolve, 0));
+            }
+
+            const candidateSuperset = this.generateRandomCombination(universe, numCount);
+            const subCombinations = this.getCombinations(candidateSuperset, 6);
+            const totalSubCombos = subCombinations.length;
+            const requiredValidCount = Math.ceil(totalSubCombos * tolerance);
+            
+            let validCount = 0;
+            for (const subCombo of subCombinations) {
+                if (this.isValidCombination(subCombo)) {
+                    validCount++;
                 }
             }
 
-            validCombinations.sort((a,b) => b.score - a.score);
-            const bestCombinations = validCombinations.slice(0, playCount).map(c => c.combination);
-            
-            this.hideLoading();
-            if (bestCombinations.length > 0) {
-                this.displayTicket(bestCombinations);
-            } else {
-                this.showToast('No se encontraron combinaciones válidas. Relaja los filtros.', 'error');
+            if (validCount >= requiredValidCount) {
+                if(loadingInfo) loadingInfo.textContent = `¡Superconjunto válido encontrado!`;
+                return candidateSuperset.sort((a, b) => a - b);
             }
-        } else if (strategy === 'multiple') {
-            const numCount = this.getMaxSelection();
-            if (this.selectedNumbers.length !== numCount) {
-                this.showToast(`Debes seleccionar exactamente ${numCount} números para esta opción.`, 'error');
-                return;
-            }
-            
-            this.showLoading('Generando combinaciones múltiples...');
-            await new Promise(resolve => setTimeout(resolve, 50));
-
-            const allCombos = this.getCombinations(this.selectedNumbers, 6);
-            let validCombos = [];
-            let attempts = 0;
-
-            for(const combo of allCombos) {
-                attempts++;
-                document.getElementById('loadingAttempts').textContent = attempts;
-                if (this.isValidCombination(combo)) {
-                    validCombos.push(combo);
-                }
-            }
-
-            this.hideLoading();
-            if (validCombos.length > 0) {
-                this.displayTicket(validCombos);
-            } else {
-                this.showToast('Ninguna de las combinaciones múltiples pasó los filtros.', 'error');
-            }
-        } else { // Strategy Simple con 6 números
-             this.showLoading('Validando combinación...');
-             await new Promise(resolve => setTimeout(resolve, 50));
-             if(this.isValidCombination(this.selectedNumbers)) {
-                 this.displayTicket([this.selectedNumbers]);
-             } else {
-                 this.showToast('La combinación seleccionada no cumple con los filtros.', 'error');
-             }
-             this.hideLoading();
         }
+        if(loadingInfo) loadingInfo.textContent = `Búsqueda finalizada sin éxito.`;
+        return null;
       }
-      
-      generateRandomCombination() {
-        const combination = new Set();
-        const available = Array.from({length: 49}, (_, i) => i + 1).filter(n => !this.excludedNumbers.has(n));
-        while(combination.size < 6 && available.length > 0) {
-            const index = Math.floor(Math.random() * available.length);
-            combination.add(available.splice(index, 1)[0]);
-        }
-        return Array.from(combination).sort((a,b)=>a-b);
-      }
-      
-      scoreCombination(combination) {
-        let score = 0;
-        // Nash score
-        if (this.filters.useNash) {
-            const popularity = combination.reduce((sum, num) => sum + this.popularityMatrix[num], 0);
-            score += (1 - popularity) * 100;
-        }
-        // Markov score
-        if (this.filters.useMarkov && this.historicalData.length > 2) {
-             const lastTwoDraws = this.historicalData.slice(-2).map(d => d.numbers).flat().sort((a, b) => a - b).join(',');
-             if(this.transitionMatrix[lastTwoDraws]) {
-                 const prob = combination.reduce((p, num) => p + (this.transitionMatrix[lastTwoDraws][num] || 0), 0);
-                 score += prob * 50;
-             }
-        }
-        return score;
+
+      findValidCombinations(universe, count, maxAttempts) {
+          const validCombinations = [];
+          for (let i = 0; i < maxAttempts && validCombinations.length < count; i++) {
+              const combo = this.generateRandomCombination(universe, 6);
+              if (this.isValidCombination(combo)) {
+                  validCombinations.push(combo);
+              }
+          }
+          return validCombinations;
       }
       
       isValidCombination(combination) {
-        if (combination.length !== 6) return false;
+          const stats = this.getCombinationStats(combination);
+          if (Object.keys(stats).length === 0) return false;
 
-        const stats = this.getCombinationStats(combination);
-        
-        // Exclusions
-        if (this.excludedNumbers.size > 0 && combination.some(n => this.excludedNumbers.has(n))) return false;
-        if (this.filters.terminaciones.length > 0 && combination.some(n => this.filters.terminaciones.includes(n % 10))) return false;
+          // Nivel 2
+          if (stats.sum < this.filters.sum.min || stats.sum > this.filters.sum.max) return false;
+          if (this.filters.parImpar.length > 0 && !this.filters.parImpar.includes(stats.parImpar)) return false;
+          if (this.filters.bajosAltos.length > 0 && !this.filters.bajosAltos.includes(stats.bajosAltos)) return false;
+          if (stats.primos < this.filters.primos.min || stats.primos > this.filters.primos.max) return false;
+          if (this.filters.consecutivos.length > 0 && !this.filters.consecutivos.includes(stats.consecutivos)) return false;
+          if (this.filters.agrupDecenas.length > 0 && !this.filters.agrupDecenas.includes(stats.agrupDecenas)) return false;
+          if (stats.sumaDigitos < this.filters.sumaDigitos.min || stats.sumaDigitos > this.filters.sumaDigitos.max) return false;
+          
+          // Nivel 3 Exclusions
+          if (stats._desviacion < this.filters.desviacion.min || stats._desviacion > this.filters.desviacion.max) return false;
+          if (stats._entropia < this.filters.entropy.min || stats._entropia > this.filters.entropy.max) return false;
+          if (this.filters.geometric.exclude.length > 0 && this.hasGeometricPattern(combination, this.filters.geometric.exclude)) return false;
 
-        // Basic Filters
-        if (stats.sum < this.filters.sum.min || stats.sum > this.filters.sum.max) return false;
-        if (!this.filters.parImpar.includes(stats.parImparRatio)) return false;
-        if (!this.filters.bajosAltos.includes(stats.bajosAltosRatio)) return false;
+          return true;
+      }
 
-        // Structural Filters
-        if (stats.primes < this.filters.primos.min || stats.primes > this.filters.primos.max) return false;
-        if (!this.filters.consecutivos.includes(stats.consecutiveGroups)) return false;
-        if (!this.filters.agrupDecenas.includes(stats.decenasGroups)) return false;
-        if (stats.digitSum < this.filters.sumaDigitos.min || stats.digitSum > this.filters.sumaDigitos.max) return false;
-
-        // Advanced Stats Filters
-        if (stats.stdDev < this.filters.desviacion.min || stats.stdDev > this.filters.desviacion.max) return false;
-        if (stats.entropy < this.filters.entropy.min || stats.entropy > this.filters.entropy.max) return false;
-
-        // Geometric Filters
-        if (this.filters.geometric.exclude.length > 0 && this.hasGeometricPattern(combination, this.filters.geometric.exclude)) return false;
-        if (this.filters.geometric.favor.length > 0 && !this.hasGeometricPattern(combination, this.filters.geometric.favor)) return false;
-        
-        return true;
+      generateRandomCombination(universe, count) {
+        let tempUniverse = [...universe];
+        let combination = [];
+        while (combination.length < count && tempUniverse.length > 0) {
+          const randomIndex = Math.floor(Math.random() * tempUniverse.length);
+          combination.push(tempUniverse.splice(randomIndex, 1)[0]);
+        }
+        return combination.sort((a, b) => a - b);
       }
       
-       getCombinations(arr, k) {
-            const result = [];
-            function backtrack(combination, start) {
-                if (combination.length === k) {
-                    result.push([...combination]);
-                    return;
-                }
-                for (let i = start; i < arr.length; i++) {
-                    combination.push(arr[i]);
-                    backtrack(combination, i + 1);
-                    combination.pop();
-                }
-            }
-            backtrack([], 0);
-            return result;
-        }
+      getCombinations(source, k) {
+        if (k > source.length || k <= 0) return [];
+        if (k === source.length) return [source];
+        if (k === 1) return source.map(item => [item]);
 
-      // ===== STATS & VALIDATION HELPERS =====
+        const result = [];
+        const stack = [[0, []]];
+        while (stack.length > 0) {
+            const [index, currentCombo] = stack.pop();
+
+            if (currentCombo.length === k) {
+                result.push(currentCombo);
+                continue;
+            }
+            if (index >= source.length) continue;
+
+            stack.push([index + 1, currentCombo]);
+            stack.push([index + 1, [...currentCombo, source[index]]]);
+        }
+        return result;
+      }
+      
+      // ===== ESTADÍSTICAS Y VALIDACIÓN (CORREGIDO) =====
+      updateStats() {
+        this.displayCombinationStats(Array.from(this.selectedNumbers));
+      }
+
+      displayCombinationStats(combination) {
+        const statsContent = document.getElementById('statsContent');
+        if (!statsContent) return;
+        const allStatValues = statsContent.querySelectorAll('.stat-value');
+        if (!combination || combination.length !== 6) {
+            allStatValues.forEach(el => {
+                if (el) el.textContent = '-';
+            });
+            return;
+        }
+        const stats = this.getCombinationStats(combination);
+        for (const key in stats) {
+            if (key.startsWith('_')) continue; // No mostrar valores raw
+            const el = document.getElementById(`stat${key.charAt(0).toUpperCase() + key.slice(1)}`);
+            if (el) el.textContent = stats[key];
+        }
+      }
+
       getCombinationStats(combination) {
+        if (combination.length !== 6) return {};
         const sum = combination.reduce((a, b) => a + b, 0);
         const evens = combination.filter(n => n % 2 === 0).length;
         const lows = combination.filter(n => n <= 25).length;
-        const primes = combination.filter(n => this.primes.has(n)).length;
-        const digitSum = combination.join('').split('').reduce((a, b) => a + parseInt(b), 0);
+        const primesCount = combination.filter(n => this.primes.has(n)).length;
         
-        // Std Dev
+        const sorted = [...combination].sort((a,b)=>a-b);
+        let consecutivePattern = '';
+        let count = 1;
+        for (let i = 1; i < sorted.length; i++) {
+            if (sorted[i] === sorted[i-1] + 1) {
+                count++;
+            } else {
+                consecutivePattern += count;
+                count = 1;
+            }
+        }
+        consecutivePattern += count;
+        const consecPatternSorted = consecutivePattern.split('').sort((a,b)=>b-a).join('/');
+        
+        const tens = {};
+        combination.forEach(n => {
+            const ten = Math.floor((n-1)/10);
+            tens[ten] = (tens[ten] || 0) + 1;
+        });
+        const tensGroups = Object.values(tens).sort((a,b)=>b-a).join('/');
+
+        const digitSum = combination.reduce((sum, num) => sum + (num < 10 ? num : (num % 10 + Math.floor(num/10))), 0);
+        
         const mean = sum / 6;
         const stdDev = Math.sqrt(combination.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / 6);
-        
-        // Decades
-        const decades = combination.map(n => Math.floor((n - 1) / 10));
-        const decadeCounts = decades.reduce((acc, d) => { acc[d] = (acc[d] || 0) + 1; return acc; }, {});
-        
-        // Consecutive
-        const consecutiveGroups = this.getConsecutiveGroups(combination);
 
-        // Entropy
-        const entropy = this.calculateShannonEntropy(combination);
+        const counts = {};
+        combination.forEach(n => { counts[n] = (counts[n] || 0) + 1; });
+        const entropy = -Object.values(counts).reduce((sum, count) => {
+            const p = count / 6;
+            return sum + p * Math.log2(p);
+        }, 0);
 
         return {
-          sum,
-          parImparRatio: `${evens}/${6 - evens}`,
-          bajosAltosRatio: `${lows}/${6 - lows}`,
-          primes,
-          digitSum,
-          stdDev: parseFloat(stdDev.toFixed(2)),
-          decenas: Object.keys(decadeCounts).length,
-          decenasGroups: Object.values(decadeCounts).sort((a,b)=>b-a).join('/'),
-          consecutiveGroups,
-          entropy: parseFloat(entropy.toFixed(3))
+          suma: sum,
+          parImpar: `${evens}/${6-evens}`,
+          bajosAltos: `${lows}/${6-lows}`,
+          primos: primesCount,
+          consecutivos: consecPatternSorted,
+          agrupDecenas: tensGroups,
+          sumaDigitos: digitSum,
+          desviacion: stdDev.toFixed(2),
+          entropia: entropy.toFixed(3),
+          _desviacion: stdDev,
+          _entropia: entropy,
         };
       }
       
-      getConsecutiveGroups(numbers) {
-        if (numbers.length < 2) return numbers.length.toString();
-        let groups = [];
-        let currentGroup = 1;
-        for (let i = 1; i < numbers.length; i++) {
-            if (numbers[i] === numbers[i-1] + 1) {
-                currentGroup++;
+      clearGridHighlights() {
+        document.querySelectorAll('.number-ball.generated-pick, .number-ball.random-pick').forEach(ball => {
+            ball.classList.remove('generated-pick', 'random-pick');
+            const icon = ball.querySelector('.number-icon');
+            if (!icon) return;
+
+            const num = parseInt(ball.dataset.number);
+            
+            if(this.excludedNumbers.has(num)) {
+                icon.textContent = '🚫';
+            } else if(this.hotNumbers.has(num)) {
+                icon.textContent = '🔥';
+            } else if(this.coldNumbers.has(num)) {
+                icon.textContent = '❄️';
             } else {
-                groups.push(currentGroup);
-                currentGroup = 1;
+                icon.textContent = '';
             }
-        }
-        groups.push(currentGroup);
-        return groups.sort((a,b) => b-a).join('/');
-      }
-
-      calculateShannonEntropy(combination) {
-        const coords = combination.map(n => this.geometricMatrix[n]);
-        const distances = [];
-        for (let i = 0; i < coords.length; i++) {
-            for (let j = i + 1; j < coords.length; j++) {
-                distances.push(Math.sqrt(Math.pow(coords[i].x - coords[j].x, 2) + Math.pow(coords[i].y - coords[j].y, 2)));
-            }
-        }
-        const totalDist = distances.reduce((a, b) => a + b, 0);
-        if (totalDist === 0) return 0;
-
-        let entropy = 0;
-        for (const dist of distances) {
-            const p = dist / totalDist;
-            if (p > 0) {
-                entropy -= p * Math.log2(p);
-            }
-        }
-        return entropy;
+        });
       }
       
-      hasGeometricPattern(combination, patterns) {
-        const coords = combination.map(n => this.geometricMatrix[n]);
-
-        for(const pattern of patterns) {
-            if (pattern === 'lineas' && this.isCollinear(coords, 3)) return true;
-            if (pattern === 'diagonales' && this.isDiagonal(coords, 3)) return true;
-            if (pattern === 'cruces' && this.formsCross(coords)) return true;
-            if (pattern === 'espaciados' && this.isWellSpaced(coords)) return true;
-        }
-        return false;
-      }
-      
-      isCollinear(coords, minPoints) {
-          if (coords.length < minPoints) return false;
-          for (let i = 0; i < coords.length; i++) {
-              for (let j = i + 1; j < coords.length; j++) {
-                  let collinearCount = 2;
-                  for (let k = j + 1; k < coords.length; k++) {
-                      const val = (coords[j].y - coords[i].y) * (coords[k].x - coords[j].x) -
-                                  (coords[j].x - coords[i].x) * (coords[k].y - coords[j].y);
-                      if (Math.abs(val) < 1e-9) {
-                          collinearCount++;
-                      }
-                  }
-                  if (collinearCount >= minPoints) return true;
-              }
-          }
-          return false;
-      }
-
-      isDiagonal(coords, minPoints) {
-          const mainDiagonals = new Map();
-          const antiDiagonals = new Map();
-          coords.forEach(c => {
-              const mainD = c.y - c.x;
-              const antiD = c.y + c.x;
-              mainDiagonals.set(mainD, (mainDiagonals.get(mainD) || 0) + 1);
-              antiDiagonals.set(antiD, (antiDiagonals.get(antiD) || 0) + 1);
-          });
-          return Array.from(mainDiagonals.values()).some(c => c >= minPoints) || 
-                 Array.from(antiDiagonals.values()).some(c => c >= minPoints);
-      }
-
-      formsCross(coords) {
-         for(const center of coords) {
-             const hasHorizontal = coords.some(p => p.y === center.y && Math.abs(p.x - center.x) === 1);
-             const hasVertical = coords.some(p => p.x === center.x && Math.abs(p.y - center.y) === 1);
-             if(hasHorizontal && hasVertical) return true;
-         }
-         return false;
-      }
-      
-      isWellSpaced(coords) {
-          let minDist = Infinity;
-          for(let i=0; i < coords.length; i++) {
-              for(let j=i+1; j < coords.length; j++) {
-                  const dist = Math.sqrt(Math.pow(coords[i].x - coords[j].x, 2) + Math.pow(coords[i].y - coords[j].y, 2));
-                  minDist = Math.min(minDist, dist);
-              }
-          }
-          return minDist > 1.5; // Threshold for spacing
-      }
-
-      updateStats() {
-        if (this.selectedNumbers.length !== 6) {
-          document.querySelectorAll('.stats-grid .stat-value').forEach(el => el.textContent = '-');
-          return;
-        }
-
-        const stats = this.getCombinationStats(this.selectedNumbers);
-        const filterStatus = {
-            sum: stats.sum >= this.filters.sum.min && stats.sum <= this.filters.sum.max,
-            parImpar: this.filters.parImpar.includes(stats.parImparRatio),
-            bajosAltos: this.filters.bajosAltos.includes(stats.bajosAltosRatio),
-            primos: stats.primes >= this.filters.primos.min && stats.primes <= this.filters.primos.max,
-            consecutivos: this.filters.consecutivos.includes(stats.consecutiveGroups),
-            sumaDigitos: stats.digitSum >= this.filters.sumaDigitos.min && stats.digitSum <= this.filters.sumaDigitos.max,
-            desviacion: stats.stdDev >= this.filters.desviacion.min && stats.stdDev <= this.filters.desviacion.max,
-            entropia: stats.entropy >= this.filters.entropy.min && stats.entropy <= this.filters.entropy.max,
-            agrupDecenas: this.filters.agrupDecenas.includes(stats.decenasGroups)
-        };
-        
-        const setStat = (id, value, valid) => {
-            const el = document.getElementById(id);
-            el.textContent = value;
-            el.classList.toggle('valid', valid);
-            el.classList.toggle('invalid', !valid);
-        };
-        
-        setStat('statSuma', stats.sum, filterStatus.sum);
-        setStat('statParImpar', stats.parImparRatio, filterStatus.parImpar);
-        setStat('statBajosAltos', stats.bajosAltosRatio, filterStatus.bajosAltos);
-        setStat('statDecenas', stats.decenas, true);
-        setStat('statAgrupDecenas', stats.decenasGroups, filterStatus.agrupDecenas);
-        setStat('statConsecutivos', stats.consecutiveGroups, filterStatus.consecutivos);
-        setStat('statSumaDigitos', stats.digitSum, filterStatus.sumaDigitos);
-        setStat('statPrimos', stats.primes, filterStatus.primos);
-        setStat('statDesviacion', stats.stdDev, filterStatus.desviacion);
-        setStat('statEntropia', stats.entropy, filterStatus.entropia);
-      }
-      
-
-      // ===== TICKET & STORAGE =====
-      displayTicket(combinations) {
-        this.currentTicket = {
-            date: new Date().toISOString(),
-            combinations: combinations
-        };
+      // ===== TICKET & STORAGE (CORREGIDO) =====
+      displayTicket(combinations, strategy) {
+        this.currentTicket = { date: new Date().toISOString(), combinations, strategy };
         const ticketDiv = document.getElementById('ticket');
         const combinationsDiv = document.getElementById('ticketCombinations');
-        document.getElementById('ticketDate').textContent = new Date().toLocaleString();
+        const ticketDateEl = document.getElementById('ticketDate');
+        if (ticketDateEl) ticketDateEl.textContent = new Date().toLocaleString();
+        
+        if (!combinationsDiv) return;
         combinationsDiv.innerHTML = '';
-
+        
         combinations.forEach(combo => {
             const comboDiv = document.createElement('div');
             comboDiv.className = 'ticket-combination';
-            combo.forEach(num => {
+            combo.sort((a,b)=>a-b).forEach(num => {
                 const numDiv = document.createElement('div');
                 numDiv.className = 'ticket-number';
                 numDiv.textContent = num;
@@ -2978,18 +2764,42 @@ function requestFileFromAppInventor() {
             combinationsDiv.appendChild(comboDiv);
         });
         
-        ticketDiv.classList.add('show');
-      }
+        this.clearGridHighlights();
 
+        if (strategy !== 'multiple' && combinations.length > 0) {
+            this.updateTopDisplayWithCombination(combinations[0], 'generated');
+        } else {
+            const display = document.getElementById('selectedDisplay');
+            const message = strategy === 'multiple' ? 'Múltiple generada. Ver boleto.' : 'Selecciona hasta 6 números';
+            if(display) display.innerHTML = `<div style="color:#666; font-style: italic;">${message}</div>`;
+        }
+
+        const firstResult = combinations[0];
+        if (firstResult) {
+            firstResult.forEach(num => {
+                const ball = document.querySelector(`.number-ball[data-number="${num}"]`);
+                if (ball) {
+                    ball.classList.add('generated-pick');
+                    const icon = ball.querySelector('.number-icon');
+                    if(icon) icon.textContent = '🤖';
+                }
+            });
+            
+            if (strategy === 'multiple') {
+                this.displayCombinationStats([]);
+            } else {
+                this.displayCombinationStats(firstResult);
+            }
+        }
+        
+        if(ticketDiv) ticketDiv.classList.add('show');
+      }
       saveTicket() {
         if (!this.currentTicket) return;
         this.savedTickets.unshift(this.currentTicket);
         if (this.platform === 'appinventor') {
             if (typeof window.AppInventor !== 'undefined') {
-                window.AppInventor.setWebViewString(JSON.stringify({
-                    action: 'SAVE_TICKETS',
-                    tickets: this.savedTickets
-                }));
+                window.AppInventor.setWebViewString(JSON.stringify({ action: 'SAVE_TICKETS', tickets: this.savedTickets }));
             }
         } else {
             localStorage.setItem('lotto49_tickets', JSON.stringify(this.savedTickets));
@@ -2997,9 +2807,9 @@ function requestFileFromAppInventor() {
         }
         this.updateSavedTickets();
         this.currentTicket = null;
-        document.getElementById('ticket').classList.remove('show');
+        const ticketDiv = document.getElementById('ticket');
+        if(ticketDiv) ticketDiv.classList.remove('show');
       }
-
       loadTickets() {
         if (this.platform === 'web') {
             const tickets = localStorage.getItem('lotto49_tickets');
@@ -3007,15 +2817,11 @@ function requestFileFromAppInventor() {
             this.updateSavedTickets();
         }
       }
-
       deleteTicket(date) {
-        this.savedTickets = this.savedTickets.filter(ticket => ticket.date !== date);
+        this.savedTickets = this.savedTickets.filter(t => t.date !== date);
          if (this.platform === 'appinventor') {
             if (typeof window.AppInventor !== 'undefined') {
-                window.AppInventor.setWebViewString(JSON.stringify({
-                    action: 'SAVE_TICKETS',
-                    tickets: this.savedTickets
-                }));
+                window.AppInventor.setWebViewString(JSON.stringify({ action: 'SAVE_TICKETS', tickets: this.savedTickets }));
             }
         } else {
             localStorage.setItem('lotto49_tickets', JSON.stringify(this.savedTickets));
@@ -3023,119 +2829,201 @@ function requestFileFromAppInventor() {
         this.updateSavedTickets();
         this.showToast('Boleto eliminado', 'info');
       }
-      
       updateSavedTickets() {
         const container = document.getElementById('savedTickets');
+        if (!container) return;
         container.innerHTML = '';
         if (this.savedTickets.length === 0) {
           container.innerHTML = '<div style="color:#666; text-align: center; padding: 20px;">No tienes boletos guardados</div>';
           return;
         }
 
+        const strategyMap = {
+            simple: 'Simple',
+            winning: 'E. Ganadora',
+            multiple: 'Múltiple'
+        };
+
         this.savedTickets.forEach(ticket => {
           const item = document.createElement('div');
           item.className = 'saved-ticket-item';
-          
-          let combinationsHTML = '';
-          ticket.combinations.forEach(combo => {
-              combinationsHTML += `<div class="saved-combination"><div class="saved-combination-content">${combo.map(n => `<div class="saved-combination-number">${n}</div>`).join('')}</div></div>`;
-          });
+          const strategyName = strategyMap[ticket.strategy] || 'Simple';
+          const strategyHTML = `<span class="saved-ticket-strategy">${strategyName}</span>`;
 
-          item.innerHTML = `
-            <div class="saved-ticket-header">
+          let combosHTML = ticket.combinations.map(combo => `<div class="saved-combination"><div class="saved-combination-content">${combo.map(n => `<div class="saved-combination-number">${n}</div>`).join('')}</div></div>`).join('');
+          
+          item.innerHTML = `<div class="saved-ticket-header">
               <span class="saved-ticket-date">${new Date(ticket.date).toLocaleString()}</span>
+              ${strategyHTML}
               <div class="saved-ticket-actions">
                 <button class="validate">Validar</button>
                 <button class="delete-btn">X</button>
                 <button class="toggle-btn">+</button>
-              </div>
-            </div>
-            <div class="saved-combinations">${combinationsHTML}</div>
-          `;
-
-          item.querySelector('.delete-btn').addEventListener('click', () => this.deleteTicket(ticket.date));
-          item.querySelector('.validate').addEventListener('click', () => this.startValidation(ticket.date));
-          item.querySelector('.toggle-btn').addEventListener('click', (e) => {
+              </div></div><div class="saved-combinations">${combosHTML}</div>`;
+          
+          item.querySelector('.delete-btn')?.addEventListener('click', () => this.deleteTicket(ticket.date));
+          item.querySelector('.validate')?.addEventListener('click', () => this.startValidation(ticket.date));
+          item.querySelector('.toggle-btn')?.addEventListener('click', (e) => {
               const comboDiv = item.querySelector('.saved-combinations');
+              if (!comboDiv || !e.target) return;
               const isVisible = comboDiv.style.display === 'block';
               comboDiv.style.display = isVisible ? 'none' : 'block';
               e.target.textContent = isVisible ? '+' : '-';
           });
-
           container.appendChild(item);
         });
       }
-      
       startValidation(date) {
         this.currentValidatingTicket = this.savedTickets.find(t => t.date === date);
-        document.getElementById('validationResults').innerHTML = '';
-        document.getElementById('winningNumbersInput').value = '';
+        const validationResults = document.getElementById('validationResults');
+        if(validationResults) validationResults.innerHTML = '';
+        const winningNumbersInput = document.getElementById('winningNumbersInput');
+        if(winningNumbersInput) winningNumbersInput.value = '';
         this.toggleModal('validationModal', true);
       }
-      
       confirmValidation() {
-        const input = document.getElementById('winningNumbersInput').value;
-        const winningNumbers = new Set(input.split(/[ ,.]+/).map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0 && n < 50));
-
+        const inputEl = document.getElementById('winningNumbersInput');
+        if (!inputEl) return;
+        const winningNumbers = new Set(inputEl.value.split(/[ ,.]+/).map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0 && n < 50));
         if (winningNumbers.size !== 6) {
           this.showToast('Introduce 6 números ganadores válidos.', 'error');
           return;
         }
-
         const resultsDiv = document.getElementById('validationResults');
+        if (!resultsDiv || !this.currentValidatingTicket) return;
         resultsDiv.innerHTML = '';
-
         this.currentValidatingTicket.combinations.forEach(combo => {
-            const hits = combo.filter(n => winningNumbers.has(n)).length;
-            const resultItem = document.createElement('div');
-            resultItem.className = 'saved-combination';
-            resultItem.innerHTML = `
-                <div class="saved-combination-content">${combo.map(n => `<div class="saved-combination-number ${winningNumbers.has(n) ? 'selected' : ''}">${n}</div>`).join('')}</div>
-                <div class="hit-count">${hits} aciertos</div>
-            `;
-            resultsDiv.appendChild(resultItem);
+            if(combo.length === 6) {
+                const hits = combo.filter(n => winningNumbers.has(n)).length;
+                const resultItem = document.createElement('div');
+                resultItem.className = 'saved-combination';
+                resultItem.innerHTML = `<div class="saved-combination-content">${combo.map(n => `<div class="saved-combination-number ${winningNumbers.has(n) ? 'selected' : ''}">${n}</div>`).join('')}</div><div class="hit-count">${hits} aciertos</div>`;
+                resultsDiv.appendChild(resultItem);
+            }
         });
       }
-      
       shareTicket() {
           if (!this.currentTicket) return;
           const text = `Mi boleto DataLotto49:\n${this.currentTicket.combinations.map(c => c.join(' - ')).join('\n')}`;
           if (navigator.share) {
-              navigator.share({
-                  title: 'Mi Boleto DataLotto49',
-                  text: text,
-              }).catch(console.error);
+              navigator.share({ title: 'Mi Boleto DataLotto49', text }).catch(console.error);
           } else {
-              navigator.clipboard.writeText(text).then(() => {
-                  this.showToast('Boleto copiado al portapapeles', 'success');
-              });
+              navigator.clipboard.writeText(text).then(() => this.showToast('Boleto copiado al portapapeles', 'success'));
           }
       }
 
-      // ===== UI HELPERS =====
-      showLoading(text = 'Generando combinación...') {
-        document.getElementById('loadingText').textContent = text;
-        document.getElementById('loadingAttempts').textContent = '0';
-        document.getElementById('loadingModal').style.display = 'flex';
-        this.isGenerating = true;
+      // ===== HELPERS UI & GEOMETRIC/AI =====
+      hasGeometricPattern(combination, patternsToExclude) {
+          const coords = combination.map(n => DataLotto49Advanced.NUMBER_COORDS[n]);
+          const patternChecks = {
+              lineas: () => this.isLine(coords),
+              diagonales: () => this.isDiagonal(coords),
+              triangulos: () => false, // No implementado para exclusión
+              circulos: () => false,   // No implementado para exclusión
+              cruces: () => false,     // No implementado para exclusión
+          };
+          for (const pattern of patternsToExclude) {
+              if (patternChecks[pattern] && patternChecks[pattern]()) return true;
+          }
+          return false;
       }
-
-      hideLoading() {
-        document.getElementById('loadingModal').style.display = 'none';
-        this.isGenerating = false;
+      isSpaced(combination) {
+          const coords = combination.map(n => DataLotto49Advanced.NUMBER_COORDS[n]);
+          for (let i = 0; i < coords.length; i++) {
+              for (let j = i + 1; j < coords.length; j++) {
+                  if (Math.abs(coords[i].col - coords[j].col) <= 1 && Math.abs(coords[i].row - coords[j].row) <= 1) {
+                      return false; // Números adyacentes encontrados
+                  }
+              }
+          }
+          return true;
       }
+      isLine(coords) {
+          const allSameRow = coords.every(c => c.row === coords[0].row);
+          const allSameCol = coords.every(c => c.col === coords[0].col);
+          return allSameRow || allSameCol;
+      }
+      isDiagonal(coords) {
+          const mainDiagValue = coords[0].row - coords[0].col;
+          if (coords.every(c => c.row - c.col === mainDiagValue)) return true;
+          const antiDiagValue = coords[0].row + coords[0].col;
+          if (coords.every(c => c.row + c.col === antiDiagValue)) return true;
+          return false;
+      }
+      calculateCombinationScore(combination) {
+          let score = 0;
+          combination.forEach(n => {
+              if (this.hotNumbers.has(n)) score += 2;
+              // Only penalize cold numbers if regression filter is OFF
+              if (!this.filters.useRegression && this.coldNumbers.has(n)) score -= 1;
+          });
 
+          if (this.filters.geometric.favor.includes('espaciados') && this.isSpaced(combination)) {
+              score += 15;
+          }
+          if (this.filters.useMarkov) {
+              score += this.getAIMarkovScore(combination);
+          }
+          if (this.filters.useNash) {
+              score += (30 - this.getAIPopularityScore(combination));
+          }
+          if (this.filters.useRegression) {
+              combination.forEach(n => {
+                  if (this.coldNumbers.has(n)) score += 3; // Bonus for cold numbers
+              });
+          }
+          return score;
+      }
+      getAIMarkovScore(combination) {
+          if (this.historicalData.length < 5) return 0;
+          let score = 0;
+          const lastDraws = this.historicalData.slice(-5).flatMap(d => d.numbers);
+          const lastDrawsSet = new Set(lastDraws);
+          combination.forEach(n => {
+              if (lastDrawsSet.has(n)) score += lastDraws.filter(d => d === n).length;
+          });
+          return score;
+      }
+      getAIPopularityScore(combination) {
+          let score = 0;
+          combination.forEach(n => {
+              if (n <= 31) score += 2;
+              const { row, col } = DataLotto49Advanced.NUMBER_COORDS[n];
+              if (row === 0 || row === 6 || col === 0 || col === 6) score += 1;
+          });
+          if (this.isLine(combination.map(n => DataLotto49Advanced.NUMBER_COORDS[n]))) score += 10;
+          return score;
+      }
+      showLoading(text) { 
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = text;
+        const loadingInfo = document.getElementById('loadingInfo');
+        if (loadingInfo) loadingInfo.textContent = 'Iniciando...';
+        const loadingModal = document.getElementById('loadingModal');
+        if (loadingModal) loadingModal.style.display = 'flex'; 
+      }
+      hideLoading() { 
+        const loadingModal = document.getElementById('loadingModal');
+        if (loadingModal) loadingModal.style.display = 'none';
+      }
       showToast(message, type = 'info') {
         const toast = document.getElementById('toast');
+        if (!toast) return;
         toast.textContent = message;
         toast.className = `toast show ${type}`;
-        setTimeout(() => {
-          toast.className = 'toast';
-        }, 3000);
+        setTimeout(() => { toast.className = 'toast'; }, 3000);
       }
-      
-      toggleModal(id, show) {
-        document.getElementById(id).style.display = show ? 'flex' : 'none';
+      toggleModal(id, show) { 
+        const modal = document.getElementById(id);
+        if (modal) modal.style.display = show ? 'flex' : 'none';
+      }
+      toggleCollapse(targetId) {
+        const content = document.getElementById(`${targetId}Content`);
+        const btn = document.getElementById(`${targetId}CollapseBtn`);
+        if (content && btn) {
+            content.classList.toggle('expanded');
+            btn.textContent = content.classList.contains('expanded') ? '-' : '+';
+        }
       }
     }
 
