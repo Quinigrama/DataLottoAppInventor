@@ -99,15 +99,20 @@
       color: var(--gray);
       font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     }
+    
+    .header-actions {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        gap: 10px;
+    }
 
-    .disclaimer-btn {
-      position: absolute;
-      top: 15px;
-      right: 15px;
+    .header-btn {
       width: 32px;
       height: 32px;
-      border: 2px solid var(--warning);
-      background: var(--warning);
+      border: 2px solid;
+      background: transparent;
       color: white;
       border-radius: 50%;
       cursor: pointer;
@@ -116,14 +121,23 @@
       align-items: center;
       justify-content: center;
       transition: var(--transition);
-      animation: disclaimerPulse 2s infinite;
+    }
+    
+    .header-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    #disclaimerBtn {
+        border-color: var(--warning);
+        background: var(--warning);
+        animation: disclaimerPulse 2s infinite;
+    }
+    
+    #showTutorialBtn {
+        border-color: var(--info);
+        background: var(--info);
     }
 
-    .disclaimer-btn:hover {
-      background: #e68900;
-      border-color: #e68900;
-      transform: scale(1.1);
-    }
 
     @keyframes disclaimerPulse {
       0%, 100% { 
@@ -227,11 +241,23 @@
       background: #ffebee;
       color: #d32f2f;
     }
+    
+    .selection-mode-btn[data-mode="absent"] {
+      border-color: #607d8b;
+      background: #eceff1;
+      color: #455a64;
+    }
 
     .selection-mode-btn[data-mode="excluded"] {
       border-color: #9e9e9e;
       background: #f5f5f5;
       color: #616161;
+    }
+    
+    .selection-mode-btn[data-mode="figure"] {
+        border-color: #7e57c2;
+        background: #ede7f6;
+        color: #5e35b1;
     }
 
     .selection-mode-btn[data-mode="data"] {
@@ -266,11 +292,25 @@
       box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
     }
 
+    .selection-mode-btn.active[data-mode="absent"] {
+      border-color: #455a64;
+      background: #607d8b;
+      color: white;
+      box-shadow: 0 8px 25px rgba(96, 125, 139, 0.4);
+    }
+
     .selection-mode-btn.active[data-mode="excluded"] {
       border-color: #616161;
       background: #9e9e9e;
       color: white;
       box-shadow: 0 8px 25px rgba(158, 158, 158, 0.4);
+    }
+    
+    .selection-mode-btn.active[data-mode="figure"] {
+      border-color: #5e35b1;
+      background: #7e57c2;
+      color: white;
+      box-shadow: 0 8px 25px rgba(126, 87, 194, 0.4);
     }
 
     .selection-mode-btn.active[data-mode="data"] {
@@ -373,6 +413,11 @@
       animation: pulse 1.5s infinite;
     }
     
+    .number-ball.figure-selection {
+        background: rgba(126, 87, 194, 0.3);
+        border-color: #7e57c2;
+    }
+    
     .number-ball.generated-pick,
     .number-ball.random-pick {
         transform: scale(1.05);
@@ -405,6 +450,13 @@
       background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
       color: #0277bd;
       box-shadow: 0 0 10px rgba(3, 169, 244, 0.3);
+    }
+    
+    .number-ball.absent {
+      border-color: #78909c;
+      background: linear-gradient(135deg, #cfd8dc, #b0bec5);
+      color: #37474f;
+      box-shadow: 0 0 10px rgba(120, 144, 156, 0.3);
     }
 
     .number-ball.excluded {
@@ -440,6 +492,7 @@
 
     .number-ball.hot .number-icon { background: #ff5722; }
     .number-ball.cold .number-icon { background: #03a9f4; }
+    .number-ball.absent .number-icon { background: #78909c; }
     .number-ball.excluded .number-icon { background: #9e9e9e; }
     .number-ball.random-pick .number-icon { background: var(--warning); }
     .number-ball.generated-pick .number-icon { background: #7c3aed; }
@@ -506,6 +559,7 @@
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease-out;
+      position: relative;
     }
 
     .collapsible-content.expanded {
@@ -515,6 +569,31 @@
 
     .collapsible-inner {
       padding: 15px;
+    }
+    
+    .filter-spinner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      z-index: 10;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    
+    .filter-spinner-overlay.show {
+        display: flex;
+    }
+    
+    .filter-spinner-overlay .loading-spinner {
+        width: 30px;
+        height: 30px;
+        border-width: 3px;
     }
 
     .data-analysis-section {
@@ -577,6 +656,7 @@
       font-weight: bold;
       color: var(--dark);
       font-size: 0.9rem;
+      word-wrap: break-word;
     }
 
     .stat-value.valid {
@@ -610,12 +690,6 @@
       margin-bottom: 15px;
     }
 
-    @media(max-width: 480px) {
-      .strategy-buttons {
-        grid-template-columns: 1fr;
-      }
-    }
-
     .strategy-btn {
       padding: 12px 8px;
       background: #f3f4f6;
@@ -624,7 +698,11 @@
       cursor: pointer;
       transition: var(--transition);
       border: 2px solid transparent;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .strategy-btn:hover {
@@ -691,7 +769,7 @@
       background: var(--primary);
       color: white;
     }
-
+    
     .generate-btn {
       width: 100%;
       padding: 15px;
@@ -710,7 +788,7 @@
       gap: 8px;
       animation: generatePulse 2s infinite;
     }
-
+    
     .generate-btn:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
@@ -780,6 +858,26 @@
       font-weight: bold;
       font-size: clamp(0.8rem, 2.5vw, 1rem);
     }
+    
+    /* NUEVO: Estilo para boleto múltiple (System Ticket) */
+    .ticket-combination.system {
+        flex-wrap: wrap;
+        justify-content: center;
+        background: linear-gradient(to bottom, #ffffff, #f9fafb);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .system-badge {
+        width: 100%;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 3px;
+    }
 
     .ticket-number {
       width: 25px;
@@ -792,6 +890,25 @@
       justify-content: center;
       font-size: clamp(0.7rem, 2vw, 0.9rem);
       flex-shrink: 0;
+    }
+    
+    .ticket-draw-date-selector {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 8px;
+    }
+    
+    .ticket-draw-date-selector label {
+        font-size: 0.9rem;
+        color: var(--dark);
+        margin-right: 10px;
+    }
+    
+    .ticket-draw-date-selector input {
+        padding: 5px;
+        border-radius: 6px;
+        border: 1px solid var(--gray);
     }
 
     .ticket-actions {
@@ -924,6 +1041,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-top: 10px;
     }
     
     .switch {
@@ -994,6 +1112,21 @@
     .validation-error.show {
       display: block;
     }
+    
+    .saved-tickets-stats-section {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 15px;
+    }
+
+    .saved-tickets-stats-section h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
 
     .saved-tickets-section {
       background: white;
@@ -1003,12 +1136,36 @@
       margin-bottom: 80px;
     }
 
-    .saved-tickets-section h3 {
-      color: var(--primary);
+    .saved-tickets-header-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 15px;
+    }
+    
+    .saved-tickets-header-controls h3 {
+      color: var(--primary);
       text-align: center;
       font-size: clamp(1rem, 3vw, 1.2rem);
+      margin: 0;
     }
+    
+    #exportTicketsBtn {
+        padding: 8px 12px;
+        background: var(--info);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    #exportTicketsBtn:hover {
+        background: #0891b2;
+        transform: scale(1.05);
+    }
+
 
     .saved-tickets {
       display: flex;
@@ -1025,7 +1182,7 @@
     .saved-ticket-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 10px;
       flex-wrap: wrap;
       gap: 8px;
@@ -1035,6 +1192,12 @@
       font-weight: bold;
       color: var(--dark);
       font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+      display: block;
+    }
+    
+    .saved-ticket-draw-date {
+        font-size: 0.8rem;
+        color: var(--gray);
     }
     
     .saved-ticket-strategy {
@@ -1044,14 +1207,16 @@
         background-color: #f7f3ff;
         padding: 3px 8px;
         border-radius: 12px;
+        align-self: center;
     }
 
     .saved-ticket-actions {
       display: flex;
       gap: 8px;
+      align-items: center;
     }
 
-    .validate {
+    .validate, .play-online-btn-saved {
       background: var(--success);
       color: white;
       border: none;
@@ -1059,18 +1224,37 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.8rem;
+      transition: var(--transition);
+    }
+    
+    .validate:hover, .play-online-btn-saved:hover {
+        transform: scale(1.05);
+    }
+    
+    .play-online-btn-saved {
+        background: var(--secondary);
+    }
+    
+    .validate.verified {
+        background: #e0e0e0;
+        color: var(--gray);
+        cursor: not-allowed;
     }
 
     .delete-btn {
       background: var(--danger) !important;
       color: white !important;
       border: none;
-      padding: 8px 10px;
+      width: 28px;
+      height: 28px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.9rem;
       font-weight: bold;
       transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .delete-btn:hover {
@@ -1114,16 +1298,29 @@
     .hit-count {
       font-size: 0.8rem;
       font-weight: bold;
-      color: var(--success);
-      background-color: #e8f9f1;
-      padding: 2px 6px;
+      padding: 2px 8px;
       border-radius: 10px;
+      flex-shrink: 0;
     }
+    
+    .hit-count.no-hits {
+        color: var(--gray);
+        background-color: #f3f4f6;
+    }
+    .hit-count.low-hits {
+        color: #a16207;
+        background-color: #fefce8;
+    }
+    .hit-count.high-hits {
+        color: #166534;
+        background-color: #dcfce7;
+    }
+
 
     .saved-combination-number {
       width: 18px;
       height: 18px;
-      background: var(--primary);
+      background: var(--gray);
       color: white;
       border-radius: 50%;
       display: flex;
@@ -1132,12 +1329,41 @@
       font-size: 0.7rem;
       font-weight: bold;
       flex-shrink: 0;
+      transition: var(--transition);
+    }
+    
+    .saved-combination-number.selected {
+        background: linear-gradient(135deg, #ffd700, #ffa000);
+        transform: scale(1.1);
     }
 
     .saved-combination-content {
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    
+    /* NUEVO: Tabla de resumen para múltiples */
+    .validation-summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+    .validation-summary-table th, .validation-summary-table td {
+        border: 1px solid #e5e7eb;
+        padding: 8px;
+        text-align: center;
+    }
+    .validation-summary-table th {
+        background-color: #f3f4f6;
+        color: var(--gray);
+        font-weight: 600;
+    }
+    .validation-summary-table .row-highlight {
+        background-color: #ecfdf5;
+        color: #047857;
+        font-weight: bold;
     }
 
     /* Loading */
@@ -1192,11 +1418,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       z-index: 1000;
       justify-content: center;
       align-items: center;
       padding: 20px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
 
     .modal-content {
@@ -1204,11 +1432,12 @@
       padding: 20px;
       border-radius: 15px;
       width: 95%;
-      max-width: 400px;
-      max-height: 80vh;
+      max-width: 500px;
+      max-height: 90vh;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
+      animation: slideIn 0.3s ease-out;
     }
 
     .modal-header {
@@ -1268,6 +1497,8 @@
       gap: 8px;
       justify-content: flex-end;
       flex-shrink: 0;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
     }
 
     .modal-btn {
@@ -1299,13 +1530,14 @@
       border-radius: 8px;
       color: white;
       font-weight: bold;
-      z-index: 1000;
+      z-index: 2000;
       opacity: 0;
       transform: translateX(-50%) translateY(20px);
       transition: all 0.3s ease;
       max-width: 90%;
       text-align: center;
       font-size: 0.9rem;
+      box-shadow: var(--shadow-lg);
     }
 
     .toast.show {
@@ -1324,10 +1556,105 @@
     .toast.warning {
       background: var(--warning);
     }
+    
+    .toast.info {
+      background: var(--info);
+    }
 
     .hidden-file-input {
       display: none;
     }
+    
+    /* DATA VISUALIZATION CHART */
+    .chart-container {
+        display: flex;
+        gap: 2px;
+        height: 200px;
+        align-items: flex-end;
+        border-bottom: 2px solid var(--gray);
+        padding-bottom: 5px;
+    }
+    .bar-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        position: relative;
+    }
+    .chart-bar {
+        width: 100%;
+        background-color: var(--primary);
+        border-radius: 2px 2px 0 0;
+        transition: height 0.5s ease-out, background-color 0.3s;
+        cursor: pointer;
+    }
+    .chart-bar:hover {
+        background-color: var(--secondary);
+    }
+    .bar-label {
+        font-size: 0.6rem;
+        margin-top: 4px;
+        color: var(--dark);
+    }
+    .bar-value {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--dark);
+        color: white;
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+    }
+    .bar-wrapper:hover .bar-value {
+        opacity: 1;
+    }
+    
+    /* AI CONFIG */
+    .ai-config-row {
+        margin-top: 15px;
+    }
+    .ai-config-row label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+    .ai-config-row input[type="range"] {
+        width: 100%;
+    }
+    
+    /* TUTORIAL */
+    .tutorial-highlight {
+        position: relative;
+        z-index: 1001;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6), 0 0 15px 5px #764ba2;
+        border-radius: var(--border-radius);
+    }
+    #tutorialModal .modal-content {
+        max-width: 400px;
+    }
+    #tutorialContent {
+        line-height: 1.6;
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+    #tutorialProgress {
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        color: var(--gray);
+    }
+    #tutorialModal .modal-actions {
+        justify-content: space-between;
+    }
+
 
     @media(max-width: 320px) {
       .numbers-grid {
@@ -1353,7 +1680,10 @@
     <header class="header">
       <h1>🎲 DataLotto49</h1>
       <p>Generador Inteligente con Arquitectura Matemática Avanzada</p>
-      <button class="disclaimer-btn" id="disclaimerBtn" title="Disclaimer Ético">⚠️</button>
+      <div class="header-actions">
+        <button class="header-btn" id="showTutorialBtn" title="Mostrar Tutorial">?</button>
+        <button class="header-btn" id="disclaimerBtn" title="Disclaimer Ético">⚠️</button>
+      </div>
     </header>
 
     <div class="selected-numbers">
@@ -1373,8 +1703,14 @@
           <button class="selection-mode-btn" data-mode="hot" title="Activar modo para marcar/desmarcar números calientes">
             <span class="icon">🔥</span>
           </button>
+          <button class="selection-mode-btn" data-mode="absent" title="Activar modo para marcar/desmarcar números ausentes">
+            <span class="icon">👻</span>
+          </button>
           <button class="selection-mode-btn" data-mode="excluded" title="Activar modo para marcar/desmarcar números excluidos">
             <span class="icon">🚫</span>
+          </button>
+          <button class="selection-mode-btn" data-mode="figure" id="figureBtn" title="Activar modo para dibujar una figura">
+            <span class="icon">🗺️</span>
           </button>
           <button class="selection-mode-btn" data-mode="data" title="Cargar base de datos" id="dataBtn">
             <span class="icon">📊</span>
@@ -1427,6 +1763,22 @@
         <div class="stat-item">
           <div class="stat-label">Sesgo Detectado</div>
           <div class="stat-value" id="biasDetected">-</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Data Visualization -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" data-target="viz">
+        <h3>📈 Visualización de Datos</h3>
+        <button class="collapse-btn collapsed" id="vizCollapseBtn">+</button>
+      </div>
+      <div class="collapsible-content" id="vizContent">
+        <div class="collapsible-inner">
+            <p style="font-size: 0.9rem; color: var(--gray); margin-bottom: 15px;">Gráfico de frecuencia de aparición de cada número en los datos cargados.</p>
+            <div id="frequencyChartContainer" class="chart-container">
+                <div style="color:#666; text-align: center; width: 100%;">Carga datos para ver el gráfico.</div>
+            </div>
         </div>
       </div>
     </div>
@@ -1502,6 +1854,7 @@
         </div>
       </div>
 
+      <!-- Opciones para Estrategia Ganadora -->
       <div class="multiple-options" id="winningOptions" style="display: none;">
         <div class="input-row">
           <label>Generar:</label>
@@ -1534,8 +1887,13 @@
           <p id="ticketDate"></p>
         </div>
         <div id="ticketCombinations"></div>
+        <div class="ticket-draw-date-selector">
+          <label for="ticketDrawDate">Fecha del Sorteo (Opcional):</label>
+          <input type="date" id="ticketDrawDate">
+        </div>
         <div class="ticket-actions">
-          <button class="ticket-btn save-btn" id="saveBtn"><span>💾 Guardar Boleto</span></button>
+          <button class="ticket-btn save-btn" id="saveBtn"><span>💾 Guardar</span></button>
+          <button class="ticket-btn" id="playOnlineBtn" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;"><span>🔗 Jugar Online</span></button>
           <button class="ticket-btn share-btn" id="shareBtn"><span>📤 Compartir</span></button>
         </div>
       </div>
@@ -1548,6 +1906,9 @@
         <button class="collapse-btn collapsed" id="filtersCollapseBtn">+</button>
       </div>
       <div class="collapsible-content" id="filtersContent">
+        <div class="filter-spinner-overlay" id="filterSpinnerOverlay">
+            <div class="loading-spinner"></div>
+        </div>
         <div class="collapsible-inner">
           <div class="filters-panel">
             <!-- GRUPO: Excluir Terminaciones -->
@@ -1564,6 +1925,18 @@
                 <div class="filter-chip" data-value="7">7</div>
                 <div class="filter-chip" data-value="8">8</div>
                 <div class="filter-chip" data-value="9">9</div>
+              </div>
+            </div>
+            
+             <!-- GRUPO: Variedad de Terminaciones -->
+            <div class="filter-group" title="Filtra por el número de terminaciones distintas. Por ejemplo, '5' busca combinaciones donde los 6 números acaben en 5 dígitos diferentes.">
+              <div class="filter-title">#️⃣ Variedad de Terminaciones</div>
+              <div class="filter-options" id="terminacionesDistintasOptions">
+                <div class="filter-chip" data-value="2">2</div>
+                <div class="filter-chip" data-value="3">3</div>
+                <div class="filter-chip active" data-value="4">4</div>
+                <div class="filter-chip active" data-value="5">5</div>
+                <div class="filter-chip active" data-value="6">6</div>
               </div>
             </div>
 
@@ -1633,6 +2006,16 @@
                 <div class="filter-chip active" data-value="1/1/1/1/1/1">1/1/1/1/1/1</div>
               </div>
             </div>
+            
+            <div class="filter-group" title="Distancia mínima y máxima entre números adyacentes (una vez ordenados).">
+              <div class="filter-title">↔️ Distancia entre Números</div>
+              <div class="range-control">
+                <input type="number" id="distanciaMin" value="1" min="1" max="44">
+                <span>a</span>
+                <input type="number" id="distanciaMax" value="25" min="1" max="44">
+              </div>
+              <div class="validation-error" id="distanciaError">El valor mínimo no puede ser mayor que el máximo</div>
+            </div>
 
             <div class="filter-group" title="Distribución de los números en las decenas (1-9, 10-19...). '3/2/1' indica 3 números en una decena, 2 en otra y 1 en una tercera.">
               <div class="filter-title">🔢 Agrupación por Decenas</div>
@@ -1682,8 +2065,8 @@
             </div>
             
             <!-- GRUPO: Filtros Geométricos -->
-            <div class="filter-group" title="Evita o favorece combinaciones que formen visuales en el tablero 7x7.">
-              <div class="filter-title">🗺️ Patrones Geométricos (Detección Real)</div>
+            <div class="filter-group" title="Evita o favorece combinaciones que formen visuales en el tablero 7x7. Usa el 'Modo Figura' para generar combinaciones dentro de un patrón.">
+              <div class="filter-title">🗺️ Filtros Geométricos y Figuras</div>
               <div class="filter-options" id="geometricOptions">
                 <div class="filter-chip" data-value="lineas">🚫 Líneas</div>
                 <div class="filter-chip" data-value="diagonales">🚫 Diagonales</div>
@@ -1692,34 +2075,52 @@
                 <div class="filter-chip" data-value="cruces">🚫 Cruces</div>
                 <div class="filter-chip" data-value="espaciados">👍 Espaciados</div>
               </div>
+               <div class="filter-info-text">
+                <b>Usa el Modo Figura 🗺️</b> en la selección de números para generar combinaciones dentro de un patrón específico.
+              </div>
             </div>
 
             <!-- GRUPO: Filtros Predictivos (IA) -->
             <div class="filter-group" title="Utiliza modelos matemáticos avanzados basados en datos históricos y de comportamiento para optimizar la selección.">
               <div class="filter-title">🤖 Filtros Predictivos (IA)</div>
-              <div class="switch-control">
+              <div class="switch-control" style="margin-top: 0;">
                 <label class="switch">
                   <input type="checkbox" id="useMarkovSwitch">
                   <span class="slider"></span>
                 </label>
-                <span>Activar Cadenas de Markov</span>
+                <span>Cadenas de Markov</span>
               </div>
-               <div class="switch-control" style="margin-top: 10px;">
+              <div class="ai-config-row">
+                <label for="markovDepth">Sorteos a considerar: <span id="markovDepthValue">5</span></label>
+                <input type="range" id="markovDepth" min="1" max="20" value="5">
+              </div>
+
+               <div class="switch-control">
                 <label class="switch">
                   <input type="checkbox" id="useNashSwitch">
                   <span class="slider"></span>
                 </label>
-                <span>Activar Optimización Nash (Anti-Popular)</span>
+                <span>Optimización Nash (Anti-Popular)</span>
               </div>
-              <div class="switch-control" style="margin-top: 10px;" title="Favorece combinaciones con números que han aparecido con menos frecuencia (fríos), basado en el principio de que los resultados tienden a volver a la media a largo plazo.">
+              <div class="ai-config-row">
+                <label for="nashWeight">Factor Anti-Popularidad: <span id="nashWeightValue">1</span></label>
+                <input type="range" id="nashWeight" min="0" max="10" value="1">
+              </div>
+
+              <div class="switch-control" title="Favorece combinaciones con números ausentes (👻) o fríos (❄️), basado en el principio de que los resultados tienden a volver a la media a largo plazo.">
                 <label class="switch">
                   <input type="checkbox" id="useRegressionSwitch">
                   <span class="slider"></span>
                 </label>
-                <span>Activar Regresión a la Media (Pro-Fríos)</span>
+                <span>Regresión a la Media (Pro-Fríos)</span>
               </div>
+               <div class="ai-config-row">
+                <label for="regressionBonus">Bonus por nº Frío: <span id="regressionBonusValue">3</span></label>
+                <input type="range" id="regressionBonus" min="0" max="10" value="3">
+              </div>
+
               <div class="filter-info-text">
-                <b>Markov:</b> Analiza secuencias. <b>Nash:</b> Favorece números menos populares. <b>Regresión:</b> Apuesta por números 'atrasados' (fríos).
+                <b>Markov:</b> Analiza secuencias. <b>Nash:</b> Favorece números menos populares. <b>Regresión:</b> Apuesta por números 'atrasados' (fríos y ausentes).
               </div>
             </div>
             
@@ -1727,9 +2128,47 @@
         </div>
       </div>
     </div>
+    
+    <!-- Estadísticas de Boletos Guardados -->
+    <div class="saved-tickets-stats-section" id="savedTicketsStats" style="display: none;">
+      <h3>📈 Estadísticas de Boletos Guardados</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Total Combinaciones Generadas</div>
+          <div class="stat-value" id="totalTicketsSaved">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Estrategia Más Usada</div>
+          <div class="stat-value" id="mostUsedStrategy">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Aciertos de 3</div>
+          <div class="stat-value" id="hits3">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Aciertos de 4</div>
+          <div class="stat-value" id="hits4">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Aciertos de 5</div>
+          <div class="stat-value" id="hits5">-</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Aciertos de 6</div>
+          <div class="stat-value" id="hits6">-</div>
+        </div>
+        <div class="stat-item" style="grid-column: 1 / -1;">
+          <div class="stat-label">Distribución de Estrategias</div>
+          <div class="stat-value" id="strategyDistribution">-</div>
+        </div>
+      </div>
+    </div>
 
     <div class="saved-tickets-section">
-      <h3>🗂 Boletos Guardados</h3>
+      <div class="saved-tickets-header-controls">
+          <h3>🗂 Boletos Guardados</h3>
+          <button id="exportTicketsBtn">Exportar</button>
+      </div>
       <div class="saved-tickets" id="savedTickets">
         <div style="color:#666; text-align: center; padding: 20px;">No tienes boletos guardados</div>
       </div>
@@ -1792,6 +2231,27 @@
         </div>
       </div>
     </div>
+    
+    <!-- Modal de Tutorial -->
+    <div class="modal" id="tutorialModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="tutorialTitle">Bienvenido a DataLotto49</h3>
+        </div>
+        <div id="tutorialContent">
+            <p>Este breve tutorial te guiará por las funciones principales de la aplicación.</p>
+        </div>
+        <div id="tutorialProgress"></div>
+        <div class="modal-actions">
+          <button class="modal-btn cancel" id="tutorialPrevBtn" style="display: none;">Anterior</button>
+          <div>
+            <button class="modal-btn cancel" id="tutorialSkipBtn">Saltar</button>
+            <button class="modal-btn confirm" id="tutorialNextBtn">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <div class="toast" id="toast"></div>
 
@@ -1799,1246 +2259,7 @@
     <input type="file" id="fileInput" class="hidden-file-input" accept=".csv,.db" multiple>
   </div>
 
-  <script>
-// ============================================
-// SISTEMA DE ALMACENAMIENTO PERSISTENTE
-// ============================================
-window.loadDataFromAppInventor = function(fileContent) {
-  if (window.app) {
-    try {
-      const data = window.app.parseCSVData(fileContent);
-      window.app.historicalData = data;
-      window.app.dataType = 'real';
-      window.app.dataLoaded = true;
-      window.app.updateDataAnalysis();
-      window.app.analyzeNumbers();
-      window.app.updateGridWithHotColdNumbers();
-      window.app.showToast(`✅ Datos cargados desde App Inventor: ${data.length} sorteos`, 'success');
-    } catch (error) {
-      window.app.showToast(`Error al procesar datos del archivo: ${error.message}`, 'error');
-    }
-  }
-};
-
-window.receiveAppInventorTickets = function(jsonString) {
-  try {
-    const data = JSON.parse(jsonString);
-    if (data.action === 'TICKETS_LOADED' && window.app) {
-      window.app.savedTickets = data.tickets || [];
-      window.app.updateSavedTickets();
-      console.log(`Cargados ${data.tickets ? data.tickets.length : 0} boletos desde App Inventor`);
-    } else if (data.action === 'TICKETS_SAVED' && window.app) {
-      window.app.showToast('Boletos guardados en App Inventor', 'success');
-    }
-  } catch(error) {
-    console.error('Error procesando datos de App Inventor:', error);
-  }
-};
-
-function detectPlatform() {
-  if (typeof window.AppInventor !== 'undefined' || 
-      window.location.href.includes('appinventor') ||
-      navigator.userAgent.includes('AppInventor')) {
-    return 'appinventor';
-  } else if (window.location.href.includes('appmaker.xyz') ||
-             typeof window.appmaker !== 'undefined') {
-    return 'appmaker';
-  } else {
-    return 'web';
-  }
-}
-
-function requestFileFromAppInventor() {
-    if (typeof window.AppInventor !== 'undefined') {
-        window.AppInventor.setWebViewString(JSON.stringify({
-            action: 'REQUEST_FILE_PICK'
-        }));
-    } else {
-        console.warn("La función para solicitar archivos solo está disponible en App Inventor.");
-        if (window.app) {
-            window.app.showToast("Esta función solo está disponible en la app Android.", "warning");
-        }
-    }
-}
-
-
-    // Clase principal de la aplicación
-    class DataLotto49Advanced {
-      // Coordenadas pre-calculadas para cada número en la cuadrícula 7x7
-      static NUMBER_COORDS = (() => {
-          const coords = {};
-          for (let i = 1; i <= 49; i++) {
-              coords[i] = { row: Math.floor((i - 1) / 7), col: (i - 1) % 7 };
-          }
-          return coords;
-      })();
-
-      constructor() {
-        // Estado del sistema
-        this.selectedNumbers = new Set();
-        this.excludedNumbers = new Set();
-        this.hotNumbers = new Set();
-        this.coldNumbers = new Set();
-        this.currentSelectionMode = null; // null | 'excluded' | 'hot' | 'cold'
-        this.isGenerating = false;
-        this.savedTickets = [];
-        this.currentTicket = null;
-        this.currentValidatingTicket = null;
-        this.historicalData = [];
-        this.numberStats = {};
-        this.analysisPeriod = 100;
-        this.dataLoaded = false;
-        this.dataType = 'none';
-        this.platform = detectPlatform();
-
-        // Filtros (activados todos los niveles)
-        this.filters = {
-          terminaciones: [],
-          sum: { min: 121, max: 190 },
-          parImpar: [],
-          bajosAltos: [],
-          primos: { min: 1, max: 3 },
-          consecutivos: [],
-          agrupDecenas: [],
-          sumaDigitos: { min: 28, max: 45 },
-          desviacion: { min: 12.0, max: 18.0 },
-          entropy: { min: 2.3, max: 2.6 },
-          geometric: { exclude: [], favor: [] },
-          useMarkov: false,
-          useNash: false,
-          useRegression: false,
-        };
-        
-        // Constantes y pre-cálculos
-        this.primes = new Set([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]);
-        this.TOLERANCE_LEVELS = { // Niveles de tolerancia para la estrategia Múltiple
-            7: 0.70,
-            8: 0.50,
-            9: 0.35,
-            10: 0.25,
-            11: 0.20
-        };
-
-        this.init();
-      }
-
-      init() {
-        this.initializeHistoricalData();
-        this.analyzeNumbers();
-        this.createNumbersGrid();
-        this.bindEvents();
-        this.loadTickets();
-        this.updateFilterStateFromUI();
-        if (this.platform === 'appinventor') {
-            this.requestInitialDataFromAppInventor();
-        }
-      }
-      
-      requestInitialDataFromAppInventor() {
-        if (typeof window.AppInventor !== 'undefined') {
-            window.AppInventor.setWebViewString(JSON.stringify({ action: 'REQUEST_TICKETS' }));
-        }
-      }
-
-      // ===== DATOS HISTÓRICOS (Sin cambios) =====
-      initializeHistoricalData() {
-        if (!this.dataLoaded) {
-          this.simulateHistoricalData(500);
-        }
-      }
-      simulateHistoricalData(numDraws = 500) {
-        this.historicalData = [];
-        const baseDate = new Date();
-        baseDate.setDate(baseDate.getDate() - numDraws * 3.5);
-
-        for(let i = 0; i < numDraws; i++) {
-          const drawDate = new Date(baseDate);
-          drawDate.setDate(drawDate.getDate() + (i * 3.5));
-          const numbers = this.generateRealisticDraw();
-          this.historicalData.push({
-            id: i + 1,
-            date: drawDate,
-            numbers: numbers.sort((a, b) => a - b),
-            sum: numbers.reduce((a, b) => a + b, 0)
-          });
-        }
-        
-        this.dataType = 'simulated';
-        this.dataLoaded = true;
-        this.updateDataAnalysis();
-        this.analyzeNumbers();
-        this.updateGridWithHotColdNumbers();
-        this.showToast('✅ Datos simulados generados correctamente', 'success');
-      }
-      generateRealisticDraw() {
-        const numbers = new Set();
-        while(numbers.size < 6) {
-            const num = Math.floor(Math.random() * 49) + 1;
-            if(!numbers.has(num)) {
-                numbers.add(num);
-            }
-        }
-        return Array.from(numbers);
-      }
-      async loadRealData(files) {
-        try {
-          this.historicalData = [];
-          let totalDraws = 0;
-          
-          for (const file of files) {
-            const data = await this.loadDataFile(file);
-            this.historicalData.push(...data);
-            totalDraws += data.length;
-          }
-          
-          this.historicalData.sort((a, b) => new Date(a.date) - new Date(b.date));
-          this.historicalData.forEach((draw, index) => {
-            draw.id = index + 1;
-          });
-          
-          this.dataType = 'real';
-          this.dataLoaded = true;
-          this.updateDataAnalysis();
-          this.analyzeNumbers();
-          this.updateGridWithHotColdNumbers(); // CORREGIDO
-          
-          this.showToast(`✅ Datos reales cargados: ${totalDraws} sorteos`, 'success');
-          
-        } catch (error) {
-          this.showToast(`Error cargando datos: ${error.message}`, 'error');
-        }
-      }
-      async loadDataFromUrl() {
-        const url = prompt("Introduce la URL del archivo de datos (CSV):");
-        if (!url) return;
-        try {
-          this.showLoading('Cargando datos desde URL...');
-          const response = await fetch(url);
-          if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
-          const content = await response.text();
-          const data = this.parseCSVData(content);
-          
-          this.historicalData = data;
-          this.dataType = 'url';
-          this.dataLoaded = true;
-          this.updateDataAnalysis();
-          this.analyzeNumbers();
-          this.updateGridWithHotColdNumbers(); // CORREGIDO
-          this.hideLoading();
-          this.showToast(`✅ Datos cargados desde URL: ${data.length} sorteos`, 'success');
-        } catch (error) {
-          this.hideLoading();
-          this.showToast(`Error al cargar desde URL: ${error.message}`, 'error');
-        }
-      }
-      async loadDataFile(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            try {
-              const content = e.target.result;
-              resolve(this.parseCSVData(content));
-            } catch (error) {
-              reject(error);
-            }
-          };
-          reader.onerror = () => reject(new Error('Error leyendo archivo'));
-          reader.readAsText(file);
-        });
-      }
-      parseCSVData(content) {
-        const lines = content.trim().split('\n');
-        return lines.map((line, i) => {
-          if (!line.trim()) return null;
-          const numbers = line.split(/[,;\t\s]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-          if (numbers.length !== 6) throw new Error(`Línea ${i + 1}: Se esperan 6 números`);
-          if (numbers.some(n => n < 1 || n > 49)) throw new Error(`Línea ${i + 1}: Números fuera de rango`);
-          return {
-            id: i + 1,
-            date: new Date(Date.now() - (lines.length - i) * 3.5 * 24 * 60 * 60 * 1000),
-            numbers: numbers.sort((a, b) => a - b),
-            sum: numbers.reduce((a, b) => a + b, 0)
-          };
-        }).filter(Boolean);
-      }
-      updateDataAnalysis() {
-        const dataInfo = document.getElementById('dataInfo');
-        const dataStatsGrid = document.getElementById('dataStatsGrid');
-        if (!dataInfo || !dataStatsGrid) return;
-        
-        if (!this.dataLoaded || this.historicalData.length === 0) {
-          dataInfo.textContent = 'No hay datos cargados. Carga una base de datos CSV/DB o simula datos históricos.';
-          dataInfo.className = 'data-info';
-          dataStatsGrid.style.display = 'none';
-          return;
-        }
-        const frequencies = {};
-        for (let i = 1; i <= 49; i++) frequencies[i] = 0;
-        this.historicalData.forEach(draw => draw.numbers.forEach(num => frequencies[num]++));
-        const sortedFreq = Object.entries(frequencies).sort((a, b) => b[1] - a[1]);
-        dataInfo.innerHTML = `📊 ${this.historicalData.length} sorteos cargados (${this.dataType === 'real' ? 'DATOS REALES' : 'DATOS SIMULADOS'})`;
-        dataInfo.className = 'data-info has-data';
-        
-        const safeSetText = (id, text) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = text;
-        };
-        
-        safeSetText('totalDraws', this.historicalData.length);
-        safeSetText('dataType', this.dataType.toUpperCase());
-        safeSetText('mostFrequent', sortedFreq.slice(0, 3).map(([num]) => num).join(', '));
-        safeSetText('leastFrequent', sortedFreq.slice(-3).map(([num]) => num).join(', '));
-        
-        const chiSquareEl = document.getElementById('chiSquare');
-        const biasEl = document.getElementById('biasDetected');
-
-        if (this.historicalData.length >= 50 && chiSquareEl && biasEl) {
-            const expectedFrequency = (this.historicalData.length * 6) / 49;
-            let chiSquareStat = 0;
-            for (let i = 1; i <= 49; i++) {
-                chiSquareStat += Math.pow(frequencies[i] - expectedFrequency, 2) / expectedFrequency;
-            }
-            const criticalValue = 65.17; // df=48, p=0.05
-            const biasDetected = chiSquareStat > criticalValue;
-            
-            chiSquareEl.textContent = chiSquareStat.toFixed(2);
-            biasEl.textContent = biasDetected ? 'Sí (Significativo al 95%)' : 'No (Distribución Normal)';
-            biasEl.classList.toggle('invalid', biasDetected);
-            biasEl.classList.toggle('valid', !biasDetected);
-        } else if(chiSquareEl && biasEl) {
-            chiSquareEl.textContent = 'N/A';
-            biasEl.textContent = 'Datos insuficientes';
-            biasEl.classList.remove('valid', 'invalid');
-        }
-        
-        dataStatsGrid.style.display = 'grid';
-      }
-
-      // ===== ANÁLISIS DE NÚMEROS (Sin cambios) =====
-      analyzeNumbers() {
-        for(let i = 1; i <= 49; i++) this.numberStats[i] = { frequency: 0, score: 0 };
-        const analysisData = this.historicalData.slice(-this.analysisPeriod);
-        if (analysisData.length === 0) return;
-        analysisData.forEach(draw => draw.numbers.forEach(num => this.numberStats[num].frequency++));
-        this.classifyNumbers();
-      }
-      classifyNumbers() {
-        const freqs = Object.values(this.numberStats).map(s => s.frequency);
-        const sortedFreqs = [...freqs].sort((a, b) => a - b);
-        const hotThreshold = sortedFreqs[Math.floor(sortedFreqs.length * 0.7)];
-        const coldThreshold = sortedFreqs[Math.floor(sortedFreqs.length * 0.3)];
-        this.hotNumbers.clear();
-        this.coldNumbers.clear();
-        for (let num = 1; num <= 49; num++) {
-          const freq = this.numberStats[num].frequency;
-          if (freq >= hotThreshold) this.hotNumbers.add(num);
-          if (freq <= coldThreshold) this.coldNumbers.add(num);
-        }
-      }
-      updateGridWithHotColdNumbers() {
-        for (let i = 1; i <= 49; i++) {
-          const ball = document.querySelector(`.number-ball[data-number="${i}"]`);
-          if (ball) {
-            ball.classList.remove('hot', 'cold');
-            const icon = ball.querySelector('.number-icon');
-            if (!icon) continue;
-
-            let newIcon = '';
-            
-            if (this.hotNumbers.has(i)) {
-                ball.classList.add('hot');
-                newIcon = '🔥';
-            }
-            if (this.coldNumbers.has(i)) {
-                ball.classList.add('cold');
-                newIcon = '❄️';
-            }
-            
-            const currentIcon = icon.textContent;
-            if (['🔥', '❄️', ''].includes(currentIcon) && !this.excludedNumbers.has(i)) {
-                icon.textContent = newIcon;
-            }
-          }
-        }
-      }
-
-      // ===== UI SETUP Y EVENTOS (Sin cambios en su mayoría) =====
-      createNumbersGrid() {
-        const grid = document.getElementById('numbersGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        for (let i = 1; i <= 49; i++) {
-          const ball = document.createElement('div');
-          ball.classList.add('number-ball');
-          ball.dataset.number = i;
-          ball.innerHTML = `${i}<span class="number-icon"></span>`;
-          if (this.hotNumbers.has(i)) ball.classList.add('hot');
-          if (this.coldNumbers.has(i)) ball.classList.add('cold');
-          grid.appendChild(ball);
-        }
-      }
-      bindEvents() {
-        document.getElementById('numbersGrid')?.addEventListener('click', e => {
-          if (e.target.classList.contains('number-ball')) this.handleNumberClick(e.target);
-        });
-        document.querySelector('.selection-mode-controls')?.addEventListener('click', e => {
-            const btn = e.target.closest('.selection-mode-btn');
-            if (!btn) return;
-            const mode = btn.dataset.mode;
-            
-            if (['cold', 'hot', 'excluded'].includes(mode)) {
-                this.updateSelectionMode(mode);
-            } else if (btn.id === 'randomBtn') {
-                this.randomSelect();
-            } else if (btn.id === 'clearBtn') {
-                this.clearSelections(true);
-                const clearBtn = document.getElementById('clearBtn');
-                if (clearBtn) {
-                  clearBtn.classList.add('shake');
-                  setTimeout(() => clearBtn.classList.remove('shake'), 500);
-                }
-            } else if (btn.id === 'dataBtn') {
-                document.getElementById('fileInput')?.click();
-            } else if (btn.id === 'simulateBtn') {
-                this.simulateHistoricalData(500);
-            } else if (btn.id === 'urlBtn') {
-                this.loadDataFromUrl();
-            }
-        });
-        document.querySelectorAll('.collapsible-header').forEach(h => h.addEventListener('click', () => this.toggleCollapse(h.dataset.target)));
-        document.querySelectorAll('.strategy-btn').forEach(btn => btn.addEventListener('click', () => this.updateStrategyUI(btn.dataset.strategy)));
-        document.querySelectorAll('.number-option').forEach(opt => opt.addEventListener('click', () => {
-          document.querySelectorAll('.number-option').forEach(o => o.classList.remove('active'));
-          opt.classList.add('active');
-        }));
-        document.getElementById('generateBtn')?.addEventListener('click', () => this.generateCombinations());
-        document.getElementById('saveBtn')?.addEventListener('click', () => this.saveTicket());
-        document.getElementById('shareBtn')?.addEventListener('click', () => this.shareTicket());
-        document.querySelector('.filters-panel')?.addEventListener('input', () => this.updateFilterStateFromUI());
-        document.querySelector('.filters-panel')?.addEventListener('click', e => {
-           if(e.target.classList.contains('filter-chip')) {
-               e.target.classList.toggle('active');
-               this.updateFilterStateFromUI();
-           }
-        });
-        document.getElementById('disclaimerBtn')?.addEventListener('click', () => this.toggleModal('disclaimerModal', true));
-        document.getElementById('disclaimerCloseBtn')?.addEventListener('click', () => this.toggleModal('disclaimerModal', false));
-        document.getElementById('cancelValidationBtn')?.addEventListener('click', () => this.toggleModal('validationModal', false));
-        document.getElementById('confirmValidationBtn')?.addEventListener('click', () => this.confirmValidation());
-        document.getElementById('fileInput')?.addEventListener('change', e => e.target.files.length > 0 && this.loadRealData(e.target.files));
-      }
-
-      // ===== FILTROS (Reactivados y completos) =====
-      updateFilterStateFromUI() {
-          const getVal = (id, isFloat = false) => {
-              const el = document.getElementById(id);
-              if (!el) return isFloat ? 0.0 : 0;
-              return isFloat ? parseFloat(el.value) : parseInt(el.value);
-          };
-          const getChecked = (id) => document.getElementById(id)?.checked || false;
-          const getActiveChips = (selector) => Array.from(document.querySelectorAll(selector)).map(el => el.dataset.value);
-
-          this.filters.terminaciones = getActiveChips('#terminacionesOptions .filter-chip.active').map(Number);
-          this.filters.sum = { min: getVal('sumMin'), max: getVal('sumMax') };
-          this.filters.parImpar = getActiveChips('#parImparOptions .filter-chip.active');
-          this.filters.bajosAltos = getActiveChips('#bajosAltosOptions .filter-chip.active');
-          this.filters.primos = { min: getVal('primosMin'), max: getVal('primosMax') };
-          this.filters.consecutivos = getActiveChips('#consecutivosOptions .filter-chip.active');
-          this.filters.agrupDecenas = getActiveChips('#agrupDecenasOptions .filter-chip.active');
-          this.filters.sumaDigitos = { min: getVal('sumaDigitosMin'), max: getVal('sumaDigitosMax') };
-          this.filters.desviacion = { min: getVal('desviacionMin', true), max: getVal('desviacionMax', true) };
-          this.filters.entropy = { min: getVal('entropyMin', true), max: getVal('entropyMax', true) };
-          
-          const geometricChips = Array.from(document.querySelectorAll('#geometricOptions .filter-chip.active'));
-          this.filters.geometric = {
-              exclude: geometricChips.filter(el => el.textContent.startsWith('🚫')).map(el => el.dataset.value),
-              favor: geometricChips.filter(el => el.textContent.startsWith('👍')).map(el => el.dataset.value),
-          };
-          
-          this.filters.useMarkov = getChecked('useMarkovSwitch');
-          this.filters.useNash = getChecked('useNashSwitch');
-          this.filters.useRegression = getChecked('useRegressionSwitch');
-      }
-
-      // ===== SELECCIÓN DE NÚMEROS (CORREGIDO) =====
-      handleNumberClick(ball) {
-        const number = parseInt(ball.dataset.number);
-        const icon = ball.querySelector('.number-icon');
-        if (!icon) return;
-        
-        if (this.excludedNumbers.has(number) && this.currentSelectionMode !== 'excluded') {
-            this.showToast('Este número está excluido.', 'warning');
-            return;
-        }
-
-        switch (this.currentSelectionMode) {
-            case 'excluded':
-                if (this.selectedNumbers.has(number)) {
-                    this.showToast('No puedes excluir un número ya seleccionado.', 'warning');
-                    return;
-                }
-                this.excludedNumbers.has(number) ? this.excludedNumbers.delete(number) : this.excludedNumbers.add(number);
-                ball.classList.toggle('excluded');
-                if (this.excludedNumbers.has(number)) {
-                    icon.textContent = '🚫';
-                } else {
-                    if (this.hotNumbers.has(number)) icon.textContent = '🔥';
-                    else if (this.coldNumbers.has(number)) icon.textContent = '❄️';
-                    else icon.textContent = '';
-                }
-                break;
-
-            case 'hot':
-                if (this.coldNumbers.has(number)) {
-                    this.coldNumbers.delete(number);
-                    document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.remove('cold');
-                }
-                this.hotNumbers.has(number) ? this.hotNumbers.delete(number) : this.hotNumbers.add(number);
-                ball.classList.toggle('hot');
-                icon.textContent = this.hotNumbers.has(number) ? '🔥' : '';
-                break;
-
-            case 'cold':
-                if (this.hotNumbers.has(number)) {
-                    this.hotNumbers.delete(number);
-                    document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.remove('hot');
-                }
-                this.coldNumbers.has(number) ? this.coldNumbers.delete(number) : this.coldNumbers.add(number);
-                ball.classList.toggle('cold');
-                icon.textContent = this.coldNumbers.has(number) ? '❄️' : '';
-                break;
-
-            default: // Normal selection mode
-                if (this.excludedNumbers.has(number)) return;
-                if (document.querySelector('.random-pick, .generated-pick')) {
-                    this.clearGridHighlights();
-                    this.selectedNumbers.clear();
-                }
-                this.selectedNumbers.has(number) ? this.removeNumber(number) : this.addNumber(number);
-                break;
-        }
-      }
-      addNumber(number) {
-        if (this.selectedNumbers.size < 6) {
-          this.selectedNumbers.add(number);
-          document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.add('selected');
-          this.updateSelectedDisplay();
-          this.updateStats();
-        }
-      }
-      removeNumber(number) {
-        this.selectedNumbers.delete(number);
-        document.querySelector(`.number-ball[data-number="${number}"]`)?.classList.remove('selected');
-        this.updateSelectedDisplay();
-        this.updateStats();
-      }
-      clearSelections(fullClear) {
-        this.selectedNumbers.clear();
-        if (fullClear) {
-          this.excludedNumbers.clear();
-          this.hotNumbers.clear();
-          this.coldNumbers.clear();
-          document.querySelectorAll('.number-ball').forEach(b => {
-              b.classList.remove('excluded', 'hot', 'cold');
-              const icon = b.querySelector('.number-icon');
-              if (icon) icon.textContent = '';
-          });
-          this.analyzeNumbers();
-          this.updateGridWithHotColdNumbers();
-        }
-        document.querySelectorAll('.number-ball.selected').forEach(b => b.classList.remove('selected'));
-        this.clearGridHighlights();
-        this.updateSelectedDisplay();
-        this.updateStats();
-      }
-      randomSelect() {
-        this.clearSelections(false);
-        const available = this.getAvailableUniverse();
-        if (available.length < 6) {
-          this.showToast('No hay suficientes números para seleccionar 6 al azar.', 'warning');
-          return;
-        }
-        
-        const randomNumbers = [];
-        while (randomNumbers.length < 6) {
-          const randomIndex = Math.floor(Math.random() * available.length);
-          const number = available.splice(randomIndex, 1)[0];
-          randomNumbers.push(number);
-          const ball = document.querySelector(`.number-ball[data-number="${number}"]`);
-          if (ball) {
-            ball.classList.add('random-pick');
-            const icon = ball.querySelector('.number-icon');
-            if (icon) icon.textContent = '🎲';
-          }
-        }
-        
-        this.selectedNumbers = new Set(randomNumbers);
-        this.updateTopDisplayWithCombination(randomNumbers, 'random');
-        this.updateStats();
-      }
-      updateSelectionMode(mode) {
-        const isTogglingOff = this.currentSelectionMode === mode;
-        this.currentSelectionMode = null;
-        document.querySelectorAll('.selection-mode-btn[data-mode]').forEach(b => {
-            if (['cold', 'hot', 'excluded'].includes(b.dataset.mode)) {
-                b.classList.remove('active');
-            }
-        });
-
-        if (isTogglingOff) {
-            this.showToast('Modo de selección normal activado', 'info');
-        } else {
-            this.currentSelectionMode = mode;
-            document.querySelector(`.selection-mode-btn[data-mode="${mode}"]`)?.classList.add('active');
-            const modeText = {
-                excluded: 'marcar números excluidos',
-                hot: 'marcar números Calientes',
-                cold: 'marcar números Fríos'
-            };
-            this.showToast(`Modo para ${modeText[mode]} activado`, 'info');
-        }
-      }
-      updateSelectedDisplay() {
-        const display = document.getElementById('selectedDisplay');
-        if (!display) return;
-        display.innerHTML = '';
-        if (this.selectedNumbers.size === 0) {
-          display.innerHTML = `<div style="color:#666; font-style: italic;">Selecciona hasta 6 números</div>`;
-        } else {
-          Array.from(this.selectedNumbers).sort((a,b)=>a-b).forEach(num => {
-            const ball = document.createElement('div');
-            ball.classList.add('number-ball', 'selected');
-            ball.style.cssText = 'width: 35px; height: 35px; cursor: default;';
-            ball.textContent = num;
-            display.appendChild(ball);
-          });
-        }
-      }
-
-      updateTopDisplayWithCombination(combination, type = 'generated') {
-        const display = document.getElementById('selectedDisplay');
-        if (!display) return;
-        display.innerHTML = '';
-        if (!combination || combination.length === 0) {
-            display.innerHTML = `<div style="color:#666; font-style: italic;">No se generó ninguna combinación.</div>`;
-            return;
-        }
-
-        const className = type === 'random' ? 'random-pick' : 'generated-pick';
-
-        combination.sort((a, b) => a - b).forEach(num => {
-            const ball = document.createElement('div');
-            ball.classList.add('number-ball', className);
-            ball.style.cssText = 'width: 35px; height: 35px; cursor: default;';
-            ball.textContent = num;
-            display.appendChild(ball);
-        });
-      }
-
-      // ===== UI STRATEGY (Sin cambios) =====
-      updateStrategyUI(strategy) {
-        document.querySelectorAll('.strategy-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector(`.strategy-btn[data-strategy="${strategy}"]`)?.classList.add('active');
-        const winningOptions = document.getElementById('winningOptions');
-        const multipleOptions = document.getElementById('multipleNumbersOptions');
-        if(winningOptions) winningOptions.style.display = strategy === 'winning' ? 'block' : 'none';
-        if(multipleOptions) multipleOptions.style.display = strategy === 'multiple' ? 'block' : 'none';
-      }
-      
-      // ===========================================
-      // ===== MOTOR DE GENERACIÓN (CORREGIDO) =====
-      // ===========================================
-      async generateCombinations() {
-        if (this.isGenerating) return;
-
-        this.clearSelections(false);
-
-        this.isGenerating = true;
-        this.showLoading('Iniciando...');
-        
-        this.updateFilterStateFromUI();
-        const availableUniverse = this.getAvailableUniverse();
-
-        if (availableUniverse.length < 6) {
-          this.showToast('Imposible generar. Menos de 6 números disponibles con los filtros de exclusión actuales.', 'error');
-          this.hideLoading();
-          this.isGenerating = false;
-          return;
-        }
-
-        const strategy = document.querySelector('.strategy-btn.active')?.dataset.strategy;
-        let combinations = [];
-
-        await new Promise(resolve => setTimeout(resolve, 50));
-
-        try {
-          if (strategy === 'simple') {
-              this.showLoading('Buscando combinación...');
-              const result = this.findValidCombinations(availableUniverse, 1, 500000);
-              if (result.length > 0) combinations = result;
-          } else if (strategy === 'winning') {
-              const generateCount = parseInt(document.getElementById('generateCount')?.value || 100);
-              const playCount = parseInt(document.getElementById('playCount')?.value || 10);
-              combinations = await this.findAndRankWinningCombinations(availableUniverse, generateCount, playCount);
-          } else if (strategy === 'multiple') {
-            const numCount = parseInt(document.querySelector('.number-option.active')?.dataset.numbers || 7);
-            if (availableUniverse.length < numCount) {
-              throw new Error(`No hay suficientes números (${availableUniverse.length}) para una múltiple de ${numCount}.`);
-            }
-            const foundSuperset = await this.findValidSuperset(availableUniverse, numCount);
-            if (foundSuperset) {
-                combinations = [foundSuperset];
-            }
-          }
-
-          if (combinations.length > 0) {
-            this.displayTicket(combinations, strategy);
-          } else {
-             this.showToast('No se encontró ninguna combinación que cumpla todos los filtros. Prueba a flexibilizarlos.', 'warning');
-          }
-
-        } catch (error) {
-            this.showToast(`Error: ${error.message}`, 'error');
-        } finally {
-            this.hideLoading();
-            this.isGenerating = false;
-        }
-      }
-
-      getAvailableUniverse() {
-        let universe = [];
-        for (let i = 1; i <= 49; i++) {
-          if (this.excludedNumbers.has(i)) continue;
-          if (this.filters.terminaciones.includes(i % 10)) continue;
-          universe.push(i);
-        }
-        return universe;
-      }
-
-      async findAndRankWinningCombinations(universe, generateCount, playCount) {
-        this.showLoading(`Buscando ${generateCount} válidas...`);
-        const loadingInfo = document.getElementById('loadingInfo');
-
-        const validCombos = [];
-        const maxAttempts = Math.max(500000, generateCount * 100);
-        
-        for(let i=0; i < maxAttempts && validCombos.length < generateCount; i++) {
-            if (i % 500 === 0) {
-                if (loadingInfo) loadingInfo.textContent = `${validCombos.length} / ${generateCount} encontradas... (Intento ${i})`;
-                await new Promise(resolve => setTimeout(resolve, 0));
-            }
-            const combo = this.generateRandomCombination(universe, 6);
-            if (this.isValidCombination(combo)) {
-                validCombos.push(combo);
-            }
-        }
-
-        if (validCombos.length === 0) {
-            throw new Error('No se encontraron combinaciones válidas. Intenta flexibilizar los filtros.');
-        }
-
-        this.showLoading('Puntuando y ordenando...');
-        if (loadingInfo) loadingInfo.textContent = `Puntuando ${validCombos.length} combinaciones...`;
-        await new Promise(resolve => setTimeout(resolve, 0));
-
-        const scoredCombos = validCombos.map(combo => ({
-            combo,
-            score: this.calculateCombinationScore(combo)
-        }));
-
-        scoredCombos.sort((a, b) => b.score - a.score);
-        return scoredCombos.slice(0, playCount).map(item => item.combo);
-      }
-
-      async findValidSuperset(universe, numCount) {
-        this.showLoading(`Buscando Múltiple de ${numCount}...`);
-        const loadingInfo = document.getElementById('loadingInfo');
-        
-        const tolerance = this.TOLERANCE_LEVELS[numCount];
-        const maxAttempts = 50000;
-        
-        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            if (attempt % 100 === 0) {
-                if(loadingInfo) loadingInfo.textContent = `Intento ${attempt} de ${maxAttempts}...`;
-                await new Promise(resolve => setTimeout(resolve, 0));
-            }
-
-            const candidateSuperset = this.generateRandomCombination(universe, numCount);
-            const subCombinations = this.getCombinations(candidateSuperset, 6);
-            const totalSubCombos = subCombinations.length;
-            const requiredValidCount = Math.ceil(totalSubCombos * tolerance);
-            
-            let validCount = 0;
-            for (const subCombo of subCombinations) {
-                if (this.isValidCombination(subCombo)) {
-                    validCount++;
-                }
-            }
-
-            if (validCount >= requiredValidCount) {
-                if(loadingInfo) loadingInfo.textContent = `¡Superconjunto válido encontrado!`;
-                return candidateSuperset.sort((a, b) => a - b);
-            }
-        }
-        if(loadingInfo) loadingInfo.textContent = `Búsqueda finalizada sin éxito.`;
-        return null;
-      }
-
-      findValidCombinations(universe, count, maxAttempts) {
-          const validCombinations = [];
-          for (let i = 0; i < maxAttempts && validCombinations.length < count; i++) {
-              const combo = this.generateRandomCombination(universe, 6);
-              if (this.isValidCombination(combo)) {
-                  validCombinations.push(combo);
-              }
-          }
-          return validCombinations;
-      }
-      
-      isValidCombination(combination) {
-          const stats = this.getCombinationStats(combination);
-          if (Object.keys(stats).length === 0) return false;
-
-          // Nivel 2
-          if (stats.sum < this.filters.sum.min || stats.sum > this.filters.sum.max) return false;
-          if (this.filters.parImpar.length > 0 && !this.filters.parImpar.includes(stats.parImpar)) return false;
-          if (this.filters.bajosAltos.length > 0 && !this.filters.bajosAltos.includes(stats.bajosAltos)) return false;
-          if (stats.primos < this.filters.primos.min || stats.primos > this.filters.primos.max) return false;
-          if (this.filters.consecutivos.length > 0 && !this.filters.consecutivos.includes(stats.consecutivos)) return false;
-          if (this.filters.agrupDecenas.length > 0 && !this.filters.agrupDecenas.includes(stats.agrupDecenas)) return false;
-          if (stats.sumaDigitos < this.filters.sumaDigitos.min || stats.sumaDigitos > this.filters.sumaDigitos.max) return false;
-          
-          // Nivel 3 Exclusions
-          if (stats._desviacion < this.filters.desviacion.min || stats._desviacion > this.filters.desviacion.max) return false;
-          if (stats._entropia < this.filters.entropy.min || stats._entropia > this.filters.entropy.max) return false;
-          if (this.filters.geometric.exclude.length > 0 && this.hasGeometricPattern(combination, this.filters.geometric.exclude)) return false;
-
-          return true;
-      }
-
-      generateRandomCombination(universe, count) {
-        let tempUniverse = [...universe];
-        let combination = [];
-        while (combination.length < count && tempUniverse.length > 0) {
-          const randomIndex = Math.floor(Math.random() * tempUniverse.length);
-          combination.push(tempUniverse.splice(randomIndex, 1)[0]);
-        }
-        return combination.sort((a, b) => a - b);
-      }
-      
-      getCombinations(source, k) {
-        if (k > source.length || k <= 0) return [];
-        if (k === source.length) return [source];
-        if (k === 1) return source.map(item => [item]);
-
-        const result = [];
-        const stack = [[0, []]];
-        while (stack.length > 0) {
-            const [index, currentCombo] = stack.pop();
-
-            if (currentCombo.length === k) {
-                result.push(currentCombo);
-                continue;
-            }
-            if (index >= source.length) continue;
-
-            stack.push([index + 1, currentCombo]);
-            stack.push([index + 1, [...currentCombo, source[index]]]);
-        }
-        return result;
-      }
-      
-      // ===== ESTADÍSTICAS Y VALIDACIÓN (CORREGIDO) =====
-      updateStats() {
-        this.displayCombinationStats(Array.from(this.selectedNumbers));
-      }
-
-      displayCombinationStats(combination) {
-        const statsContent = document.getElementById('statsContent');
-        if (!statsContent) return;
-        
-        const safeSetText = (id, text) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = text;
-        };
-        
-        if (!combination || combination.length !== 6) {
-            statsContent.querySelectorAll('.stat-value').forEach(el => el.textContent = '-');
-            return;
-        }
-        const stats = this.getCombinationStats(combination);
-        for (const key in stats) {
-            if (key.startsWith('_')) continue; // No mostrar valores raw
-            const elId = `stat${key.charAt(0).toUpperCase() + key.slice(1)}`;
-            safeSetText(elId, stats[key]);
-        }
-      }
-
-      getCombinationStats(combination) {
-        if (combination.length !== 6) return {};
-        const sum = combination.reduce((a, b) => a + b, 0);
-        const evens = combination.filter(n => n % 2 === 0).length;
-        const lows = combination.filter(n => n <= 25).length;
-        const primesCount = combination.filter(n => this.primes.has(n)).length;
-        
-        const sorted = [...combination].sort((a,b)=>a-b);
-        let consecutivePattern = '';
-        let count = 1;
-        for (let i = 1; i < sorted.length; i++) {
-            if (sorted[i] === sorted[i-1] + 1) {
-                count++;
-            } else {
-                consecutivePattern += count;
-                count = 1;
-            }
-        }
-        consecutivePattern += count;
-        const consecPatternSorted = consecutivePattern.split('').sort((a,b)=>b-a).join('/');
-        
-        const tens = {};
-        combination.forEach(n => {
-            const ten = Math.floor((n-1)/10);
-            tens[ten] = (tens[ten] || 0) + 1;
-        });
-        const tensGroups = Object.values(tens).sort((a,b)=>b-a).join('/');
-
-        const digitSum = combination.reduce((sum, num) => sum + (num < 10 ? num : (num % 10 + Math.floor(num/10))), 0);
-        
-        const mean = sum / 6;
-        const stdDev = Math.sqrt(combination.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / 6);
-
-        const counts = {};
-        combination.forEach(n => { counts[n] = (counts[n] || 0) + 1; });
-        const entropy = -Object.values(counts).reduce((sum, count) => {
-            const p = count / 6;
-            return sum + p * Math.log2(p);
-        }, 0);
-
-        return {
-          suma: sum,
-          parImpar: `${evens}/${6-evens}`,
-          bajosAltos: `${lows}/${6-lows}`,
-          primos: primesCount,
-          consecutivos: consecPatternSorted,
-          agrupDecenas: tensGroups,
-          sumaDigitos: digitSum,
-          desviacion: stdDev.toFixed(2),
-          entropia: entropy.toFixed(3),
-          _desviacion: stdDev,
-          _entropia: entropy,
-        };
-      }
-      
-      clearGridHighlights() {
-        document.querySelectorAll('.number-ball.generated-pick, .number-ball.random-pick').forEach(ball => {
-            ball.classList.remove('generated-pick', 'random-pick');
-            const icon = ball.querySelector('.number-icon');
-            if (!icon) return;
-
-            const num = parseInt(ball.dataset.number);
-            
-            if(this.excludedNumbers.has(num)) {
-                icon.textContent = '🚫';
-            } else if(this.hotNumbers.has(num)) {
-                icon.textContent = '🔥';
-            } else if(this.coldNumbers.has(num)) {
-                icon.textContent = '❄️';
-            } else {
-                icon.textContent = '';
-            }
-        });
-      }
-      
-      // ===== TICKET & STORAGE (CORREGIDO) =====
-      displayTicket(combinations, strategy) {
-        this.currentTicket = { date: new Date().toISOString(), combinations, strategy };
-        const ticketDiv = document.getElementById('ticket');
-        const combinationsDiv = document.getElementById('ticketCombinations');
-        const ticketDateEl = document.getElementById('ticketDate');
-        if (ticketDateEl) ticketDateEl.textContent = new Date().toLocaleString();
-        
-        if (!combinationsDiv || !ticketDiv) return;
-        combinationsDiv.innerHTML = '';
-        
-        combinations.forEach(combo => {
-            const comboDiv = document.createElement('div');
-            comboDiv.className = 'ticket-combination';
-            combo.sort((a,b)=>a-b).forEach(num => {
-                const numDiv = document.createElement('div');
-                numDiv.className = 'ticket-number';
-                numDiv.textContent = num;
-                comboDiv.appendChild(numDiv);
-            });
-            combinationsDiv.appendChild(comboDiv);
-        });
-        
-        this.clearGridHighlights();
-
-        if (strategy !== 'multiple' && combinations.length > 0) {
-            this.updateTopDisplayWithCombination(combinations[0], 'generated');
-        } else {
-            const display = document.getElementById('selectedDisplay');
-            const message = strategy === 'multiple' ? 'Múltiple generada. Ver boleto.' : 'Selecciona hasta 6 números';
-            if(display) display.innerHTML = `<div style="color:#666; font-style: italic;">${message}</div>`;
-        }
-
-        const firstResult = combinations[0];
-        if (firstResult) {
-            firstResult.forEach(num => {
-                const ball = document.querySelector(`.number-ball[data-number="${num}"]`);
-                if (ball) {
-                    ball.classList.add('generated-pick');
-                    const icon = ball.querySelector('.number-icon');
-                    if(icon) icon.textContent = '🤖';
-                }
-            });
-            
-            if (strategy === 'multiple') {
-                this.displayCombinationStats([]);
-            } else {
-                this.displayCombinationStats(firstResult);
-            }
-        }
-        
-        ticketDiv.classList.add('show');
-      }
-      saveTicket() {
-        if (!this.currentTicket) return;
-        this.savedTickets.unshift(this.currentTicket);
-        if (this.platform === 'appinventor') {
-            if (typeof window.AppInventor !== 'undefined') {
-                window.AppInventor.setWebViewString(JSON.stringify({ action: 'SAVE_TICKETS', tickets: this.savedTickets }));
-            }
-        } else {
-            localStorage.setItem('lotto49_tickets', JSON.stringify(this.savedTickets));
-            this.showToast('✅ Boleto guardado localmente', 'success');
-        }
-        this.updateSavedTickets();
-        this.currentTicket = null;
-        const ticketDiv = document.getElementById('ticket');
-        if(ticketDiv) ticketDiv.classList.remove('show');
-      }
-      loadTickets() {
-        if (this.platform === 'web') {
-            const tickets = localStorage.getItem('lotto49_tickets');
-            this.savedTickets = tickets ? JSON.parse(tickets) : [];
-            this.updateSavedTickets();
-        }
-      }
-      deleteTicket(date) {
-        this.savedTickets = this.savedTickets.filter(t => t.date !== date);
-         if (this.platform === 'appinventor') {
-            if (typeof window.AppInventor !== 'undefined') {
-                window.AppInventor.setWebViewString(JSON.stringify({ action: 'SAVE_TICKETS', tickets: this.savedTickets }));
-            }
-        } else {
-            localStorage.setItem('lotto49_tickets', JSON.stringify(this.savedTickets));
-        }
-        this.updateSavedTickets();
-        this.showToast('Boleto eliminado', 'info');
-      }
-      updateSavedTickets() {
-        const container = document.getElementById('savedTickets');
-        if (!container) return;
-        container.innerHTML = '';
-        if (this.savedTickets.length === 0) {
-          container.innerHTML = '<div style="color:#666; text-align: center; padding: 20px;">No tienes boletos guardados</div>';
-          return;
-        }
-
-        const strategyMap = {
-            simple: 'Simple',
-            winning: 'E. Ganadora',
-            multiple: 'Múltiple'
-        };
-
-        this.savedTickets.forEach(ticket => {
-          const item = document.createElement('div');
-          item.className = 'saved-ticket-item';
-          const strategyName = strategyMap[ticket.strategy] || 'Simple';
-          const strategyHTML = `<span class="saved-ticket-strategy">${strategyName}</span>`;
-
-          let combosHTML = ticket.combinations.map(combo => `<div class="saved-combination"><div class="saved-combination-content">${combo.map(n => `<div class="saved-combination-number">${n}</div>`).join('')}</div></div>`).join('');
-          
-          item.innerHTML = `<div class="saved-ticket-header">
-              <span class="saved-ticket-date">${new Date(ticket.date).toLocaleString()}</span>
-              ${strategyHTML}
-              <div class="saved-ticket-actions">
-                <button class="validate">Validar</button>
-                <button class="delete-btn">X</button>
-                <button class="toggle-btn">+</button>
-              </div></div><div class="saved-combinations">${combosHTML}</div>`;
-          
-          item.querySelector('.delete-btn')?.addEventListener('click', () => this.deleteTicket(ticket.date));
-          item.querySelector('.validate')?.addEventListener('click', () => this.startValidation(ticket.date));
-          item.querySelector('.toggle-btn')?.addEventListener('click', (e) => {
-              const comboDiv = item.querySelector('.saved-combinations');
-              const target = e.target;
-              if (!comboDiv || !target) return;
-              const isVisible = comboDiv.style.display === 'block';
-              comboDiv.style.display = isVisible ? 'none' : 'block';
-              target.textContent = isVisible ? '+' : '-';
-          });
-          container.appendChild(item);
-        });
-      }
-      startValidation(date) {
-        this.currentValidatingTicket = this.savedTickets.find(t => t.date === date);
-        const validationResults = document.getElementById('validationResults');
-        if(validationResults) validationResults.innerHTML = '';
-        const winningNumbersInput = document.getElementById('winningNumbersInput');
-        if(winningNumbersInput) winningNumbersInput.value = '';
-        this.toggleModal('validationModal', true);
-      }
-      confirmValidation() {
-        const inputEl = document.getElementById('winningNumbersInput');
-        if (!inputEl) return;
-        const winningNumbers = new Set(inputEl.value.split(/[ ,.]+/).map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0 && n < 50));
-        if (winningNumbers.size !== 6) {
-          this.showToast('Introduce 6 números ganadores válidos.', 'error');
-          return;
-        }
-        const resultsDiv = document.getElementById('validationResults');
-        if (!resultsDiv || !this.currentValidatingTicket) return;
-        resultsDiv.innerHTML = '';
-        this.currentValidatingTicket.combinations.forEach(combo => {
-            if(combo.length === 6) {
-                const hits = combo.filter(n => winningNumbers.has(n)).length;
-                const resultItem = document.createElement('div');
-                resultItem.className = 'saved-combination';
-                resultItem.innerHTML = `<div class="saved-combination-content">${combo.map(n => `<div class="saved-combination-number ${winningNumbers.has(n) ? 'selected' : ''}">${n}</div>`).join('')}</div><div class="hit-count">${hits} aciertos</div>`;
-                resultsDiv.appendChild(resultItem);
-            }
-        });
-      }
-      shareTicket() {
-          if (!this.currentTicket) return;
-          const text = `Mi boleto DataLotto49:\n${this.currentTicket.combinations.map(c => c.join(' - ')).join('\n')}`;
-          if (navigator.share) {
-              navigator.share({ title: 'Mi Boleto DataLotto49', text }).catch(console.error);
-          } else {
-              navigator.clipboard.writeText(text).then(() => this.showToast('Boleto copiado al portapapeles', 'success'));
-          }
-      }
-
-      // ===== HELPERS UI & GEOMETRIC/AI =====
-      hasGeometricPattern(combination, patternsToExclude) {
-          const coords = combination.map(n => DataLotto49Advanced.NUMBER_COORDS[n]);
-          const patternChecks = {
-              lineas: () => this.isLine(coords),
-              diagonales: () => this.isDiagonal(coords),
-              triangulos: () => false, // No implementado para exclusión
-              circulos: () => false,   // No implementado para exclusión
-              cruces: () => false,     // No implementado para exclusión
-          };
-          for (const pattern of patternsToExclude) {
-              if (patternChecks[pattern] && patternChecks[pattern]()) return true;
-          }
-          return false;
-      }
-      isSpaced(combination) {
-          const coords = combination.map(n => DataLotto49Advanced.NUMBER_COORDS[n]);
-          for (let i = 0; i < coords.length; i++) {
-              for (let j = i + 1; j < coords.length; j++) {
-                  if (Math.abs(coords[i].col - coords[j].col) <= 1 && Math.abs(coords[i].row - coords[j].row) <= 1) {
-                      return false; // Números adyacentes encontrados
-                  }
-              }
-          }
-          return true;
-      }
-      isLine(coords) {
-          const allSameRow = coords.every(c => c.row === coords[0].row);
-          const allSameCol = coords.every(c => c.col === coords[0].col);
-          return allSameRow || allSameCol;
-      }
-      isDiagonal(coords) {
-          const mainDiagValue = coords[0].row - coords[0].col;
-          if (coords.every(c => c.row - c.col === mainDiagValue)) return true;
-          const antiDiagValue = coords[0].row + coords[0].col;
-          if (coords.every(c => c.row + c.col === antiDiagValue)) return true;
-          return false;
-      }
-      calculateCombinationScore(combination) {
-          let score = 0;
-          combination.forEach(n => {
-              if (this.hotNumbers.has(n)) score += 2;
-              // Only penalize cold numbers if regression filter is OFF
-              if (!this.filters.useRegression && this.coldNumbers.has(n)) score -= 1;
-          });
-
-          if (this.filters.geometric.favor.includes('espaciados') && this.isSpaced(combination)) {
-              score += 15;
-          }
-          if (this.filters.useMarkov) {
-              score += this.getAIMarkovScore(combination);
-          }
-          if (this.filters.useNash) {
-              score += (30 - this.getAIPopularityScore(combination));
-          }
-          if (this.filters.useRegression) {
-              combination.forEach(n => {
-                  if (this.coldNumbers.has(n)) score += 3; // Bonus for cold numbers
-              });
-          }
-          return score;
-      }
-      getAIMarkovScore(combination) {
-          if (this.historicalData.length < 5) return 0;
-          let score = 0;
-          const lastDraws = this.historicalData.slice(-5).flatMap(d => d.numbers);
-          const lastDrawsSet = new Set(lastDraws);
-          combination.forEach(n => {
-              if (lastDrawsSet.has(n)) score += lastDraws.filter(d => d === n).length;
-          });
-          return score;
-      }
-      getAIPopularityScore(combination) {
-          let score = 0;
-          combination.forEach(n => {
-              if (n <= 31) score += 2;
-              const { row, col } = DataLotto49Advanced.NUMBER_COORDS[n];
-              if (row === 0 || row === 6 || col === 0 || col === 6) score += 1;
-          });
-          if (this.isLine(combination.map(n => DataLotto49Advanced.NUMBER_COORDS[n]))) score += 10;
-          return score;
-      }
-      showLoading(text) { 
-        const loadingText = document.getElementById('loadingText');
-        if (loadingText) loadingText.textContent = text;
-        const loadingInfo = document.getElementById('loadingInfo');
-        if (loadingInfo) loadingInfo.textContent = 'Iniciando...';
-        const loadingModal = document.getElementById('loadingModal');
-        if (loadingModal) loadingModal.style.display = 'flex'; 
-      }
-      hideLoading() { 
-        const loadingModal = document.getElementById('loadingModal');
-        if (loadingModal) loadingModal.style.display = 'none';
-      }
-      showToast(message, type = 'info') {
-        const toast = document.getElementById('toast');
-        if (!toast) return;
-        toast.textContent = message;
-        toast.className = `toast show ${type}`;
-        setTimeout(() => { toast.className = 'toast'; }, 3000);
-      }
-      toggleModal(id, show) { 
-        const modal = document.getElementById(id);
-        if (modal) modal.style.display = show ? 'flex' : 'none';
-      }
-      toggleCollapse(targetId) {
-        const content = document.getElementById(`${targetId}Content`);
-        const btn = document.getElementById(`${targetId}CollapseBtn`);
-        if (content && btn) {
-            content.classList.toggle('expanded');
-            btn.textContent = content.classList.contains('expanded') ? '-' : '+';
-        }
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      window.app = new DataLotto49Advanced();
-    });
-  </script>
+  <!-- App logic is now loaded from the compiled TSX file -->
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
